@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, MapPin, Send, Github, Linkedin, Twitter } from 'lucide-react';
+import { Mail, MapPin, Send, Github, Linkedin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -70,10 +70,10 @@ const Contact = () => {
                     <div>
                       <p className="font-medium mb-1">Email</p>
                       <a 
-                        href="mailto:john.doe@example.com" 
+                        href="mailto:mukeshsilwal5@gmail.com" 
                         className="text-muted-foreground hover:text-primary transition-colors"
                       >
-                        john.doe@example.com
+                        mukeshsilwal5@gmail.com
                       </a>
                     </div>
                   </div>
@@ -85,7 +85,7 @@ const Contact = () => {
                     <div>
                       <p className="font-medium mb-1">Location</p>
                       <p className="text-muted-foreground">
-                        San Francisco, CA
+                        Godawari-02, Lalitpur, Nepal
                       </p>
                     </div>
                   </div>
@@ -95,7 +95,7 @@ const Contact = () => {
                   <p className="font-medium mb-4">Find me on</p>
                   <div className="flex items-center gap-4">
                     <a
-                      href="https://github.com"
+                      href="https://github.com/Mukeshsilwal"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-12 h-12 rounded-lg glass-card flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/50 transition-all duration-300"
@@ -104,22 +104,13 @@ const Contact = () => {
                       <Github className="w-5 h-5" />
                     </a>
                     <a
-                      href="https://linkedin.com"
+                      href="https://linkedin.com/in/Mukeshsilwal"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="w-12 h-12 rounded-lg glass-card flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/50 transition-all duration-300"
                       aria-label="LinkedIn"
                     >
                       <Linkedin className="w-5 h-5" />
-                    </a>
-                    <a
-                      href="https://twitter.com"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-12 h-12 rounded-lg glass-card flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/50 transition-all duration-300"
-                      aria-label="Twitter"
-                    >
-                      <Twitter className="w-5 h-5" />
                     </a>
                   </div>
                 </div>

@@ -52,12 +52,12 @@ const About = () => {
                 <pre className="font-mono text-sm text-muted-foreground overflow-x-auto">
                   <code>
 {`public class Developer {
-  private String name = "John Doe";
-  private int experience = 3; // years
+  private String name = "Mukesh Silwal";
+  private int experience = 2; // years
   private String[] passions = {
-    "Backend Development",
-    "System Architecture",
-    "Problem Solving"
+    "Reactive Programming",
+    "Fintech Solutions",
+    "System Architecture"
   };
 }`}
                   </code>
@@ -65,32 +65,32 @@ const About = () => {
               </div>
 
               <p className="text-lg text-muted-foreground leading-relaxed">
-                I'm a passionate <span className="text-foreground font-semibold">Java Developer</span> with 
-                3+ years of experience building robust backend systems. I specialize in creating 
-                scalable RESTful APIs, microservices, and enterprise applications using 
-                <span className="text-spring font-semibold"> Spring Boot</span> and related technologies.
+                I'm a passionate <span className="text-foreground font-semibold">Java Backend Software Engineer</span> with 
+                2+ years of experience building robust fintech solutions. I specialize in creating 
+                scalable APIs using <span className="text-spring font-semibold">Spring Boot</span>, 
+                <span className="text-spring font-semibold"> WebFlux</span>, and reactive programming.
               </p>
 
               <p className="text-lg text-muted-foreground leading-relaxed">
-                My journey in software development started with a curiosity for how systems work 
-                at scale. Today, I focus on writing clean, efficient code that solves real-world 
-                problems while maintaining high standards for quality and performance.
+                Currently at F1Soft, Nepal's leading fintech company, I work on mobile banking backends 
+                that serve millions of users. Previously, I built payment gateway systems and POS solutions 
+                at Citytech Group.
               </p>
 
               <div className="flex items-center gap-6 pt-4">
                 <div className="text-center">
-                  <span className="text-3xl font-bold gradient-text">3+</span>
+                  <span className="text-3xl font-bold gradient-text">2+</span>
                   <p className="text-sm text-muted-foreground">Years Exp.</p>
                 </div>
                 <div className="w-px h-12 bg-border" />
                 <div className="text-center">
-                  <span className="text-3xl font-bold gradient-text">20+</span>
+                  <span className="text-3xl font-bold gradient-text">5+</span>
                   <p className="text-sm text-muted-foreground">Projects</p>
                 </div>
                 <div className="w-px h-12 bg-border" />
                 <div className="text-center">
-                  <span className="text-3xl font-bold gradient-text">10+</span>
-                  <p className="text-sm text-muted-foreground">Clients</p>
+                  <span className="text-3xl font-bold gradient-text">2</span>
+                  <p className="text-sm text-muted-foreground">Companies</p>
                 </div>
               </div>
             </div>

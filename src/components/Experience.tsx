@@ -3,43 +3,34 @@ import { Briefcase, GraduationCap, Award, Calendar } from 'lucide-react';
 const experiences = [
   {
     type: 'work',
+    title: 'Java Software Engineer',
+    company: 'F1Soft International',
+    period: 'Oct 2024 - Present',
+    description: 'Working on mobile banking backend systems at Nepal\'s leading fintech company. Building scalable APIs and microservices serving millions of users.',
+    highlights: ['Mobile Banking', 'Java Backend', 'Microservices'],
+  },
+  {
+    type: 'work',
     title: 'Java Backend Developer',
-    company: 'Tech Solutions Inc.',
-    period: '2022 - Present',
-    description: 'Developing and maintaining microservices architecture using Spring Boot. Leading API design and implementation for enterprise clients.',
-    highlights: ['Microservices', 'API Development', 'Team Lead'],
-  },
-  {
-    type: 'work',
-    title: 'Junior Java Developer',
-    company: 'StartupXYZ',
-    period: '2021 - 2022',
-    description: 'Built RESTful APIs and contributed to backend development of an e-commerce platform. Collaborated with frontend team for seamless integration.',
-    highlights: ['REST APIs', 'E-commerce', 'Agile'],
-  },
-  {
-    type: 'work',
-    title: 'Software Development Intern',
-    company: 'Innovation Labs',
-    period: '2020 - 2021',
-    description: 'Learned enterprise Java development practices. Contributed to internal tools and gained hands-on experience with Spring Framework.',
-    highlights: ['Spring Framework', 'Internal Tools', 'Learning'],
+    company: 'Citytech Group Pvt. Ltd',
+    period: 'Apr 2023 - Sep 2024',
+    description: 'Developed Gatepay, a multi-payment gateway system using Java reactive programming. Built FinPOS backend for POS device integration and transaction management.',
+    highlights: ['Reactive Programming', 'Payment Gateway', 'POS Systems'],
   },
 ];
 
 const education = [
   {
-    degree: 'Bachelor of Science in Computer Science',
-    institution: 'State University',
-    period: '2017 - 2021',
-    description: 'Graduated with honors. Specialized in software engineering and database systems.',
+    degree: 'Bachelor in Computer Application (BCA)',
+    institution: 'Tribhuvan University',
+    period: '2019 - 2023',
+    description: 'Focused on software engineering, database systems, and web technologies.',
   },
 ];
 
 const certifications = [
-  { name: 'Oracle Certified Professional: Java SE 11', year: '2023' },
-  { name: 'Spring Professional Certification', year: '2022' },
-  { name: 'AWS Certified Cloud Practitioner', year: '2022' },
+  { name: 'Java Spring Boot Development', year: '2023' },
+  { name: 'Reactive Programming with WebFlux', year: '2024' },
 ];
 
 const Experience = () => {
