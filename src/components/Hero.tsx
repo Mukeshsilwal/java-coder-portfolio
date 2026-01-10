@@ -1,4 +1,4 @@
-import { ArrowDown, Download, Github, Linkedin, Mail } from 'lucide-react';
+import { ArrowDown, Github, Linkedin, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 const Hero = () => {
@@ -31,24 +31,25 @@ const Hero = () => {
           {/* Main Heading */}
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 animate-fade-up" style={{ animationDelay: '0.1s' }}>
             Hi, I'm{' '}
-            <span className="gradient-text">John Doe</span>
+            <span className="gradient-text">Mukesh Silwal</span>
           </h1>
 
           {/* Title */}
           <div className="flex flex-wrap items-center justify-center gap-3 mb-8 animate-fade-up" style={{ animationDelay: '0.2s' }}>
-            <span className="font-mono text-lg sm:text-xl md:text-2xl text-foreground">Java Developer</span>
+            <span className="font-mono text-lg sm:text-xl md:text-2xl text-foreground">Java Backend Software Engineer</span>
             <span className="text-primary">•</span>
-            <span className="font-mono text-lg sm:text-xl md:text-2xl text-muted-foreground">Backend Engineer</span>
+            <span className="font-mono text-lg sm:text-xl md:text-2xl text-muted-foreground">Reactive Systems</span>
             <span className="text-primary hidden sm:inline">•</span>
-            <span className="font-mono text-lg sm:text-xl md:text-2xl text-muted-foreground hidden sm:inline">Problem Solver</span>
+            <span className="font-mono text-lg sm:text-xl md:text-2xl text-muted-foreground hidden sm:inline">Fintech Expert</span>
           </div>
 
           {/* Tagline */}
           <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed animate-fade-up text-balance" style={{ animationDelay: '0.3s' }}>
             Building robust, scalable backend systems with{' '}
-            <span className="text-java font-semibold">Java</span> and{' '}
-            <span className="text-spring font-semibold">Spring Boot</span>.
-            Passionate about clean code, RESTful APIs, and microservices architecture.
+            <span className="text-java font-semibold">Java</span>,{' '}
+            <span className="text-spring font-semibold">Spring Boot</span> &{' '}
+            <span className="text-spring font-semibold">Reactive Programming</span>.
+            Currently powering mobile banking at Nepal's #1 fintech.
           </p>
 
           {/* CTA Buttons */}
@@ -69,9 +70,8 @@ const Hero = () => {
               className="w-full sm:w-auto border-border hover:bg-secondary transition-all duration-300 font-semibold px-8"
               asChild
             >
-              <a href="/resume.pdf" download>
-                <Download className="mr-2 w-4 h-4" />
-                Download Resume
+              <a href="#contact">
+                Get in Touch
               </a>
             </Button>
           </div>
@@ -79,7 +79,7 @@ const Hero = () => {
           {/* Social Links */}
           <div className="flex items-center justify-center gap-4 animate-fade-up" style={{ animationDelay: '0.5s' }}>
             <a
-              href="https://github.com"
+              href="https://github.com/Mukeshsilwal"
               target="_blank"
               rel="noopener noreferrer"
               className="w-12 h-12 rounded-lg glass-card flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/50 transition-all duration-300"
@@ -88,7 +88,7 @@ const Hero = () => {
               <Github className="w-5 h-5" />
             </a>
             <a
-              href="https://linkedin.com"
+              href="https://linkedin.com/in/Mukeshsilwal"
               target="_blank"
               rel="noopener noreferrer"
               className="w-12 h-12 rounded-lg glass-card flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/50 transition-all duration-300"
@@ -97,7 +97,7 @@ const Hero = () => {
               <Linkedin className="w-5 h-5" />
             </a>
             <a
-              href="mailto:john@example.com"
+              href="mailto:mukeshsilwal5@gmail.com"
               className="w-12 h-12 rounded-lg glass-card flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/50 transition-all duration-300"
               aria-label="Email"
             >

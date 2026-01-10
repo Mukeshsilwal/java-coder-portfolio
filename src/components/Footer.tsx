@@ -15,7 +15,7 @@ const Footer = () => {
               </div>
               <span className="font-mono font-bold">
                 <span className="text-primary">&lt;</span>
-                JD
+                MS
                 <span className="text-primary">/&gt;</span>
               </span>
             </a>
@@ -27,7 +27,7 @@ const Footer = () => {
 
             {/* Copyright */}
             <p className="text-sm text-muted-foreground">
-              © {currentYear} John Doe. All rights reserved.
+              © {currentYear} Mukesh Silwal. All rights reserved.
             </p>
           </div>
         </div>

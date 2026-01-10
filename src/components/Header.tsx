@@ -35,7 +35,7 @@ const Header = () => {
           </div>
           <span className="font-mono font-bold text-lg">
             <span className="text-primary">&lt;</span>
-            JD
+            MS
             <span className="text-primary">/&gt;</span>
           </span>
         </a>
