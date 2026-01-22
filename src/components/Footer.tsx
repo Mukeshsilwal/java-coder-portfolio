@@ -20,10 +20,7 @@ const Footer = () => {
               </span>
             </a>
 
-            {/* Built With */}
-            <p className="text-sm text-muted-foreground flex items-center gap-1">
-              Built with <Heart className="w-4 h-4 text-red-500 fill-current" /> using React & Tailwind
-            </p>
+            {/* Built With - Removed */}
 
             {/* Copyright */}
             <p className="text-sm text-muted-foreground">
