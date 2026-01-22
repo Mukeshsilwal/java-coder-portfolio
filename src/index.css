@@ -7,7 +7,7 @@
 
 @layer base {
   :root {
-    /* Light Mode - Premium SaaS Colors */
+    /* Light Mode - Business Professional */
     --background: 0 0% 100%;
     --foreground: 222 47% 11%;
     --card: 0 0% 100%;
@@ -15,16 +15,16 @@
     --popover: 0 0% 100%;
     --popover-foreground: 222 47% 11%;
 
-    /* Primary Brand: Indigo → Blue Gradient */
-    --primary: 238 77% 63%;
-    /* #6366F1 Indigo */
-    --primary-dark: 221 83% 53%;
-    /* #2563EB Blue */
+    /* Primary Brand: Deep Blue */
+    --primary: 221 83% 53%;
+    /* #2563EB */
+    --primary-dark: 224 76% 48%;
+    /* #1d4ed8 */
     --primary-foreground: 210 40% 98%;
 
-    /* Accent: Teal */
-    --accent: 187 85% 53%;
-    /* #22D3EE */
+    /* Accent: Electric Blue */
+    --accent: 199 89% 48%;
+    /* #0ea5e9 */
     --accent-foreground: 210 40% 98%;
 
     --secondary: 210 40% 96.1%;
@@ -35,56 +35,65 @@
     --destructive-foreground: 210 40% 98%;
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
-    --ring: 238 77% 63%;
+    --ring: 221 83% 53%;
 
-    --radius: 0.875rem;
-    /* 14px */
+    --radius: 0.75rem;
+
+    /* Tech Stack Colors (Light) */
+    --java: 16 100% 50%;
+    /* #ff4500 */
+    --spring: 96 48% 47%;
+    /* #6db33f */
+    --database: 43 96% 56%;
+    /* #fbbf24 */
+    --tools: 271 91% 65%;
+    /* #a855f7 */
   }
 
   .dark {
-    /* Premium Dark Mode - Enterprise SaaS */
-    --background: 222 47% 7%;
-    /* #0B1120 Dark Primary */
+    /* Deep Backend Theme - Void */
+    --background: 240 10% 4%;
+    /* #0a0a0c */
     --foreground: 210 40% 98%;
-    /* #F8FAFC Primary Text */
 
-    /* Surface Cards */
-    --card: 215 28% 10%;
-    /* #111827 Surface Cards */
+    /* Surface Cards - Oberon */
+    --card: 240 6% 10%;
+    /* #18181b */
     --card-foreground: 210 40% 98%;
-    --popover: 215 28% 10%;
+    --popover: 240 6% 10%;
     --popover-foreground: 210 40% 98%;
 
-    /* Primary Brand: Indigo → Blue */
-    --primary: 238 77% 63%;
-    /* #6366F1 */
-    --primary-dark: 221 83% 53%;
-    /* #2563EB */
-    --primary-foreground: 222 47% 7%;
+    /* Primary: Electric Blue */
+    --primary: 217 91% 60%;
+    /* #3b82f6 */
+    --primary-dark: 224 76% 48%;
+    --primary-foreground: 222 47% 11%;
 
-    /* Accent: Teal */
-    --accent: 187 85% 53%;
-    /* #22D3EE */
-    --accent-foreground: 222 47% 7%;
+    /* Accent: Neon Mint */
+    --accent: 180 100% 50%;
+    /* #00f0ff */
+    --accent-foreground: 222 47% 11%;
 
-    /* Backgrounds & Borders */
-    --secondary: 217 33% 17%;
-    /* #1F2937 Soft Border */
+    /* Secondary */
+    --secondary: 240 4% 16%;
+    /* #27272a */
     --secondary-foreground: 210 40% 98%;
-    --muted: 217 33% 17%;
-    --muted-foreground: 215 16% 47%;
-    /* #64748B Muted Text */
+    --muted: 240 4% 16%;
+    --muted-foreground: 240 5% 65%;
+    /* #a1a1aa */
 
-    /* Text Colors */
-    --text-secondary: 214 32% 64%;
-    /* #94A3B8 Secondary Text */
-
-    --destructive: 0 84% 60%;
+    --destructive: 0 62% 30%;
     --destructive-foreground: 210 40% 98%;
-    --border: 217 33% 17%;
-    /* #1F2937 */
-    --input: 217 33% 17%;
-    --ring: 238 77% 63%;
+
+    --border: 240 4% 16%;
+    --input: 240 4% 16%;
+    --ring: 217 91% 60%;
+
+    /* Tech Stack Colors (Dark - slightly brighter for contrast) */
+    --java: 16 100% 60%;
+    --spring: 96 58% 57%;
+    --database: 43 100% 66%;
+    --tools: 271 100% 75%;
   }
 }
 

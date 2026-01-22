@@ -46,16 +46,18 @@ const Hero = () => {
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 animate-fade-up" style={{ animationDelay: '0.3s' }}>
-              <a href="#projects" className="w-full sm:w-auto">
-                <button className="btn-primary w-full sm:w-auto flex items-center justify-center gap-2">
-                  <Sparkles className="w-4 h-4" />
-                  View Projects
-                </button>
-              </a>
+              <button
+                onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
+                className="btn-primary w-full sm:w-auto flex items-center justify-center gap-2 group cursor-pointer"
+              >
+                <Code2 className="w-4 h-4 group-hover:rotate-12 transition-transform" />
+                View Projects
+              </button>
+
               <a href={resumeService.getDownloadUrl()} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
-                <button className="btn-secondary w-full sm:w-auto flex items-center justify-center gap-2">
-                  <Download className="w-4 h-4" />
-                  Download Resume
+                <button className="btn-secondary w-full sm:w-auto flex items-center justify-center gap-2 group">
+                  <Download className="w-4 h-4 group-hover:translate-y-1 transition-transform" />
+                  Download CV
                 </button>
               </a>
             </div>

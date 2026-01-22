@@ -1,6 +1,19 @@
 import { axiosInstance } from './axios';
 import { ProjectDTO, SkillDTO, ProfileDTO } from '@/types';
 
+export interface MessageDTO {
+    senderName: string;
+    senderEmail: string;
+    message: string;
+    subject: string;
+}
+
+export interface LoginDTO {
+    username?: string;
+    password?: string;
+    email?: string;
+}
+
 // Public APIs
 export const publicApi = {
     getProfile: async () => {
@@ -19,7 +32,7 @@ export const publicApi = {
         const { data } = await axiosInstance.get<ProjectDTO>(`/projects/${id}`);
         return data;
     },
-    sendMessage: async (message: any) => {
+    sendMessage: async (message: MessageDTO) => {
         const { data } = await axiosInstance.post('/contact', message);
         return data;
     }
@@ -61,12 +74,12 @@ export const adminApi = {
 };
 
 export const authApi = {
-    login: async (credentials: any) => {
+    login: async (credentials: LoginDTO) => {
         const { data } = await axiosInstance.post<{ token: string }>('/auth/login', credentials);
         return data;
     },
     // Admin registration might not be public, but keeping it if needed
-    register: async (credentials: any) => {
+    register: async (credentials: LoginDTO) => {
         const { data } = await axiosInstance.post('/auth/register', credentials);
         return data;
     }

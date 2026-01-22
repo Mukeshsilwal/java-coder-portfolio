@@ -1,15 +1,14 @@
 import { useState, useEffect } from 'react';
-import { Menu, X, Code2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 
 const navLinks = [
-  { href: '/', label: 'Home' },
-  { href: '/about', label: 'About' },
-  { href: '/skills', label: 'Skills' },
-  { href: '/projects', label: 'Projects' },
-  { href: '/blog', label: 'Blog' },
-  { href: '/contact', label: 'Contact' },
+  { href: '/', label: 'Home', isTopFn: true },
+  { href: '/#about', label: 'About', sectionId: 'about' },
+  { href: '/#skills', label: 'Skills', sectionId: 'skills' },
+  { href: '/#projects', label: 'Projects', sectionId: 'projects' },
+  { href: '/blog', label: 'Blog', sectionId: null },
+  { href: '/contact', label: 'Contact', sectionId: null },
 ];
 
 const Header = () => {
@@ -25,7 +24,28 @@ const Header = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const isActive = (path: string) => location.pathname === path;
+  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, sectionId: string | null) => {
+    if (location.pathname === '/' && sectionId) {
+      e.preventDefault();
+      const element = document.getElementById(sectionId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+        setIsMobileMenuOpen(false);
+      }
+    } else if (location.pathname === '/' && sectionId === 'top') {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setIsMobileMenuOpen(false);
+    }
+    // Otherwise let the default Link behavior happen (navigation to /#section)
+  };
+
+  const isActive = (link: typeof navLinks[0]) => {
+    if (link.href === '/' && location.pathname === '/' && !location.hash) return true;
+    if (link.sectionId && location.hash === `#${link.sectionId}`) return true;
+    if (!link.sectionId && location.pathname === link.href) return true;
+    return false;
+  };
 
   return (
     <>
@@ -35,14 +55,17 @@ const Header = () => {
       >
         <div className="flex items-center justify-between">
           {/* Logo */}
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-2 group">
-            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
+          <Link
+            to="/"
+            className="flex items-center gap-2 group"
+            onClick={(e) => scrollToSection(e, 'top')}
+          >
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 transition-transform group-hover:scale-110">
               <span className="font-bold text-primary text-xl">M</span>
             </div>
             <div className="flex flex-col">
-              <span className="font-bold text-lg leading-none">Mukesh Silwal</span>
-              <span className="text-[10px] text-muted-foreground uppercase tracking-widest">Portfolio</span>
+              <span className="font-bold text-lg leading-none tracking-tight">Mukesh Silwal</span>
+              <span className="text-[10px] text-muted-foreground uppercase tracking-widest group-hover:text-primary transition-colors">Backend Engineer</span>
             </div>
           </Link>
 
@@ -50,9 +73,10 @@ const Header = () => {
           <nav className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
             {navLinks.map((link) => (
               <Link
-                key={link.href}
+                key={link.label}
                 to={link.href}
-                className={`relative px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg group ${isActive(link.href)
+                onClick={(e) => scrollToSection(e, link.isTopFn ? 'top' : (link.sectionId || null))}
+                className={`relative px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg group ${isActive(link)
                   ? 'text-foreground'
                   : 'text-muted-foreground hover:text-foreground'
                   }`}
@@ -60,7 +84,7 @@ const Header = () => {
                 {link.label}
                 {/* Active Underline Animation */}
                 <span
-                  className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 bg-gradient-to-r from-primary to-accent transition-all duration-300 ${isActive(link.href) ? 'w-8' : 'w-0 group-hover:w-8'
+                  className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 bg-gradient-to-r from-primary to-accent transition-all duration-300 ${isActive(link) ? 'w-8' : 'w-0 group-hover:w-8'
                     }`}
                 />
               </Link>
@@ -68,10 +92,10 @@ const Header = () => {
           </nav>
 
           {/* Right CTA */}
-          <div className="hidden md:block">
+          <div className="hidden md:flex items-center gap-4">
             <Link to="/contact">
-              <button className="btn-primary text-sm py-2 px-6">
-                Let's Connect
+              <button className="btn-primary text-sm py-2 px-6 shadow-lg shadow-primary/20 hover:shadow-primary/40">
+                Let's Build
               </button>
             </Link>
           </div>
@@ -89,17 +113,17 @@ const Header = () => {
 
       {/* Mobile Navigation */}
       {isMobileMenuOpen && (
-        <nav className="fixed top-20 left-4 right-4 z-40 glass-card rounded-2xl p-4 animate-fade-up md:hidden">
+        <nav className="fixed top-20 left-4 right-4 z-40 glass-card rounded-2xl p-4 animate-fade-up md:hidden border-t border-white/10">
           <div className="flex flex-col gap-1">
             {navLinks.map((link) => (
               <Link
-                key={link.href}
+                key={link.label}
                 to={link.href}
-                className={`px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${isActive(link.href)
+                onClick={(e) => scrollToSection(e, link.isTopFn ? 'top' : (link.sectionId || null))}
+                className={`px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${isActive(link)
                   ? 'bg-primary/10 text-foreground border-l-2 border-primary'
                   : 'text-muted-foreground hover:bg-secondary/50 hover:text-foreground'
                   }`}
-                onClick={() => setIsMobileMenuOpen(false)}
               >
                 {link.label}
               </Link>
@@ -107,8 +131,8 @@ const Header = () => {
           </div>
           <div className="mt-4 pt-4 border-t border-border/50">
             <Link to="/contact" className="block" onClick={() => setIsMobileMenuOpen(false)}>
-              <button className="btn-primary w-full text-sm py-2">
-                Let's Connect
+              <button className="btn-primary w-full text-sm py-3 font-semibold">
+                Hire Me
               </button>
             </Link>
           </div>

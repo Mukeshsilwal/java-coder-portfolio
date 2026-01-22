@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, MapPin, Send, Github, Linkedin } from 'lucide-react';
+import { Mail, MapPin, Send, Github, Linkedin, MessageSquare, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -52,37 +52,43 @@ const Contact = () => {
   };
 
   return (
-    <section id="contact" className="py-24 relative">
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/20 to-background" />
+    <section id="contact" className="section-padding relative overflow-hidden">
+      {/* Background Glow */}
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[128px] pointer-events-none" />
 
       <div className="container mx-auto px-4 relative z-10">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-5xl mx-auto">
+
           {/* Section Header */}
-          <div className="text-center mb-16">
-            <span className="font-mono text-primary text-sm tracking-wider uppercase">Contact</span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mt-4 mb-6">
-              Let's <span className="gradient-text">Connect</span>
+          <div className="text-center mb-16 md:mb-24">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-medium tracking-wide uppercase mb-4 animate-fade-in">
+              <MessageSquare className="w-3 h-3" />
+              Contact
+            </div>
+            <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight animate-fade-up">
+              Let's Start a <span className="gradient-text">Conversation</span>
             </h2>
-            <p className="text-muted-foreground max-w-xl mx-auto">
-              Have a project in mind or want to discuss opportunities?
-              I'm always open to new challenges and collaborations.
+            <p className="text-lg text-muted-foreground max-w-xl mx-auto animate-fade-up" style={{ animationDelay: '0.1s' }}>
+              Have a project in mind or want to discuss backend architecture?
+              I'm always open to new challenges.
             </p>
-            <div className="w-20 h-1 bg-gradient-to-r from-primary to-accent mx-auto rounded-full mt-6" />
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-12">
-            {/* Contact Info */}
-            <div className="space-y-8">
-              <div className="glass-card p-8 rounded-xl">
-                <h3 className="text-2xl font-bold mb-6">Get in Touch</h3>
+          <div className="grid lg:grid-cols-5 gap-12 lg:gap-8">
+            {/* Left: Contact Info */}
+            <div className="lg:col-span-2 space-y-8 animate-fade-up" style={{ animationDelay: '0.2s' }}>
+              <div className="glass-card p-8 rounded-2xl border border-border/50 relative overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
-                <div className="space-y-6">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-lg bg-primary/10 border border-primary/30 flex items-center justify-center flex-shrink-0">
-                      <Mail className="w-5 h-5 text-primary" />
+                <h3 className="text-2xl font-bold mb-8 relative z-10">Get in Touch</h3>
+
+                <div className="space-y-8 relative z-10">
+                  <div className="flex items-start gap-4 group/item">
+                    <div className="w-12 h-12 rounded-xl bg-background border border-border flex items-center justify-center flex-shrink-0 group-hover/item:border-primary/50 transition-colors">
+                      <Mail className="w-5 h-5 text-foreground group-hover/item:text-primary transition-colors" />
                     </div>
                     <div>
-                      <p className="font-medium mb-1">Email</p>
+                      <p className="font-semibold mb-1">Email</p>
                       <a
                         href="mailto:mukeshsilwal5@gmail.com"
                         className="text-muted-foreground hover:text-primary transition-colors"
@@ -92,12 +98,12 @@ const Contact = () => {
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-lg bg-accent/10 border border-accent/30 flex items-center justify-center flex-shrink-0">
-                      <MapPin className="w-5 h-5 text-accent" />
+                  <div className="flex items-start gap-4 group/item">
+                    <div className="w-12 h-12 rounded-xl bg-background border border-border flex items-center justify-center flex-shrink-0 group-hover/item:border-accent/50 transition-colors">
+                      <MapPin className="w-5 h-5 text-foreground group-hover/item:text-accent transition-colors" />
                     </div>
                     <div>
-                      <p className="font-medium mb-1">Location</p>
+                      <p className="font-semibold mb-1">Location</p>
                       <p className="text-muted-foreground">
                         Godawari-02, Lalitpur, Nepal
                       </p>
@@ -105,14 +111,14 @@ const Contact = () => {
                   </div>
                 </div>
 
-                <div className="mt-8 pt-8 border-t border-border">
-                  <p className="font-medium mb-4">Find me on</p>
-                  <div className="flex items-center gap-4">
+                <div className="mt-10 pt-8 border-t border-border/50 relative z-10">
+                  <p className="font-medium mb-4 text-sm uppercase tracking-wider text-muted-foreground">Social Profiles</p>
+                  <div className="flex items-center gap-3">
                     <a
                       href="https://github.com/Mukeshsilwal"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-12 h-12 rounded-lg glass-card flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/50 transition-all duration-300"
+                      className="w-10 h-10 rounded-lg bg-background border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary hover:scale-105 transition-all"
                       aria-label="GitHub"
                     >
                       <Github className="w-5 h-5" />
@@ -121,7 +127,7 @@ const Contact = () => {
                       href="https://linkedin.com/in/Mukeshsilwal"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="w-12 h-12 rounded-lg glass-card flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/50 transition-all duration-300"
+                      className="w-10 h-10 rounded-lg bg-background border border-border flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary hover:scale-105 transition-all"
                       aria-label="LinkedIn"
                     >
                       <Linkedin className="w-5 h-5" />
@@ -129,91 +135,76 @@ const Contact = () => {
                   </div>
                 </div>
               </div>
-
-              {/* Code snippet decoration */}
-              <div className="glass-card p-4 rounded-xl font-mono text-sm">
-                <div className="flex items-center gap-2 mb-3">
-                  <div className="w-3 h-3 rounded-full bg-red-500" />
-                  <div className="w-3 h-3 rounded-full bg-yellow-500" />
-                  <div className="w-3 h-3 rounded-full bg-green-500" />
-                </div>
-                <pre className="text-muted-foreground overflow-x-auto">
-                  <code>
-                    {`Developer dev = new Developer();
-dev.setAvailable(true);
-dev.contact("your-email@example.com");`}
-                  </code>
-                </pre>
-              </div>
             </div>
 
-            {/* Contact Form */}
-            <div className="glass-card p-8 rounded-xl">
-              <h3 className="text-2xl font-bold mb-6">Send a Message</h3>
+            {/* Right: Form */}
+            <div className="lg:col-span-3 animate-fade-up" style={{ animationDelay: '0.3s' }}>
+              <div className="glass-card p-8 md:p-10 rounded-2xl border border-border/50">
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="grid sm:grid-cols-2 gap-6">
+                    <div className="space-y-2">
+                      <label htmlFor="name" className="text-sm font-medium ml-1">
+                        Name
+                      </label>
+                      <Input
+                        id="name"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleChange}
+                        placeholder="John Doe"
+                        required
+                        className="bg-secondary/30 border-border focus:border-primary h-12"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label htmlFor="email" className="text-sm font-medium ml-1">
+                        Email
+                      </label>
+                      <Input
+                        id="email"
+                        name="email"
+                        type="email"
+                        value={formData.email}
+                        onChange={handleChange}
+                        placeholder="john@example.com"
+                        required
+                        className="bg-secondary/30 border-border focus:border-primary h-12"
+                      />
+                    </div>
+                  </div>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
-                  <label htmlFor="name" className="block text-sm font-medium mb-2">
-                    Your Name
-                  </label>
-                  <Input
-                    id="name"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="John Smith"
-                    required
-                    className="bg-secondary/50 border-border focus:border-primary"
-                  />
-                </div>
+                  <div className="space-y-2">
+                    <label htmlFor="message" className="text-sm font-medium ml-1">
+                      Message
+                    </label>
+                    <Textarea
+                      id="message"
+                      name="message"
+                      value={formData.message}
+                      onChange={handleChange}
+                      placeholder="Tell me about your project context..."
+                      required
+                      rows={6}
+                      className="bg-secondary/30 border-border focus:border-primary resize-none p-4 leading-relaxed"
+                    />
+                  </div>
 
-                <div>
-                  <label htmlFor="email" className="block text-sm font-medium mb-2">
-                    Your Email
-                  </label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="john@example.com"
-                    required
-                    className="bg-secondary/50 border-border focus:border-primary"
-                  />
-                </div>
-
-                <div>
-                  <label htmlFor="message" className="block text-sm font-medium mb-2">
-                    Message
-                  </label>
-                  <Textarea
-                    id="message"
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    placeholder="Tell me about your project or opportunity..."
-                    required
-                    rows={5}
-                    className="bg-secondary/50 border-border focus:border-primary resize-none"
-                  />
-                </div>
-
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="w-full bg-primary text-primary-foreground hover:bg-primary/90 glow-primary transition-all duration-300"
-                >
-                  {isSubmitting ? (
-                    'Sending...'
-                  ) : (
-                    <>
-                      Send Message
-                      <Send className="ml-2 w-4 h-4" />
-                    </>
-                  )}
-                </Button>
-              </form>
+                  <Button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="w-full h-12 bg-primary text-primary-foreground font-semibold hover:bg-primary/90 glow-primary transition-all duration-300 rounded-xl"
+                  >
+                    {isSubmitting ? (
+                      'Sending...'
+                    ) : (
+                      <>
+                        Send Message
+                        <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1" />
+                      </>
+                    )}
+                  </Button>
+                </form>
+              </div>
             </div>
           </div>
         </div>
