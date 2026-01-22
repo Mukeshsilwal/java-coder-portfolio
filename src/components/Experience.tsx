@@ -1,39 +1,68 @@
 import { Briefcase, GraduationCap, Award, Calendar } from 'lucide-react';
 
-const experiences = [
-  {
-    type: 'work',
-    title: 'Java Software Engineer',
-    company: 'F1Soft International',
-    period: 'Oct 2024 - Present',
-    description: 'Working on mobile banking backend systems at Nepal\'s leading fintech company. Building scalable APIs and microservices serving millions of users.',
-    highlights: ['Mobile Banking', 'Java Backend', 'Microservices'],
-  },
-  {
-    type: 'work',
-    title: 'Java Backend Developer',
-    company: 'Citytech Group Pvt. Ltd',
-    period: 'Apr 2023 - Sep 2024',
-    description: 'Developed Gatepay, a multi-payment gateway system using Java reactive programming. Built FinPOS backend for POS device integration and transaction management.',
-    highlights: ['Reactive Programming', 'Payment Gateway', 'POS Systems'],
-  },
-];
+import { useEffect, useState } from 'react';
+import { axiosInstance } from '@/api/axios';
 
-const education = [
-  {
-    degree: 'Bachelor in Computer Application (BCA)',
-    institution: 'Tribhuvan University',
-    period: '2019 - 2023',
-    description: 'Focused on software engineering, database systems, and web technologies.',
-  },
-];
-
-const certifications = [
-  { name: 'Java Spring Boot Development', year: '2023' },
-  { name: 'Reactive Programming with WebFlux', year: '2024' },
-];
+interface ExperienceItem {
+  id: string;
+  company: string;
+  position: string;
+  description: string;
+  startDate: string;
+  endDate: string;
+  isCurrent: boolean;
+}
 
 const Experience = () => {
+  const [experiences, setExperiences] = useState<ExperienceItem[]>([]);
+
+  useEffect(() => {
+    const fetchExperience = async () => {
+      try {
+        const { data } = await axiosInstance.get<ExperienceItem[]>('/experience');
+        setExperiences(data);
+      } catch (err) {
+        console.error("Using static fallback", err);
+        // Fallback to static if API fails (optional, good for demo)
+        setExperiences([
+          {
+            id: '1',
+            isCurrent: true,
+            position: 'Java Software Engineer',
+            company: 'F1Soft International',
+            startDate: '2024-10-01',
+            endDate: '',
+            description: 'Working on mobile banking backend systems at Nepal\'s leading fintech company. Building scalable APIs and microservices serving millions of users.',
+          },
+          {
+            id: '2',
+            isCurrent: false,
+            position: 'Java Backend Developer',
+            company: 'Citytech Group Pvt. Ltd',
+            startDate: '2023-04-01',
+            endDate: '2024-09-30',
+            description: 'Developed Gatepay, a multi-payment gateway system using Java reactive programming. Built FinPOS backend for POS device integration and transaction management.',
+          },
+        ]);
+      }
+    };
+    fetchExperience();
+  }, []);
+
+  const education = [
+    {
+      degree: 'Bachelor in Computer Application (BCA)',
+      institution: 'Tribhuvan University',
+      period: '2019 - 2023',
+      description: 'Focused on software engineering, database systems, and web technologies.',
+    },
+  ];
+
+  const certifications = [
+    { name: 'Java Spring Boot Development', year: '2023' },
+    { name: 'Reactive Programming with WebFlux', year: '2024' },
+  ];
+
   return (
     <section id="experience" className="py-24 relative">
       <div className="container mx-auto px-4">
@@ -62,31 +91,21 @@ const Experience = () => {
                 <div className="absolute left-4 top-0 bottom-0 w-px bg-gradient-to-b from-primary via-accent to-transparent" />
 
                 <div className="space-y-8">
-                  {experiences.map((exp, index) => (
-                    <div key={index} className="relative pl-12">
+                  {experiences.map((exp) => (
+                    <div key={exp.id} className="relative pl-12">
                       {/* Timeline Dot */}
                       <div className="absolute left-[9px] w-3 h-3 rounded-full bg-primary glow-primary" />
-                      
+
                       <div className="glass-card p-6 rounded-xl hover:border-primary/30 transition-all duration-300">
                         <div className="flex flex-wrap items-start justify-between gap-2 mb-2">
-                          <h4 className="font-bold text-lg">{exp.title}</h4>
+                          <h4 className="font-bold text-lg">{exp.position}</h4>
                           <span className="flex items-center gap-1 text-sm text-muted-foreground font-mono">
                             <Calendar className="w-4 h-4" />
-                            {exp.period}
+                            {exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}
                           </span>
                         </div>
                         <p className="text-primary font-medium mb-3">{exp.company}</p>
-                        <p className="text-muted-foreground text-sm mb-4">{exp.description}</p>
-                        <div className="flex flex-wrap gap-2">
-                          {exp.highlights.map((highlight) => (
-                            <span
-                              key={highlight}
-                              className="text-xs px-3 py-1 rounded-full bg-secondary text-muted-foreground"
-                            >
-                              {highlight}
-                            </span>
-                          ))}
-                        </div>
+                        <p className="text-muted-foreground text-sm mb-4 whitespace-pre-line">{exp.description}</p>
                       </div>
                     </div>
                   ))}

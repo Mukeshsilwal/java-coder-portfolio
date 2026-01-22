@@ -1,7 +1,7 @@
-import { 
-  Code, 
-  Server, 
-  Database as DatabaseIcon, 
+import {
+  Code,
+  Server,
+  Database as DatabaseIcon,
   Wrench,
   Coffee,
   Leaf,
@@ -12,53 +12,25 @@ import {
   Terminal,
   TestTube
 } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { publicApi } from '@/api/services';
+import { SkillDTO } from '@/types';
 
-const skillCategories = [
-  {
-    title: 'Languages',
-    color: 'java',
-    icon: Code,
-    skills: [
-      { name: 'Java (Core, OOP, Collections)', level: 95 },
-      { name: 'Multithreading & Concurrency', level: 85 },
-      { name: 'SQL', level: 90 },
-      { name: 'JavaScript', level: 75 },
-    ],
-  },
-  {
-    title: 'Frameworks & Tools',
-    color: 'spring',
-    icon: Server,
-    skills: [
-      { name: 'Spring Boot', level: 92 },
-      { name: 'Spring MVC / Spring Security', level: 88 },
-      { name: 'Hibernate / JPA', level: 85 },
-      { name: 'REST APIs', level: 95 },
-    ],
-  },
-  {
-    title: 'Databases',
-    color: 'database',
-    icon: DatabaseIcon,
-    skills: [
-      { name: 'MySQL', level: 90 },
-      { name: 'PostgreSQL', level: 88 },
-      { name: 'MongoDB', level: 75 },
-      { name: 'Redis', level: 70 },
-    ],
-  },
-  {
-    title: 'Dev Tools',
-    color: 'tools',
-    icon: Wrench,
-    skills: [
-      { name: 'Git & GitHub', level: 95 },
-      { name: 'Docker', level: 80 },
-      { name: 'Maven / Gradle', level: 90 },
-      { name: 'IntelliJ IDEA', level: 95 },
-    ],
-  },
-];
+// Map for Category -> Icon/Color
+const categoryConfig: Record<string, { icon: any, color: string, title: string }> = {
+  'Backend': { icon: Server, color: 'spring', title: 'Backend' },
+  'Frontend': { icon: Code, color: 'java', title: 'Frontend' },
+  'Database': { icon: DatabaseIcon, color: 'database', title: 'Databases' },
+  'DevOps': { icon: Wrench, color: 'tools', title: 'DevOps' },
+  'Tools': { icon: Terminal, color: 'muted-foreground', title: 'Tools' }
+};
+
+const levelMap: Record<string, number> = {
+  'Expert': 95,
+  'Advanced': 85,
+  'Intermediate': 70,
+  'Beginner': 50
+};
 
 const techIcons = [
   { icon: Coffee, label: 'Java', color: 'java' },
@@ -72,6 +44,51 @@ const techIcons = [
 ];
 
 const Skills = () => {
+  const [skillCategories, setSkillCategories] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchSkills = async () => {
+      try {
+        const data = await publicApi.getSkills();
+        if (data && data.length > 0) {
+          // Group by Category
+          const groups: Record<string, SkillDTO[]> = {};
+          data.forEach(skill => {
+            const cat = skill.category || 'Tools';
+            if (!groups[cat]) groups[cat] = [];
+            groups[cat].push(skill);
+          });
+
+          // Transform to UI format
+          const categories = Object.keys(groups).map(cat => {
+            const config = categoryConfig[cat] || { icon: Code, color: 'primary', title: cat };
+            return {
+              title: config.title,
+              color: config.color,
+              icon: config.icon,
+              skills: groups[cat].map(s => ({
+                name: s.skillName,
+                level: levelMap[s.proficiencyLevel] || 60
+              })).sort((a, b) => b.level - a.level)
+            };
+          });
+
+          setSkillCategories(categories);
+        } else {
+          // Fallback to static if empty or just wait
+        }
+      } catch (err) {
+        console.error("Failed to fetch skills", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchSkills();
+  }, []);
+
+  if (loading) return <div className="py-24 text-center">Loading skills...</div>;
+
   return (
     <section id="skills" className="py-24 relative">
       <div className="container mx-auto px-4">
@@ -85,7 +102,7 @@ const Skills = () => {
             <div className="w-20 h-1 bg-gradient-to-r from-primary to-accent mx-auto rounded-full" />
           </div>
 
-          {/* Tech Icons */}
+          {/* Tech Icons - Static for now as they are decorative */}
           <div className="flex flex-wrap items-center justify-center gap-6 mb-16">
             {techIcons.map((tech) => (
               <div
@@ -117,7 +134,7 @@ const Skills = () => {
                 </div>
 
                 <div className="space-y-4">
-                  {category.skills.map((skill) => (
+                  {category.skills.map((skill: any) => (
                     <div key={skill.name}>
                       <div className="flex items-center justify-between mb-2">
                         <span className="text-sm text-muted-foreground">{skill.name}</span>

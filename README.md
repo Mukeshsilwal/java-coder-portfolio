@@ -1,73 +1,101 @@
-# Welcome to your Lovable project
+# Professional Java Developer Portfolio
 
-## Project info
+A full-stack portfolio website built with **Spring Boot 3** (Backend) and **React/Vite** (Frontend), featuring a **PostgreSQL** database.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## 🚀 Tech Stack
 
-## How can I edit this code?
+### Backend
+- **Java 17**
+- **Spring Boot 3+**
+- **Spring Security (JWT)**
+- **Spring Data JPA**
+- **PostgreSQL**
+- **Flyway** (Database Migration)
+- **MapStruct**
+- **Swagger / OpenAPI**
+- **Docker**
 
-There are several ways of editing your application.
+### Frontend
+- **React 18**
+- **Vite**
+- **Tailwind CSS**
+- **Shadcn UI**
+- **TypeScript**
 
-**Use Lovable**
+## 📂 Project Structure
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+```
+/
+├── backend/                 # Spring Boot Backend
+│   ├── src/main/java/com/portfolio/backend
+│   │   ├── config/          # Security & App Config
+│   │   ├── controller/      # REST APIs
+│   │   ├── entity/          # JPA Entities
+│   │   ├── repository/      # JPA Repositories
+│   │   ├── service/         # Business Logic
+│   │   └── ...
+│   └── src/main/resources
+│       └── db/migration/    # Flyway SQL Scripts
+├── src/                     # React Frontend Source (Root)
+│   ├── components/
+│   ├── pages/
+│   └── lib/api.ts           # API Integration
+├── docker-compose.yml       # Orchestration
+└── Dockerfile               # Backend Dockerfile
 ```
 
-**Edit a file directly in GitHub**
+## 🛠️ Getting Started
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+### Prerequisites
+- Java 17+
+- Node.js 18+
+- Docker & Docker Compose
 
-**Use GitHub Codespaces**
+### 1. Database & Backend (Docker)
+Run the following command to start PostgreSQL and the Backend:
+```bash
+docker-compose up --build
+```
+The backend will run on `http://localhost:8080`.
+Swagger UI: `http://localhost:8080/swagger-ui.html`
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+### 2. Frontend (Local Dev)
+```bash
+npm install
+npm run dev
+```
+The frontend will run on `http://localhost:8080` (or Vite default port, configurable).
 
-## What technologies are used for this project?
+## 🔌 API Endpoints (Examples)
 
-This project is built with:
+### Authentication
+- `POST /api/auth/register` - Create account
+- `POST /api/auth/login` - Get JWT Token
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+### Projects
+- `GET /api/projects` - List all projects
+- `POST /api/projects` - Create project (Admin only)
+- `GET /api/projects/{id}` - Get project details
 
-## How can I deploy this project?
+### Profile & Skills
+- `GET /api/profile` - Get developer profile
+- `GET /api/skills` - List skills
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+## 🔐 Security
+- Public Endpoints: GET Projects, Profile, Skills.
+- Protected Endpoints: All CUD operations (Create, Update, Delete) require `Bearer <token>`.
+- Admin Role required for Portfolio Management.
 
-## Can I connect a custom domain to my Lovable project?
+## 🎨 UI/UX Features
+- Dark Mode by default.
+- Responsive design.
+- Terminal-style "About Me".
+- Glassmorphism effects.
 
-Yes, you can!
+## 🐳 Docker Support
+The `docker-compose.yml` includes:
+- **Postgres 15**: Persists data to `postgres_data` volume.
+- **Backend**: Builds from `./backend`.
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+## 📄 License
+MIT

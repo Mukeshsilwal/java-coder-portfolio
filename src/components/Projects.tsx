@@ -1,7 +1,10 @@
 import { ExternalLink, Github, Folder, ArrowUpRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { useEffect, useState } from 'react';
+import { publicApi } from '@/api/services';
+import { ProjectDTO } from '@/types';
 
-const projects = [
+const staticProjects = [
   {
     title: 'Ticket Katum',
     description: 'A comprehensive booking platform for bus tickets, hotel rooms, and event reservations. Built with a microservices architecture for high availability.',
@@ -29,34 +32,49 @@ const projects = [
     demo: null,
     featured: true,
   },
-  {
-    title: 'FinPOS - Point of Sale System',
-    description: 'Backend system for POS devices enabling seamless payment processing and transaction management at retail points.',
-    tech: ['Java', 'Spring Boot', 'REST APIs', 'MySQL'],
-    features: ['POS Integration', 'Transaction Processing', 'Inventory Sync', 'Reporting'],
-    github: 'https://github.com/Mukeshsilwal',
-    demo: null,
-    featured: false,
-  },
-  {
-    title: 'Mobile Banking Backend',
-    description: 'Core banking backend powering mobile banking operations at Nepal\'s leading fintech company, serving millions of users.',
-    tech: ['Java', 'Spring Boot', 'Microservices', 'Oracle DB'],
-    features: ['Account Management', 'Fund Transfers', 'Bill Payments', 'Transaction History'],
-    github: 'https://github.com/Mukeshsilwal',
-    demo: null,
-    featured: false,
-  },
 ];
 
 const Projects = () => {
+  const [projects, setProjects] = useState<any[]>(staticProjects);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProjects = async () => {
+      try {
+        const data = await publicApi.getProjects();
+        if (data && data.length > 0) {
+          // Map DTO to UI format
+          const mapped = data.map(p => ({
+            title: p.title,
+            description: p.description,
+            tech: p.techStack ? p.techStack.split(',').map(s => s.trim()) : [],
+            features: [], // Backend doesn't support features list yet
+            github: p.githubRepoUrl,
+            demo: p.liveDemoUrl,
+            featured: p.isFeatured
+          }));
+          setProjects(mapped);
+        }
+      } catch (err) {
+        console.error("Failed to fetch projects, using static fallback", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchProjects();
+  }, []);
+
   const featuredProjects = projects.filter(p => p.featured);
   const otherProjects = projects.filter(p => !p.featured);
+
+  if (loading) {
+    return <div className="py-24 text-center">Loading projects...</div>;
+  }
 
   return (
     <section id="projects" className="py-24 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/20 to-background" />
-      
+
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
@@ -73,9 +91,8 @@ const Projects = () => {
             {featuredProjects.map((project, index) => (
               <div
                 key={project.title}
-                className={`glass-card rounded-xl overflow-hidden group hover:border-primary/50 transition-all duration-300 ${
-                  index === 0 ? 'lg:col-span-2' : ''
-                }`}
+                className={`glass-card rounded-xl overflow-hidden group hover:border-primary/50 transition-all duration-300 ${index === 0 && featuredProjects.length % 2 !== 0 ? 'lg:col-span-2' : ''
+                  }`}
               >
                 <div className="p-6 sm:p-8">
                   <div className="flex items-start justify-between mb-4">
@@ -83,15 +100,17 @@ const Projects = () => {
                       <Folder className="w-6 h-6 text-primary" />
                     </div>
                     <div className="flex items-center gap-3">
-                      <a
-                        href={project.github}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-muted-foreground hover:text-foreground transition-colors"
-                        aria-label="View on GitHub"
-                      >
-                        <Github className="w-5 h-5" />
-                      </a>
+                      {project.github && (
+                        <a
+                          href={project.github}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-muted-foreground hover:text-foreground transition-colors"
+                          aria-label="View on GitHub"
+                        >
+                          <Github className="w-5 h-5" />
+                        </a>
+                      )}
                       {project.demo && (
                         <a
                           href={project.demo}
@@ -114,20 +133,22 @@ const Projects = () => {
                   </p>
 
                   {/* Features */}
-                  <div className="flex flex-wrap gap-2 mb-6">
-                    {project.features.map((feature) => (
-                      <span
-                        key={feature}
-                        className="text-xs px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20"
-                      >
-                        {feature}
-                      </span>
-                    ))}
-                  </div>
+                  {project.features && project.features.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mb-6">
+                      {project.features.map((feature: string) => (
+                        <span
+                          key={feature}
+                          className="text-xs px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20"
+                        >
+                          {feature}
+                        </span>
+                      ))}
+                    </div>
+                  )}
 
                   {/* Tech Stack */}
                   <div className="flex flex-wrap items-center gap-3">
-                    {project.tech.map((tech) => (
+                    {project.tech.map((tech: string) => (
                       <span
                         key={tech}
                         className="font-mono text-xs text-muted-foreground"
@@ -142,57 +163,63 @@ const Projects = () => {
           </div>
 
           {/* Other Projects */}
-          <h3 className="text-xl font-semibold mb-6 text-center">Other Noteworthy Projects</h3>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {otherProjects.map((project) => (
-              <div
-                key={project.title}
-                className="glass-card p-6 rounded-xl group hover:border-primary/50 hover:-translate-y-1 transition-all duration-300"
-              >
-                <div className="flex items-start justify-between mb-4">
-                  <Folder className="w-10 h-10 text-primary" />
-                  <div className="flex items-center gap-2">
-                    <a
-                      href={project.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-muted-foreground hover:text-foreground transition-colors"
-                    >
-                      <Github className="w-4 h-4" />
-                    </a>
-                    {project.demo && (
-                      <a
-                        href={project.demo}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-muted-foreground hover:text-foreground transition-colors"
-                      >
-                        <ExternalLink className="w-4 h-4" />
-                      </a>
-                    )}
+          {otherProjects.length > 0 && (
+            <>
+              <h3 className="text-xl font-semibold mb-6 text-center">Other Noteworthy Projects</h3>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {otherProjects.map((project) => (
+                  <div
+                    key={project.title}
+                    className="glass-card p-6 rounded-xl group hover:border-primary/50 hover:-translate-y-1 transition-all duration-300"
+                  >
+                    <div className="flex items-start justify-between mb-4">
+                      <Folder className="w-10 h-10 text-primary" />
+                      <div className="flex items-center gap-2">
+                        {project.github && (
+                          <a
+                            href={project.github}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-muted-foreground hover:text-foreground transition-colors"
+                          >
+                            <Github className="w-4 h-4" />
+                          </a>
+                        )}
+                        {project.demo && (
+                          <a
+                            href={project.demo}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-muted-foreground hover:text-foreground transition-colors"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        )}
+                      </div>
+                    </div>
+
+                    <h4 className="font-semibold mb-2 group-hover:text-primary transition-colors">
+                      {project.title}
+                    </h4>
+                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+                      {project.description}
+                    </p>
+
+                    <div className="flex flex-wrap items-center gap-2">
+                      {project.tech.slice(0, 3).map((tech: string) => (
+                        <span
+                          key={tech}
+                          className="font-mono text-xs text-muted-foreground"
+                        >
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                </div>
-
-                <h4 className="font-semibold mb-2 group-hover:text-primary transition-colors">
-                  {project.title}
-                </h4>
-                <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                  {project.description}
-                </p>
-
-                <div className="flex flex-wrap items-center gap-2">
-                  {project.tech.slice(0, 3).map((tech) => (
-                    <span
-                      key={tech}
-                      className="font-mono text-xs text-muted-foreground"
-                    >
-                      {tech}
-                    </span>
-                  ))}
-                </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </>
+          )}
 
           {/* View More */}
           <div className="text-center mt-12">
@@ -214,3 +241,4 @@ const Projects = () => {
 };
 
 export default Projects;
+

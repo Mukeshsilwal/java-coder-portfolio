@@ -1,102 +1,128 @@
 import { useState, useEffect } from 'react';
 import { Menu, X, Code2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Link, useLocation } from 'react-router-dom';
 
 const navLinks = [
-  { href: '#about', label: 'About' },
-  { href: '#skills', label: 'Skills' },
-  { href: '#projects', label: 'Projects' },
-  { href: '#experience', label: 'Experience' },
-  { href: '#contact', label: 'Contact' },
+  { href: '/', label: 'Home' },
+  { href: '/about', label: 'About' },
+  { href: '/skills', label: 'Skills' },
+  { href: '/projects', label: 'Projects' },
+  { href: '/blog', label: 'Blog' },
+  { href: '/contact', label: 'Contact' },
 ];
 
 const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50);
+      setIsScrolled(window.scrollY > 20);
     };
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const isActive = (path: string) => location.pathname === path;
+
   return (
-    <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? 'glass-card py-3' : 'py-5 bg-transparent'
-      }`}
-    >
-      <div className="container mx-auto px-4 flex items-center justify-between">
-        <a href="#" className="flex items-center gap-2 group">
-          <div className="w-10 h-10 rounded-lg bg-primary/10 border border-primary/30 flex items-center justify-center group-hover:glow-primary transition-all duration-300">
-            <Code2 className="w-5 h-5 text-primary" />
+    <>
+      {/* Floating Glass Navbar */}
+      <header
+        className={`navbar-floating ${isScrolled ? 'navbar-scrolled' : ''}`}
+      >
+        <div className="flex items-center justify-between">
+          {/* Logo */}
+          {/* Logo */}
+          <Link to="/" className="flex items-center gap-2 group">
+            <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
+              <span className="font-bold text-primary text-xl">M</span>
+            </div>
+            <div className="flex flex-col">
+              <span className="font-bold text-lg leading-none">Mukesh Silwal</span>
+              <span className="text-[10px] text-muted-foreground uppercase tracking-widest">Portfolio</span>
+            </div>
+          </Link>
+
+          {/* Desktop Navigation - Center */}
+          <nav className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                to={link.href}
+                className={`relative px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg group ${isActive(link.href)
+                  ? 'text-foreground'
+                  : 'text-muted-foreground hover:text-foreground'
+                  }`}
+              >
+                {link.label}
+                {/* Active Underline Animation */}
+                <span
+                  className={`absolute bottom-0 left-1/2 -translate-x-1/2 h-0.5 bg-gradient-to-r from-primary to-accent transition-all duration-300 ${isActive(link.href) ? 'w-8' : 'w-0 group-hover:w-8'
+                    }`}
+                />
+              </Link>
+            ))}
+          </nav>
+
+          {/* Right CTA */}
+          <div className="hidden md:block">
+            <Link to="/contact">
+              <button className="btn-primary text-sm py-2 px-6">
+                Let's Connect
+              </button>
+            </Link>
           </div>
-          <span className="font-mono font-bold text-lg">
-            <span className="text-primary">&lt;</span>
-            MS
-            <span className="text-primary">/&gt;</span>
-          </span>
-        </a>
 
-        {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-8">
-          {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="text-muted-foreground hover:text-foreground transition-colors duration-200 text-sm font-medium relative after:absolute after:bottom-[-4px] after:left-0 after:w-0 after:h-[2px] after:bg-primary after:transition-all hover:after:w-full"
-            >
-              {link.label}
-            </a>
-          ))}
-        </nav>
-
-        <div className="hidden md:block">
-          <Button
-            variant="outline"
-            className="border-primary/50 text-primary hover:bg-primary hover:text-primary-foreground transition-all duration-300"
-            asChild
+          {/* Mobile Menu Toggle */}
+          <button
+            className="md:hidden text-foreground p-2 hover:bg-secondary/50 rounded-lg transition-colors"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle menu"
           >
-            <a href="#contact">Let's Connect</a>
-          </Button>
+            {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+          </button>
         </div>
-
-        {/* Mobile Menu Toggle */}
-        <button
-          className="md:hidden text-foreground p-2"
-          onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-          aria-label="Toggle menu"
-        >
-          {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-        </button>
-      </div>
+      </header>
 
       {/* Mobile Navigation */}
       {isMobileMenuOpen && (
-        <nav className="md:hidden glass-card mt-2 mx-4 rounded-lg p-4 animate-fade-up">
-          {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="block py-3 text-muted-foreground hover:text-foreground transition-colors border-b border-border/50 last:border-0"
-              onClick={() => setIsMobileMenuOpen(false)}
-            >
-              {link.label}
-            </a>
-          ))}
-          <Button
-            className="w-full mt-4 bg-primary text-primary-foreground hover:bg-primary/90"
-            asChild
-          >
-            <a href="#contact" onClick={() => setIsMobileMenuOpen(false)}>
-              Let's Connect
-            </a>
-          </Button>
+        <nav className="fixed top-20 left-4 right-4 z-40 glass-card rounded-2xl p-4 animate-fade-up md:hidden">
+          <div className="flex flex-col gap-1">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                to={link.href}
+                className={`px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${isActive(link.href)
+                  ? 'bg-primary/10 text-foreground border-l-2 border-primary'
+                  : 'text-muted-foreground hover:bg-secondary/50 hover:text-foreground'
+                  }`}
+                onClick={() => setIsMobileMenuOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </div>
+          <div className="mt-4 pt-4 border-t border-border/50">
+            <Link to="/contact" className="block" onClick={() => setIsMobileMenuOpen(false)}>
+              <button className="btn-primary w-full text-sm py-2">
+                Let's Connect
+              </button>
+            </Link>
+          </div>
         </nav>
       )}
-    </header>
+
+      {/* Backdrop for mobile menu */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-30 md:hidden"
+          onClick={() => setIsMobileMenuOpen(false)}
+        />
+      )}
+    </>
   );
 };
 

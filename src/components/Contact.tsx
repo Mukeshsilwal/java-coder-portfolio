@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
+import { publicApi } from '@/api/services';
 
 const Contact = () => {
   const { toast } = useToast();
@@ -18,16 +19,29 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
-    // Simulate form submission
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    try {
+      await publicApi.sendMessage({
+        senderName: formData.name,
+        senderEmail: formData.email,
+        message: formData.message,
+        subject: 'New Portfolio Inquiry'
+      });
 
-    toast({
-      title: "Message sent!",
-      description: "Thank you for reaching out. I'll get back to you soon.",
-    });
+      toast({
+        title: "Message sent!",
+        description: "Thank you for reaching out. I'll get back to you soon.",
+      });
 
-    setFormData({ name: '', email: '', message: '' });
-    setIsSubmitting(false);
+      setFormData({ name: '', email: '', message: '' });
+    } catch (err) {
+      toast({
+        title: "Message failed",
+        description: "Could not send message. Please try again later.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -40,7 +54,7 @@ const Contact = () => {
   return (
     <section id="contact" className="py-24 relative">
       <div className="absolute inset-0 bg-gradient-to-b from-background via-secondary/20 to-background" />
-      
+
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-6xl mx-auto">
           {/* Section Header */}
@@ -50,7 +64,7 @@ const Contact = () => {
               Let's <span className="gradient-text">Connect</span>
             </h2>
             <p className="text-muted-foreground max-w-xl mx-auto">
-              Have a project in mind or want to discuss opportunities? 
+              Have a project in mind or want to discuss opportunities?
               I'm always open to new challenges and collaborations.
             </p>
             <div className="w-20 h-1 bg-gradient-to-r from-primary to-accent mx-auto rounded-full mt-6" />
@@ -61,7 +75,7 @@ const Contact = () => {
             <div className="space-y-8">
               <div className="glass-card p-8 rounded-xl">
                 <h3 className="text-2xl font-bold mb-6">Get in Touch</h3>
-                
+
                 <div className="space-y-6">
                   <div className="flex items-start gap-4">
                     <div className="w-12 h-12 rounded-lg bg-primary/10 border border-primary/30 flex items-center justify-center flex-shrink-0">
@@ -69,8 +83,8 @@ const Contact = () => {
                     </div>
                     <div>
                       <p className="font-medium mb-1">Email</p>
-                      <a 
-                        href="mailto:mukeshsilwal5@gmail.com" 
+                      <a
+                        href="mailto:mukeshsilwal5@gmail.com"
                         className="text-muted-foreground hover:text-primary transition-colors"
                       >
                         mukeshsilwal5@gmail.com
@@ -125,7 +139,7 @@ const Contact = () => {
                 </div>
                 <pre className="text-muted-foreground overflow-x-auto">
                   <code>
-{`Developer dev = new Developer();
+                    {`Developer dev = new Developer();
 dev.setAvailable(true);
 dev.contact("your-email@example.com");`}
                   </code>
@@ -136,7 +150,7 @@ dev.contact("your-email@example.com");`}
             {/* Contact Form */}
             <div className="glass-card p-8 rounded-xl">
               <h3 className="text-2xl font-bold mb-6">Send a Message</h3>
-              
+
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div>
                   <label htmlFor="name" className="block text-sm font-medium mb-2">
