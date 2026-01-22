@@ -51,7 +51,7 @@ const Experience = () => {
 
   const education = [
     {
-      degree: 'Bachelor in Computer Application (BCA)',
+      degree: 'BSc CSIT',
       institution: 'Tribhuvan University',
       period: '2019 - 2023',
       description: 'Focused on software engineering, database systems, and web technologies.',
