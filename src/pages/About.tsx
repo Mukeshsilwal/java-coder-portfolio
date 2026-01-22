@@ -38,7 +38,24 @@ const experiences = [
     },
 ];
 
+import { publicApi } from '@/api/services';
+import { ProfileDTO } from '@/types';
+import { useEffect, useState } from 'react';
+
 const About = () => {
+    const [profile, setProfile] = useState<ProfileDTO | null>(null);
+
+    useEffect(() => {
+        const fetchProfile = async () => {
+            try {
+                const data = await publicApi.getProfile();
+                setProfile(data);
+            } catch (error) {
+                console.error("Failed to fetch profile", error);
+            }
+        };
+        fetchProfile();
+    }, []);
     return (
         <div className="min-h-screen pt-24 pb-16">
             {/* Hero Section */}
@@ -82,24 +99,24 @@ const About = () => {
 
                                 {/* Bio Text */}
                                 <div className="space-y-4">
-                                    <p className="text-lg text-muted-foreground leading-relaxed">
-                                        I'm a passionate <span className="text-foreground font-semibold">Java Backend Software Engineer</span> with
-                                        2+ years of experience building robust fintech solutions. I specialize in creating
-                                        scalable APIs using <span className="text-primary font-semibold">Spring Boot</span>,
-                                        <span className="text-primary font-semibold"> WebFlux</span>, and reactive programming.
-                                    </p>
-
-                                    <p className="text-lg text-muted-foreground leading-relaxed">
-                                        Currently at <span className="text-foreground font-semibold">F1Soft International</span>, Nepal's leading fintech company,
-                                        I work on mobile banking backends that serve millions of users. Previously, I built payment gateway
-                                        systems and POS solutions at Citytech Group.
-                                    </p>
+                                    {profile?.bio ? (
+                                        <div className="text-lg text-muted-foreground leading-relaxed whitespace-pre-line">
+                                            {profile.bio}
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-4">
+                                            <p className="text-lg text-muted-foreground leading-relaxed">
+                                                I'm a passionate <span className="text-foreground font-semibold">Java Backend Software Engineer</span> with
+                                                over 2 years of experience.
+                                            </p>
+                                        </div>
+                                    )}
                                 </div>
 
                                 {/* Stats */}
                                 <div className="flex items-center gap-6 pt-4">
                                     <div className="text-center">
-                                        <span className="text-3xl font-bold gradient-text">2+</span>
+                                        <span className="text-3xl font-bold gradient-text">{profile?.yearsOfExperience || '2+'}</span>
                                         <p className="text-sm text-muted-foreground">Years Exp.</p>
                                     </div>
                                     <div className="w-px h-12 bg-border" />
@@ -116,16 +133,20 @@ const About = () => {
 
                                 {/* Contact Info */}
                                 <div className="glass-card p-6 rounded-2xl space-y-3">
-                                    <div className="flex items-center gap-3 text-muted-foreground">
-                                        <MapPin className="w-5 h-5 text-primary" />
-                                        <span>Kathmandu, Nepal</span>
-                                    </div>
-                                    <div className="flex items-center gap-3 text-muted-foreground">
-                                        <Mail className="w-5 h-5 text-primary" />
-                                        <a href="mailto:mukeshsilwal5@gmail.com" className="hover:text-foreground transition-colors">
-                                            mukeshsilwal5@gmail.com
-                                        </a>
-                                    </div>
+                                    {profile?.location && (
+                                        <div className="flex items-center gap-3 text-muted-foreground">
+                                            <MapPin className="w-5 h-5 text-primary" />
+                                            <span>{profile.location}</span>
+                                        </div>
+                                    )}
+                                    {profile?.email && (
+                                        <div className="flex items-center gap-3 text-muted-foreground">
+                                            <Mail className="w-5 h-5 text-primary" />
+                                            <a href={`mailto:${profile.email}`} className="hover:text-foreground transition-colors">
+                                                {profile.email}
+                                            </a>
+                                        </div>
+                                    )}
                                     <div className="flex items-center gap-3 text-muted-foreground">
                                         <Phone className="w-5 h-5 text-primary" />
                                         <span>Available on request</span>

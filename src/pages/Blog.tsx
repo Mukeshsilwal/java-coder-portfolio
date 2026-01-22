@@ -86,9 +86,11 @@ const BlogPage = () => {
                             <p className="text-muted-foreground text-sm line-clamp-3 mb-4">
                                 {post.content.replace(/[#*`]/g, '').slice(0, 150)}...
                             </p>
-                            <Button variant="link" className="p-0 h-auto group-hover:translate-x-1 transition-transform">
-                                Read Article <ArrowRight className="w-4 h-4 ml-1" />
-                            </Button>
+                            <Link to={`/blog/${post.slug}`}>
+                                <Button variant="link" className="p-0 h-auto group-hover:translate-x-1 transition-transform">
+                                    Read Article <ArrowRight className="w-4 h-4 ml-1" />
+                                </Button>
+                            </Link>
                         </div>
                     </Card>
                 ))}

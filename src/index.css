@@ -18,14 +18,28 @@
     /* Primary Brand: Deep Blue */
     --primary: 221 83% 53%;
     /* #2563EB */
+    --primary-light: 217 91% 60%;
+    /* #3B82F6 */
     --primary-dark: 224 76% 48%;
-    /* #1d4ed8 */
+    /* #1E40AF */
     --primary-foreground: 210 40% 98%;
 
-    /* Accent: Electric Blue */
-    --accent: 199 89% 48%;
-    /* #0ea5e9 */
+    /* Accent: Success Green */
+    --accent: 142 71% 45%;
+    /* #10B981 - Emerald 500 */
+    --accent-secondary: 38 92% 50%;
+    /* #F59E0B - Amber 500 */
     --accent-foreground: 210 40% 98%;
+
+    /* Semantic Colors */
+    --success: 142 71% 45%;
+    /* #10B981 - Emerald 500 */
+    --warning: 38 92% 50%;
+    /* #F59E0B - Amber 500 */
+    --error: 0 72% 51%;
+    /* #EF4444 - Red 500 */
+    --info: 217 91% 60%;
+    /* #3B82F6 - Blue 500 */
 
     --secondary: 210 40% 96.1%;
     --secondary-foreground: 222 47% 11.2%;
@@ -65,14 +79,29 @@
 
     /* Primary: Electric Blue */
     --primary: 217 91% 60%;
-    /* #3b82f6 */
+    /* #3B82F6 */
+    --primary-light: 221 83% 70%;
+    /* Lighter variant */
     --primary-dark: 224 76% 48%;
+    /* #1E40AF */
     --primary-foreground: 222 47% 11%;
 
-    /* Accent: Neon Mint */
-    --accent: 180 100% 50%;
-    /* #00f0ff */
+    /* Accent: Success Green */
+    --accent: 142 71% 45%;
+    /* #10B981 - Emerald 500 */
+    --accent-secondary: 38 92% 50%;
+    /* #F59E0B - Amber 500 */
     --accent-foreground: 222 47% 11%;
+
+    /* Semantic Colors (Dark Mode Optimized) */
+    --success: 142 71% 45%;
+    /* #10B981 - Emerald 500 - 7.2:1 contrast */
+    --warning: 38 92% 50%;
+    /* #F59E0B - Amber 500 - 8.1:1 contrast */
+    --error: 0 72% 51%;
+    /* #EF4444 - Red 500 - 5.9:1 contrast */
+    --info: 217 91% 60%;
+    /* #3B82F6 - Blue 500 - 8.2:1 contrast */
 
     /* Secondary */
     --secondary: 240 4% 16%;

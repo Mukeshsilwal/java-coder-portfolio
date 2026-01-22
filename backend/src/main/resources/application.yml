@@ -31,3 +31,8 @@ logging:
   level:
     root: INFO
     com.portfolio.backend: DEBUG
+
+cloudinary:
+  cloud-name: dsqubrfjp
+  api-key: 624365773875321
+  api-secret: 9P5wS1lelWdo6CubuJxzQiNTClw

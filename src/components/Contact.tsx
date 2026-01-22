@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, MapPin, Send, Github, Linkedin, MessageSquare, ArrowRight } from 'lucide-react';
+import { Mail, MapPin, Send, Github, Linkedin, MessageSquare, ArrowRight, CheckCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -14,6 +14,7 @@ const Contact = () => {
     message: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -27,11 +28,13 @@ const Contact = () => {
         subject: 'New Portfolio Inquiry'
       });
 
+      setIsSuccess(true);
       toast({
         title: "Message sent!",
         description: "Thank you for reaching out. I'll get back to you soon.",
       });
 
+      // Reset after delay if needed, or leave success state
       setFormData({ name: '', email: '', message: '' });
     } catch (err) {
       toast({
@@ -137,73 +140,93 @@ const Contact = () => {
               </div>
             </div>
 
-            {/* Right: Form */}
+            {/* Right: Form or Success */}
             <div className="lg:col-span-3 animate-fade-up" style={{ animationDelay: '0.3s' }}>
-              <div className="glass-card p-8 md:p-10 rounded-2xl border border-border/50">
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid sm:grid-cols-2 gap-6">
+              <div className="glass-card p-8 md:p-10 rounded-2xl border border-border/50 relative overflow-hidden h-full flex flex-col justify-center">
+
+                {isSuccess ? (
+                  <div className="text-center py-10 animate-fade-in">
+                    <div className="w-20 h-20 bg-success/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-success/20">
+                      <CheckCircle className="w-10 h-10 text-success animate-bounce-short" />
+                    </div>
+                    <h3 className="text-2xl font-bold mb-3">Message Received!</h3>
+                    <p className="text-muted-foreground max-w-md mx-auto mb-8">
+                      Thanks for reaching out, {formData.name || 'Friend'}. I'll read your message and respond to <span className="text-foreground font-medium">{formData.email}</span> shortly.
+                    </p>
+                    <Button
+                      onClick={() => setIsSuccess(false)}
+                      variant="outline"
+                      className="border-primary/20 hover:bg-primary/10 text-primary"
+                    >
+                      Send Another Message
+                    </Button>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid sm:grid-cols-2 gap-6">
+                      <div className="space-y-2">
+                        <label htmlFor="name" className="text-sm font-medium ml-1">
+                          Name
+                        </label>
+                        <Input
+                          id="name"
+                          name="name"
+                          value={formData.name}
+                          onChange={handleChange}
+                          placeholder="John Doe"
+                          required
+                          className="bg-secondary/30 border-border focus:border-primary h-12 transition-all duration-300"
+                        />
+                      </div>
+                      <div className="space-y-2">
+                        <label htmlFor="email" className="text-sm font-medium ml-1">
+                          Email
+                        </label>
+                        <Input
+                          id="email"
+                          name="email"
+                          type="email"
+                          value={formData.email}
+                          onChange={handleChange}
+                          placeholder="john@example.com"
+                          required
+                          className="bg-secondary/30 border-border focus:border-primary h-12 transition-all duration-300"
+                        />
+                      </div>
+                    </div>
+
                     <div className="space-y-2">
-                      <label htmlFor="name" className="text-sm font-medium ml-1">
-                        Name
+                      <label htmlFor="message" className="text-sm font-medium ml-1">
+                        Message
                       </label>
-                      <Input
-                        id="name"
-                        name="name"
-                        value={formData.name}
+                      <Textarea
+                        id="message"
+                        name="message"
+                        value={formData.message}
                         onChange={handleChange}
-                        placeholder="John Doe"
+                        placeholder="Tell me about your project context..."
                         required
-                        className="bg-secondary/30 border-border focus:border-primary h-12"
+                        rows={6}
+                        className="bg-secondary/30 border-border focus:border-primary resize-none p-4 leading-relaxed transition-all duration-300"
                       />
                     </div>
-                    <div className="space-y-2">
-                      <label htmlFor="email" className="text-sm font-medium ml-1">
-                        Email
-                      </label>
-                      <Input
-                        id="email"
-                        name="email"
-                        type="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        placeholder="john@example.com"
-                        required
-                        className="bg-secondary/30 border-border focus:border-primary h-12"
-                      />
-                    </div>
-                  </div>
 
-                  <div className="space-y-2">
-                    <label htmlFor="message" className="text-sm font-medium ml-1">
-                      Message
-                    </label>
-                    <Textarea
-                      id="message"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      placeholder="Tell me about your project context..."
-                      required
-                      rows={6}
-                      className="bg-secondary/30 border-border focus:border-primary resize-none p-4 leading-relaxed"
-                    />
-                  </div>
-
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full h-12 bg-primary text-primary-foreground font-semibold hover:bg-primary/90 glow-primary transition-all duration-300 rounded-xl"
-                  >
-                    {isSubmitting ? (
-                      'Sending...'
-                    ) : (
-                      <>
-                        Send Message
-                        <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1" />
-                      </>
-                    )}
-                  </Button>
-                </form>
+                    <Button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full h-12 bg-primary text-primary-foreground font-semibold hover:bg-primary/90 glow-primary transition-all duration-300 rounded-xl"
+                    >
+                      {isSubmitting ? (
+                        'Sending...'
+                      ) : (
+                        <>
+                          Send Message
+                          <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1" />
+                        </>
+                      )}
+                    </Button>
+                  </form>
+                )}
               </div>
             </div>
           </div>

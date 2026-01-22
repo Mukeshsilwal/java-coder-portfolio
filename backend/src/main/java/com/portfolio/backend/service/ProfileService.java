@@ -47,4 +47,23 @@ public class ProfileService {
         }
         return mapper.toDto(repository.save(existingOrNew));
     }
+    public String updateProfileImage(String imageUrl) {
+        List<Profile> profiles = repository.findAll();
+        Profile profile;
+        if (profiles.isEmpty()) {
+            profile = new Profile();
+            // Initialize required fields if necessary or allow nulls
+        } else {
+            profile = profiles.get(0);
+        }
+        
+        String oldUrl = profile.getProfileImageUrl();
+        if (oldUrl == null) oldUrl = profile.getProfileImage(); // Fallback to old field if needed
+        
+        profile.setProfileImageUrl(imageUrl);
+        profile.setProfileImage(imageUrl); // Sync for backward compatibility
+        repository.save(profile);
+        
+        return oldUrl;
+    }
 }

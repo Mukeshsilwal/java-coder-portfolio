@@ -34,6 +34,7 @@ public class Project {
     private String githubRepoUrl;
     private String liveDemoUrl;
     private String projectImage;
+    private String projectImageUrl;
 
     @Enumerated(EnumType.STRING)
     private ProjectType projectType;

@@ -57,4 +57,17 @@ public class ProjectService {
     public void deleteProject(UUID id) {
         repository.deleteById(id);
     }
+    public String updateProjectImage(UUID id, String imageUrl) {
+        Project project = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Project not found"));
+                
+        String oldUrl = project.getProjectImageUrl();
+        if (oldUrl == null) oldUrl = project.getProjectImage();
+        
+        project.setProjectImageUrl(imageUrl);
+        project.setProjectImage(imageUrl); // Sync
+        repository.save(project);
+        
+        return oldUrl;
+    }
 }

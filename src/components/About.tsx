@@ -35,7 +35,17 @@ const highlights = [
   },
 ];
 
+import { publicApi } from '@/api/services';
+import { ProfileDTO } from '@/types';
+import { useEffect, useState } from 'react';
+
 const About = () => {
+  const [profile, setProfile] = useState<ProfileDTO | null>(null);
+
+  useEffect(() => {
+    publicApi.getProfile().then(setProfile).catch(console.error);
+  }, []);
+
   return (
     <section id="about" className="section-padding relative">
 
@@ -81,19 +91,26 @@ const About = () => {
               </div>
 
               <div className="space-y-6 text-lg text-muted-foreground leading-relaxed">
-                <p>
-                  I'm a passionate <span className="text-foreground font-semibold">Java Backend Software Engineer</span> with
-                  over 2 years of experience building robust fintech solutions.
-                </p>
-                <p>
-                  Currently at <span className="text-foreground font-semibold">F1Soft International</span>, Nepal's leading fintech company, I architect mobile banking backends
-                  that serve millions of users. My expertise lies in <span className="text-orange-500 font-medium">Spring Boot</span>, <span className="text-green-500 font-medium">WebFlux</span>, and designing scalable microservices.
-                </p>
+                {profile?.bio ? (
+                  <div className="whitespace-pre-line">
+                    {profile.bio}
+                  </div>
+                ) : (
+                  <>
+                    <p>
+                      I'm a passionate <span className="text-foreground font-semibold">Java Backend Software Engineer</span> with
+                      over 2 years of experience building robust fintech solutions.
+                    </p>
+                    <p>
+                      My expertise lies in <span className="text-orange-500 font-medium">Spring Boot</span>, <span className="text-green-500 font-medium">WebFlux</span>, and designing scalable microservices.
+                    </p>
+                  </>
+                )}
               </div>
 
               <div className="flex items-center gap-6 pt-4 border-t border-border/50">
                 <div className="text-center">
-                  <span className="text-3xl font-bold text-foreground">2+</span>
+                  <span className="text-3xl font-bold text-foreground">{profile?.yearsOfExperience || '2+'}</span>
                   <p className="text-sm text-muted-foreground uppercase tracking-wider font-medium mt-1">Years Exp</p>
                 </div>
                 <div className="w-px h-12 bg-border" />

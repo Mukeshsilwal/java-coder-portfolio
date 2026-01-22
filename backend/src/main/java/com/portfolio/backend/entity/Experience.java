@@ -31,6 +31,9 @@ public class Experience {
     private boolean isCurrent;
     private String logoUrl;
     
+    @Column(name = "job_type")
+    private String jobType; // Full-time, Part-time, etc.
+    
     @Column(name = "display_order")
     private Integer order;
 }

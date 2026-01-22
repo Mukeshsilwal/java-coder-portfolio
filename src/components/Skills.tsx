@@ -2,22 +2,15 @@ import {
   Code,
   Server,
   Database as DatabaseIcon,
-  Wrench,
-  Coffee,
-  Leaf,
-  Layers,
-  Globe,
-  GitBranch,
-  Container,
-  Terminal as TerminalIcon,
-  TestTube,
   Cloud,
+  Terminal as TerminalIcon,
   LucideIcon
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { publicApi } from '@/api/services';
 import { SkillDTO } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { SkillCategoryCard } from '@/components/SkillProgressBar';
 
 interface CategoryConfig {
   icon: LucideIcon;
@@ -26,7 +19,6 @@ interface CategoryConfig {
   bgClass: string;
 }
 
-// Map for Category -> Config
 const categoryConfig: Record<string, CategoryConfig> = {
   'Backend': {
     icon: Server,
@@ -60,18 +52,9 @@ const categoryConfig: Record<string, CategoryConfig> = {
   }
 };
 
-const techIcons = [
-  { icon: Coffee, label: 'Java', class: 'text-orange-500' },
-  { icon: Leaf, label: 'Spring', class: 'text-green-500' },
-  { icon: Layers, label: 'JPA', class: 'text-yellow-500' },
-  { icon: Container, label: 'Docker', class: 'text-blue-500' },
-  { icon: Cloud, label: 'AWS', class: 'text-yellow-600' },
-  { icon: GitBranch, label: 'Git', class: 'text-red-500' },
-];
-
 interface SkillUI {
   name: string;
-  level?: number;
+  level: number;
 }
 
 interface CategoryUI extends CategoryConfig {
@@ -79,8 +62,51 @@ interface CategoryUI extends CategoryConfig {
   skills: SkillUI[];
 }
 
+const FALLBACK_SKILLS: CategoryUI[] = [
+  {
+    title: 'Backend',
+    ...categoryConfig['Backend'],
+    skills: [
+      { name: 'Java', level: 95 },
+      { name: 'Spring Boot', level: 90 },
+      { name: 'WebFlux', level: 85 },
+      { name: 'Hibernate', level: 80 }
+    ]
+  },
+  {
+    title: 'Database',
+    ...categoryConfig['Database'],
+    skills: [
+      { name: 'PostgreSQL', level: 90 },
+      { name: 'Redis', level: 75 },
+      { name: 'Oracle', level: 70 },
+      { name: 'MongoDB', level: 65 }
+    ]
+  },
+  {
+    title: 'Frontend',
+    ...categoryConfig['Frontend'],
+    skills: [
+      { name: 'React', level: 75 },
+      { name: 'TypeScript', level: 80 },
+      { name: 'Tailwind CSS', level: 85 }
+    ]
+  },
+  {
+    title: 'DevOps',
+    ...categoryConfig['DevOps'],
+    skills: [
+      { name: 'Docker', level: 80 },
+      { name: 'Kubernetes', level: 60 },
+      { name: 'Jenkins', level: 65 },
+      { name: 'AWS', level: 70 }
+    ]
+  }
+];
+
 const Skills = () => {
-  const [skillCategories, setSkillCategories] = useState<CategoryUI[]>([]);
+  // Initialize with FALLBACK_SKILLS to ensure content is visible immediately or on error
+  const [skillCategories, setSkillCategories] = useState<CategoryUI[]>(FALLBACK_SKILLS);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -112,23 +138,19 @@ const Skills = () => {
                 ...config,
                 skills: groups[cat].map(s => ({
                   name: s.skillName,
-                  level: 80 // Default mostly visual now
+                  // Ensure level is a number
+                  level: typeof s.proficiencyLevel === 'number' ? s.proficiencyLevel : 80
                 }))
               };
             });
 
           setSkillCategories(categories);
-        } else {
-          // Fallback Static Data
-          setSkillCategories([
-            { title: 'Backend', ...categoryConfig['Backend'], skills: [{ name: 'Java', level: 90 }, { name: 'Spring Boot', level: 85 }, { name: 'WebFlux', level: 80 }, { name: 'Hibernate', level: 75 }] },
-            { title: 'Database', ...categoryConfig['Database'], skills: [{ name: 'PostgreSQL', level: 85 }, { name: 'Redis', level: 70 }, { name: 'Oracle', level: 60 }, { name: 'MongoDB', level: 65 }] },
-            { title: 'Frontend', ...categoryConfig['Frontend'], skills: [{ name: 'React', level: 70 }, { name: 'TypeScript', level: 65 }, { name: 'Tailwind', level: 80 }] },
-            { title: 'DevOps', ...categoryConfig['DevOps'], skills: [{ name: 'Docker', level: 75 }, { name: 'Kubernetes', level: 50 }, { name: 'Jenkins', level: 60 }, { name: 'AWS', level: 55 }] }
-          ]);
         }
+        // If data is empty, we keep the FALLBACK_SKILLS initialized in state
       } catch (err) {
-        console.error("Failed to fetch skills", err);
+        console.error("Failed to fetch skills, using static fallback", err);
+        // Keep FALLBACK_SKILLS
+        setSkillCategories(FALLBACK_SKILLS);
       } finally {
         setLoading(false);
       }
@@ -154,55 +176,24 @@ const Skills = () => {
           </p>
         </div>
 
-        {/* Floating Icons Strip (Decorative) */}
-        <div className="flex flex-wrap justify-center gap-8 md:gap-12 mb-20 opacity-80 animate-fade-up" style={{ animationDelay: '0.2s' }}>
-          {techIcons.map((t, i) => (
-            <div key={i} className="flex flex-col items-center gap-3 group">
-              <div className={`p-4 rounded-2xl bg-card border border-border/50 shadow-sm group-hover:scale-110 group-hover:shadow-lg transition-all duration-300 ${t.class.replace('text-', 'shadow-')}/20`}>
-                <t.icon className={`w-8 h-8 ${t.class}`} />
-              </div>
-              <span className="text-xs font-mono text-muted-foreground">{t.label}</span>
-            </div>
-          ))}
-        </div>
-
-        {/* Categories Grid */}
+        {/* Categories Grid with Progress Bars */}
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {loading ? (
-            Array.from({ length: 6 }).map((_, i) => (
-              <Skeleton key={i} className="h-64 rounded-2xl" />
+            Array.from({ length: 4 }).map((_, i) => (
+              <Skeleton key={i} className="h-80 rounded-2xl" />
             ))
           ) : (
             skillCategories.map((category, idx) => (
-              <div
+              <SkillCategoryCard
                 key={category.title}
-                className={`group relative p-1 rounded-2xl bg-gradient-to-br from-border/50 to-transparent hover:from-primary/20 hover:to-accent/20 transition-all duration-500
-                    ${idx === 0 || idx === 1 ? 'md:col-span-1' : ''}
-                `}
-              >
-                <div className="h-full bg-card/40 backdrop-blur-sm p-6 md:p-8 rounded-[14px] border border-border/50 group-hover:border-transparent transition-all">
-                  <div className="flex items-center gap-4 mb-8">
-                    <div className={`w-12 h-12 rounded-xl ${category.bgClass} ${category.borderClass} border flex items-center justify-center`}>
-                      <category.icon className={`w-6 h-6 ${category.colorClass}`} />
-                    </div>
-                    <div>
-                      <h3 className="text-xl font-bold">{category.title}</h3>
-                      <p className="text-xs text-muted-foreground font-mono">{category.skills.length} skills</p>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap gap-2">
-                    {category.skills.map((skill) => (
-                      <div
-                        key={skill.name}
-                        className="px-3 py-1.5 rounded-lg bg-secondary/50 border border-border/50 text-sm font-medium hover:bg-secondary hover:border-primary/30 transition-colors cursor-default"
-                      >
-                        {skill.name}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
+                title={category.title}
+                icon={category.icon}
+                skills={category.skills}
+                colorClass={category.colorClass}
+                borderClass={category.borderClass}
+                bgClass={category.bgClass}
+                delay={idx * 100}
+              />
             ))
           )}
         </div>

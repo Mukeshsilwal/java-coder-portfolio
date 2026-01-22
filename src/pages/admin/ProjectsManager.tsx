@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 import { toast } from 'sonner';
 import { Trash2, Edit2, Star, StarOff } from 'lucide-react';
+import { ImageUploader } from '@/components/admin/ImageUploader';
 import {
     Dialog,
     DialogContent,
@@ -150,6 +151,23 @@ const ProjectsManager = () => {
                                         <Input id="demo" value={formData.liveDemoUrl} onChange={e => setFormData({ ...formData, liveDemoUrl: e.target.value })} />
                                     </div>
                                 </div>
+
+                                {editingId ? (
+                                    <div className="space-y-2">
+                                        <Label>Project Image</Label>
+                                        <ImageUploader
+                                            currentImageUrl={formData.projectImage}
+                                            onUpload={async (file) => {
+                                                const { url } = await adminApi.uploadProjectImage(editingId, file);
+                                                setFormData(prev => ({ ...prev, projectImage: url }));
+                                            }}
+                                        />
+                                    </div>
+                                ) : (
+                                    <div className="text-sm text-muted-foreground p-4 border border-dashed rounded-lg bg-muted/50 text-center">
+                                        Save the project first to upload an image.
+                                    </div>
+                                )}
 
                                 <div className="flex items-center space-x-2">
                                     <Checkbox id="featured" checked={formData.isFeatured} onCheckedChange={(checked) => setFormData({ ...formData, isFeatured: checked === true })} />

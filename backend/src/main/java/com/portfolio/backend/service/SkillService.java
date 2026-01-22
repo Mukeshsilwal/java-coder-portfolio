@@ -31,4 +31,14 @@ public class SkillService {
     public void deleteSkill(UUID id) {
         repository.deleteById(id);
     }
+    
+    public String updateSkillIcon(UUID id, String imageUrl) {
+        Skill skill = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Skill not found"));
+        
+        String oldUrl = skill.getIconUrl();
+        skill.setIconUrl(imageUrl);
+        repository.save(skill);
+        return oldUrl;
+    }
 }

@@ -27,6 +27,7 @@ interface Experience {
     startDate: string;
     endDate: string;
     isCurrent: boolean;
+    jobType?: string;
     logoUrl?: string;
     order?: number;
 }
@@ -44,6 +45,7 @@ const ExperienceManager = () => {
         startDate: '',
         endDate: '',
         isCurrent: false,
+        jobType: 'FULL_TIME',
         logoUrl: ''
     });
 
@@ -106,6 +108,7 @@ const ExperienceManager = () => {
             startDate: '',
             endDate: '',
             isCurrent: false,
+            jobType: 'FULL_TIME',
             logoUrl: ''
         });
         setEditingId(null);
@@ -133,6 +136,24 @@ const ExperienceManager = () => {
                                     <Label htmlFor="position">Position</Label>
                                     <Input id="position" value={formData.position} onChange={e => setFormData({ ...formData, position: e.target.value })} required />
                                 </div>
+                            </div>
+
+
+
+                            <div className="space-y-2">
+                                <Label htmlFor="jobType">Job Type</Label>
+                                <select
+                                    id="jobType"
+                                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                    value={formData.jobType}
+                                    onChange={e => setFormData({ ...formData, jobType: e.target.value })}
+                                >
+                                    <option value="FULL_TIME">Full Time</option>
+                                    <option value="PART_TIME">Part Time</option>
+                                    <option value="CONTRACT">Contract</option>
+                                    <option value="FREELANCE">Freelance</option>
+                                    <option value="INTERNSHIP">Internship</option>
+                                </select>
                             </div>
 
                             <div className="space-y-2">
@@ -182,7 +203,7 @@ const ExperienceManager = () => {
                                 </div>
                                 <p className="text-primary font-medium">{exp.company}</p>
                                 <p className="text-sm text-muted-foreground mb-2">
-                                    {exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate}
+                                    {exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate} • <span className="text-xs uppercase bg-muted px-1 py-0.5 rounded">{exp.jobType?.replace('_', ' ')}</span>
                                 </p>
                                 <p className="text-sm text-gray-600 dark:text-gray-300 whitespace-pre-line">{exp.description}</p>
                             </div>
@@ -190,7 +211,7 @@ const ExperienceManager = () => {
                     </Card>
                 ))}
             </div>
-        </div>
+        </div >
     );
 };
 

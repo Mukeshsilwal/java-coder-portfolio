@@ -16,7 +16,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "blog_posts")
+@Table(name = "blogs")
 public class BlogPost {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -32,8 +32,10 @@ public class BlogPost {
     private String content; // Markdown
 
     private String coverImage;
+    private String thumbnailUrl;
     private String tags; // Comma separated
 
+    @com.fasterxml.jackson.annotation.JsonProperty("isPublished")
     private boolean isPublished;
     private int viewCount;
 

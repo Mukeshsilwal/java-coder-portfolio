@@ -32,5 +32,6 @@ public class Profile {
     private String phone;
     private String email;
     private String profileImage;
+    private String profileImageUrl;
     private String availabilityStatus;
 }

@@ -24,7 +24,7 @@ public class SkillController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<SkillDTO> createSkill(@RequestBody SkillDTO dto) {
+    public ResponseEntity<SkillDTO> createSkill(@RequestBody @jakarta.validation.Valid SkillDTO dto) {
         return ResponseEntity.ok(service.createSkill(dto));
     }
 

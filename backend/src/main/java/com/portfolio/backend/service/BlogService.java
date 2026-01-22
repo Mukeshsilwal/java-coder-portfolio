@@ -53,4 +53,17 @@ public class BlogService {
     public void deletePost(UUID id) {
         repository.deleteById(id);
     }
+    public String updateBlogThumbnail(UUID id, String imageUrl) {
+        BlogPost post = repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Post not found"));
+        
+        String oldUrl = post.getThumbnailUrl(); // Assuming I added this field
+        if (oldUrl == null) oldUrl = post.getCoverImage();
+        
+        post.setThumbnailUrl(imageUrl);
+        post.setCoverImage(imageUrl); // Sync
+        repository.save(post);
+        
+        return oldUrl;
+    }
 }

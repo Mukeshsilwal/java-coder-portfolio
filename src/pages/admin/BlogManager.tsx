@@ -9,6 +9,8 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { toast } from 'sonner';
 import { Trash2, Edit2, FileText, Eye } from 'lucide-react';
+import { ImageUploader } from '@/components/admin/ImageUploader';
+import { adminApi } from '@/api/services';
 import { Badge } from '@/components/ui/badge';
 import {
     Dialog,
@@ -138,16 +140,26 @@ const BlogManager = () => {
                                 <Textarea id="content" className="min-h-[300px] font-mono" value={formData.content} onChange={e => setFormData({ ...formData, content: e.target.value })} />
                             </div>
 
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="space-y-2">
-                                    <Label htmlFor="tags">Tags (comma separated)</Label>
-                                    <Input id="tags" value={formData.tags} onChange={e => setFormData({ ...formData, tags: e.target.value })} />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="image">Cover Image URL</Label>
-                                    <Input id="image" value={formData.coverImage} onChange={e => setFormData({ ...formData, coverImage: e.target.value })} />
-                                </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="tags">Tags (comma separated)</Label>
+                                <Input id="tags" value={formData.tags} onChange={e => setFormData({ ...formData, tags: e.target.value })} />
                             </div>
+                            {editingId ? (
+                                <div className="space-y-2">
+                                    <Label>Cover Image</Label>
+                                    <ImageUploader
+                                        currentImageUrl={formData.coverImage}
+                                        onUpload={async (file) => {
+                                            const { url } = await adminApi.uploadBlogThumbnail(editingId, file);
+                                            setFormData(prev => ({ ...prev, coverImage: url }));
+                                        }}
+                                    />
+                                </div>
+                            ) : (
+                                <div className="text-sm text-muted-foreground p-4 border border-dashed rounded-lg bg-muted/50 text-center">
+                                    Save first to upload image.
+                                </div>
+                            )}
 
                             <div className="flex items-center space-x-2">
                                 <Checkbox id="pub" checked={formData.isPublished} onCheckedChange={(c) => setFormData({ ...formData, isPublished: c === true })} />

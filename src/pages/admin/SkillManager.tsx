@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/select";
 import { toast } from 'sonner';
 import { Trash2, Plus, Code2 } from 'lucide-react';
+import { ImageUploader } from '@/components/admin/ImageUploader';
+import { adminApi } from '@/api/services';
 import {
     Dialog,
     DialogContent,
@@ -25,10 +27,11 @@ import {
 
 interface Skill {
     id: string;
-    name: string;
+    skillName: string;
     category: string;
-    proficiency: number;
-    iconUrl?: string; // Optional
+    proficiencyLevel: number; // matched DTO
+    iconUrl?: string;
+    experienceYears?: number;
 }
 
 const SkillManager = () => {
@@ -37,9 +40,9 @@ const SkillManager = () => {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const [formData, setFormData] = useState<Partial<Skill>>({
-        name: '',
+        skillName: '',
         category: 'BACKEND',
-        proficiency: 50,
+        proficiencyLevel: 50,
         iconUrl: ''
     });
 
@@ -83,11 +86,12 @@ const SkillManager = () => {
 
     const resetForm = () => {
         setFormData({
-            name: '',
+            skillName: '',
             category: 'BACKEND',
-            proficiency: 50,
+            proficiencyLevel: 50,
             iconUrl: ''
         });
+        setIsDialogOpen(false);
     }
 
     return (
@@ -105,7 +109,7 @@ const SkillManager = () => {
                         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
                             <div className="space-y-2">
                                 <Label>Skill Name</Label>
-                                <Input value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} required placeholder="Java, React, etc." />
+                                <Input value={formData.skillName} onChange={e => setFormData({ ...formData, skillName: e.target.value })} required placeholder="Java, React, etc." />
                             </div>
 
                             <div className="space-y-2">
@@ -126,18 +130,24 @@ const SkillManager = () => {
 
                             <div className="space-y-4">
                                 <div className="flex justify-between">
-                                    <Label>Proficiency ({formData.proficiency}%)</Label>
+                                    <Label>Proficiency ({formData.proficiencyLevel}%)</Label>
                                 </div>
                                 <Slider
                                     defaultValue={[50]}
                                     max={100}
                                     step={5}
-                                    value={[formData.proficiency!]}
-                                    onValueChange={(val) => setFormData({ ...formData, proficiency: val[0] })}
+                                    value={[formData.proficiencyLevel || 50]}
+                                    onValueChange={(val) => setFormData({ ...formData, proficiencyLevel: val[0] })}
                                 />
                             </div>
 
-                            <Button type="submit" className="w-full">Add Skill</Button>
+                            <div className="space-y-2">
+                                <Label>Icon</Label>
+                                {/* Only show uploader if we have an ID (edit mode) or just let them create first */}
+                                <p className="text-xs text-muted-foreground">Save the skill first to upload an icon.</p>
+                            </div>
+
+                            <Button type="submit" className="w-full">Save Skill</Button>
                         </form>
                     </DialogContent>
                 </Dialog>
@@ -152,7 +162,7 @@ const SkillManager = () => {
                                     <Code2 className="w-6 h-6" />
                                 </div>
                                 <div>
-                                    <h3 className="font-bold">{skill.name}</h3>
+                                    <h3 className="font-bold">{skill.skillName}</h3>
                                     <p className="text-xs text-muted-foreground">{skill.category}</p>
                                 </div>
                             </div>
@@ -160,8 +170,21 @@ const SkillManager = () => {
                                 <Trash2 className="w-4 h-4" />
                             </Button>
                         </div>
+                        <div className="px-4 pb-2">
+                            <ImageUploader
+                                currentImageUrl={skill.iconUrl}
+                                label="Icon"
+                                aspectRatio="square"
+                                className="mb-2"
+                                onUpload={async (file) => {
+                                    const { url } = await adminApi.uploadSkillIcon(skill.id, file);
+                                    // Refresh list or update local state
+                                    setSkills(prev => prev.map(s => s.id === skill.id ? { ...s, iconUrl: url } : s));
+                                }}
+                            />
+                        </div>
                         <div className="h-1 bg-secondary mx-4 mb-4 rounded-full overflow-hidden">
-                            <div className="h-full bg-primary" style={{ width: `${skill.proficiency}%` }} />
+                            <div className="h-full bg-primary" style={{ width: `${skill.proficiencyLevel || 50}%` }} />
                         </div>
                     </Card>
                 ))}

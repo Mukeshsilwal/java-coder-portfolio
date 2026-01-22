@@ -4,27 +4,22 @@ import { useEffect, useState } from 'react';
 import { publicApi } from '@/api/services';
 import { ProjectDTO } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
+import { ProjectCard, ProjectCardData } from '@/components/ProjectCard';
 
-// Extended Interface for UI Logic (merges API data with static UI enhancements)
-interface ProjectUI extends Partial<ProjectDTO> {
-  title: string;
-  description: string;
-  tech: string[];
-  features?: string[];
-  impact?: string; // New field for recruiter stats
-  github: string;
-  demo: string | null;
-  featured: boolean;
-  type?: string;
-}
 
-const staticProjects: ProjectUI[] = [
+
+const staticProjects: ProjectCardData[] = [
   {
     title: 'Ticket Katum',
     description: 'A comprehensive high-availability booking platform for bus tickets, hotel rooms, and large-scale event reservations. Designed for concurrency.',
+    problem: 'Traditional booking systems struggled with concurrent requests during peak festival seasons, leading to double bookings and poor user experience.',
+    solutions: [
+      'Implemented optimistic locking with Redis for seat reservation',
+      'Built distributed transaction management across multiple services',
+      'Designed real-time seat availability updates using WebSocket'
+    ],
+    metrics: 'Handled 10k+ concurrent requests during festival season with zero double bookings',
     tech: ['Java', 'Spring Boot', 'React', 'PostgreSQL', 'Redis'],
-    features: ['Concurrent Booking Engine', 'Real-time Seat Selection', 'Payment Gateway Aggregation'],
-    impact: 'Handled 10k+ concurrent requests during festival season',
     github: 'https://github.com/Mukeshsilwal',
     demo: null,
     featured: true,
@@ -33,9 +28,14 @@ const staticProjects: ProjectUI[] = [
   {
     title: 'Kisan Ko Sathii',
     description: 'AI-powered agricultural marketplace connecting farmers directly with buyers. Features image-based quality analysis using ML models.',
+    problem: 'Farmers faced 15-20% produce wastage due to slow buyer matchmaking and lack of quality standardization.',
+    solutions: [
+      'Integrated TensorFlow-based image recognition for quality grading',
+      'Built real-time price analytics using market data aggregation',
+      'Implemented direct chat system for instant buyer-farmer communication'
+    ],
+    metrics: 'Reduced produce wastage by 15% through faster matchmaking and quality standardization',
     tech: ['Java', 'Spring Boot', 'Python', 'TensorFlow', 'React'],
-    features: ['AI Quality Grading', 'Real-time Price Analytics', 'Direct Chat System'],
-    impact: 'Reduced produce wastage by 15% through faster matchmaking',
     github: 'https://github.com/Mukeshsilwal',
     demo: null,
     featured: true,
@@ -44,15 +44,21 @@ const staticProjects: ProjectUI[] = [
   {
     title: 'Gatepay',
     description: 'Enterprise-grade payment gateway aggregator built with Reactive programming patterns for non-blocking throughput.',
+    problem: 'Existing payment gateways had blocking I/O operations causing performance bottlenecks during high-traffic periods.',
+    solutions: [
+      'Architected fully reactive pipeline using Spring WebFlux',
+      'Implemented distributed tracing with OpenTelemetry for debugging',
+      'Built merchant dashboard with real-time transaction monitoring'
+    ],
+    metrics: 'Processed $50k+ daily transactions with 99.99% uptime and <100ms latency',
     tech: ['Java', 'Spring WebFlux', 'Docker', 'Kubernetes'],
-    features: ['Non-blocking I/O', 'Distributed Tracing', 'Merchant Dashboard'],
-    impact: 'Processed $50k+ daily transactions with 99.99% uptime',
     github: 'https://github.com/Mukeshsilwal',
     demo: null,
     featured: true,
     type: 'Fintech'
   },
 ];
+
 
 const getTechStyle = (tech: string) => {
   const lower = tech.toLowerCase();
@@ -65,7 +71,7 @@ const getTechStyle = (tech: string) => {
 };
 
 const Projects = () => {
-  const [projects, setProjects] = useState<ProjectUI[]>(staticProjects);
+  const [projects, setProjects] = useState<ProjectCardData[]>(staticProjects);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -73,17 +79,17 @@ const Projects = () => {
       try {
         const data = await publicApi.getProjects();
         if (data && data.length > 0) {
-          // Merge API data with static "Impact" data if titles match, otherwise use API data cleanly
-          const mapped: ProjectUI[] = data.map(p => {
-            // Find matching static project to get the "Impact" text which isn't in DB yet
+          // Merge API data with static case study data
+          const mapped: ProjectCardData[] = data.map(p => {
             const staticMatch = staticProjects.find(sp => sp.title.toLowerCase() === p.title.toLowerCase());
 
             return {
               title: p.title,
               description: p.description,
+              problem: staticMatch?.problem,
+              solutions: staticMatch?.solutions,
+              metrics: staticMatch?.metrics,
               tech: p.techStack ? p.techStack.split(',').map(s => s.trim()) : [],
-              features: staticMatch?.features || [],
-              impact: staticMatch?.impact,
               github: p.githubRepoUrl,
               demo: p.liveDemoUrl,
               featured: p.isFeatured,
@@ -100,6 +106,8 @@ const Projects = () => {
     };
     fetchProjects();
   }, []);
+
+
 
   const featuredProjects = projects.filter(p => p.featured);
   const otherProjects = projects.filter(p => !p.featured);
@@ -128,8 +136,8 @@ const Projects = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mb-16">
           {loading ? (
             // Skeleton Loading State
-            Array.from({ length: 4 }).map((_, i) => (
-              <div key={i} className="h-[400px] rounded-2xl border border-border/50 bg-card/50 p-8 space-y-4">
+            Array.from({ length: 3 }).map((_, i) => (
+              <div key={i} className="h-[500px] rounded-2xl border border-border/50 bg-card/50 p-8 space-y-4">
                 <Skeleton className="h-8 w-1/3 rounded-lg" />
                 <Skeleton className="h-4 w-full rounded" />
                 <Skeleton className="h-4 w-2/3 rounded" />
@@ -141,88 +149,12 @@ const Projects = () => {
             ))
           ) : (
             featuredProjects.map((project, index) => (
-              <div
+              <ProjectCard
                 key={project.title}
-                className={`group relative rounded-2xl border border-border/50 bg-card/30 backdrop-blur-xl overflow-hidden hover:border-primary/50 transition-all duration-500 hover:shadow-2xl hover:shadow-primary/5
-                  ${index === 0 ? 'md:col-span-2 lg:col-span-2' : ''}
-                `}
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
-                <div className="p-6 md:p-8 lg:p-10 relative z-10 flex flex-col h-full">
-                  {/* Top Row: Type & Links */}
-                  <div className="flex items-start justify-between mb-6">
-                    <div className="flex items-center gap-3">
-                      <span className={`px-3 py-1 rounded-lg text-xs font-semibold uppercase tracking-wider bg-secondary/50 text-foreground border border-border/50`}>
-                        {project.type || 'Project'}
-                      </span>
-                      {project.impact && (
-                        <span className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-medium bg-green-500/10 text-green-400 border border-green-500/20">
-                          <Zap className="w-3 h-3" />
-                          {project.impact}
-                        </span>
-                      )}
-                    </div>
-
-                    <div className="flex gap-2">
-                      {project.github && (
-                        <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full bg-secondary/50 hover:bg-primary hover:text-white transition-colors" asChild>
-                          <a href={project.github} target="_blank" aria-label="GitHub Repo">
-                            <Github className="w-4 h-4" />
-                          </a>
-                        </Button>
-                      )}
-                      {project.demo && (
-                        <Button size="icon" variant="ghost" className="h-9 w-9 rounded-full bg-secondary/50 hover:bg-primary hover:text-white transition-colors" asChild>
-                          <a href={project.demo} target="_blank" aria-label="Live Demo">
-                            <ExternalLink className="w-4 h-4" />
-                          </a>
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Content */}
-                  <div className="mb-auto">
-                    <h3 className="text-2xl md:text-3xl font-bold mb-3 group-hover:text-primary transition-colors duration-300">
-                      {project.title}
-                    </h3>
-                    <p className="text-muted-foreground text-base md:text-lg leading-relaxed max-w-2xl mb-6">
-                      {project.description}
-                    </p>
-
-                    {/* Features List (if available) */}
-                    {project.features && project.features.length > 0 && (
-                      <ul className="space-y-2 mb-8">
-                        {project.features.map(feat => (
-                          <li key={feat} className="flex items-center gap-2 text-sm text-foreground/80">
-                            <Star className="w-3 h-3 text-primary shrink-0" />
-                            {feat}
-                          </li>
-                        ))}
-                      </ul>
-                    )}
-                  </div>
-
-                  {/* Tech Stack Footer */}
-                  <div className="pt-6 border-t border-border/40 flex flex-wrap gap-2 mt-4">
-                    {project.tech.map(t => (
-                      <span key={t} className={`px-3 py-1.5 rounded-md text-xs font-medium border ${getTechStyle(t)}`}>
-                        {t}
-                      </span>
-                    ))}
-                  </div>
-
-                  {/* Impact Mobile Badge (shown here only if hidden above on mobile) */}
-                  {project.impact && (
-                    <div className="mt-4 sm:hidden flex items-center gap-2 text-xs text-green-400 font-medium">
-                      <Zap className="w-3 h-3" />
-                      {project.impact}
-                    </div>
-                  )}
-
-                </div>
-              </div>
+                project={project}
+                featured={true}
+                className={index === 0 ? 'md:col-span-2' : ''}
+              />
             ))
           )}
         </div>

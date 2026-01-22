@@ -32,6 +32,10 @@ export const publicApi = {
         const { data } = await axiosInstance.get<ProjectDTO>(`/projects/${id}`);
         return data;
     },
+    getExperiences: async () => {
+        const { data } = await axiosInstance.get('/experience');
+        return data;
+    },
     sendMessage: async (message: MessageDTO) => {
         const { data } = await axiosInstance.post('/contact', message);
         return data;
@@ -69,6 +73,40 @@ export const adminApi = {
     },
     updateSkill: async (id: string, skill: Partial<SkillDTO>) => { // Assuming update exists
         const { data } = await axiosInstance.put<SkillDTO>(`/skills/${id}`, skill);
+        return data;
+    },
+
+    // Images
+    uploadProfileImage: async (file: File) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        const { data } = await axiosInstance.post('/admin/profile/image', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        return data;
+    },
+    uploadProjectImage: async (id: string, file: File) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        const { data } = await axiosInstance.post(`/admin/projects/${id}/image`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        return data;
+    },
+    uploadBlogThumbnail: async (id: string, file: File) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        const { data } = await axiosInstance.post(`/admin/blogs/${id}/thumbnail`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        return data;
+    },
+    uploadSkillIcon: async (id: string, file: File) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        const { data } = await axiosInstance.post(`/admin/skills/${id}/icon`, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
         return data;
     }
 };

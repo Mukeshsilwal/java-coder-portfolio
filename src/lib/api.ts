@@ -114,5 +114,45 @@ export const api = {
             if (!res.ok) throw await res.json();
             return await res.json() as SkillDTO[];
         }
+    },
+    admin: {
+        uploadProfileImage: async (file: File) => {
+            const formData = new FormData();
+            formData.append('file', file);
+            const res = await axios.post(`${API_BASE_URL}/admin/profile/image`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+                withCredentials: true
+            });
+            return res.data;
+        },
+        uploadProjectImage: async (id: string, file: File) => {
+            const formData = new FormData();
+            formData.append('file', file);
+            const res = await axios.post(`${API_BASE_URL}/admin/projects/${id}/image`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+                withCredentials: true
+            });
+            return res.data;
+        },
+        uploadBlogThumbnail: async (id: string, file: File) => {
+            const formData = new FormData();
+            formData.append('file', file);
+            const res = await axios.post(`${API_BASE_URL}/admin/blogs/${id}/thumbnail`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+                withCredentials: true
+            });
+            return res.data;
+        },
+        uploadSkillIcon: async (id: string, file: File) => {
+            const formData = new FormData();
+            formData.append('file', file);
+            const res = await axios.post(`${API_BASE_URL}/admin/skills/${id}/icon`, formData, {
+                headers: { 'Content-Type': 'multipart/form-data' },
+                withCredentials: true
+            });
+            return res.data;
+        }
     }
 };
+
+import axios from 'axios';

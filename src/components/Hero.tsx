@@ -1,6 +1,9 @@
 import { ArrowDown, Github, Linkedin, Mail, Code2, Terminal, Sparkles, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { resumeService } from '@/services/resumeService';
+import { StatusBadge } from '@/components/StatusBadge';
+import { MetricsDisplay } from '@/components/MetricsDisplay';
+
 
 const Hero = () => {
   return (
@@ -15,11 +18,8 @@ const Hero = () => {
 
           {/* LEFT SIDE - Content */}
           <div className="space-y-8 text-center lg:text-left">
-            {/* Status Badge */}
-            <div className="inline-flex items-center gap-2 status-badge animate-fade-up">
-              <span className="w-2 h-2 bg-green-500 rounded-full animate-pulse" />
-              <span className="text-sm font-medium text-muted-foreground">Available for Work</span>
-            </div>
+            {/* Enhanced Status Badge */}
+            <StatusBadge available={true} experience="2+ Years Experience" />
 
             {/* Name Heading */}
             <div className="space-y-4 animate-fade-up" style={{ animationDelay: '0.1s' }}>
@@ -43,6 +43,9 @@ const Hero = () => {
               Building <span className="text-foreground font-semibold">robust, scalable backend systems</span> with
               Java, Spring Boot & Reactive Programming. Currently powering mobile banking at Nepal's #1 fintech.
             </p>
+
+            {/* Key Metrics */}
+            <MetricsDisplay className="animate-fade-up" />
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 animate-fade-up" style={{ animationDelay: '0.3s' }}>
