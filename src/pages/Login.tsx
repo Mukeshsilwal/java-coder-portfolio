@@ -100,10 +100,21 @@ const Login = () => {
                                 </Label>
                             </div>
                         </CardContent>
-                        <CardFooter>
+                        <CardFooter className="flex flex-col gap-4">
                             <Button type="submit" className="w-full" disabled={loading}>
                                 {loading ? 'Authenticating...' : 'Sign In'}
                             </Button>
+                            <div className="text-center text-sm text-muted-foreground">
+                                Don&apos;t have an account?{" "}
+                                <Button
+                                    variant="link"
+                                    className="p-0 h-auto font-normal text-primary"
+                                    onClick={() => navigate('/register')}
+                                    type="button"
+                                >
+                                    Register
+                                </Button>
+                            </div>
                         </CardFooter>
                     </form>
                 </Card>
