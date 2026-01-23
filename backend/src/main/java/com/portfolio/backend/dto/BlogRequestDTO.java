@@ -18,5 +18,5 @@ public class BlogRequestDTO {
     private String content;
     private String coverImage;
     private Set<String> tags;
-    private boolean published;
+    private boolean isPublished;
 }
