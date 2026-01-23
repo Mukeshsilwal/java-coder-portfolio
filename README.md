@@ -21,6 +21,39 @@ A full-stack portfolio website built with **Spring Boot 3** (Backend) and **Reac
 - **Tailwind CSS**
 - **Shadcn UI**
 - **TypeScript**
+- **PWA** (Progressive Web App) ⭐ NEW!
+
+## 📱 Progressive Web App (PWA)
+
+This portfolio is now a **fully functional PWA** that can be installed like a native app!
+
+### ✨ PWA Features
+- ✅ **Installable** - Add to home screen on mobile/desktop
+- ✅ **Offline-capable** - Works without internet connection
+- ✅ **Fast-loading** - Cached assets load instantly
+- ✅ **App-like** - No browser UI in standalone mode
+- ✅ **Push Notifications** - Ready for implementation
+- ✅ **Background Sync** - Offline form submission
+
+### 🚀 Quick Start
+```bash
+# Generate app icons
+npm run generate-icons <path-to-icon-source>
+
+# Test PWA locally
+npm run pwa:test
+
+# Run Lighthouse audit
+npm run lighthouse
+```
+
+### 📚 PWA Documentation
+- **[Quick Start Guide](PWA_QUICK_START.md)** - Get started in 5 minutes
+- **[Implementation Guide](PWA_IMPLEMENTATION.md)** - Detailed documentation
+- **[Testing Checklist](PWA_TESTING.md)** - Complete testing guide
+- **[Deployment Guide](PWA_DEPLOYMENT.md)** - Deploy to production
+- **[Summary](PWA_SUMMARY.md)** - Overview of all features
+
 
 ## 📂 Project Structure
 

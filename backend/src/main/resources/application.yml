@@ -33,6 +33,6 @@ logging:
     com.portfolio.backend: DEBUG
 
 cloudinary:
-  cloud-name: dsqubrfjp
-  api-key: 624365773875321
-  api-secret: 9P5wS1lelWdo6CubuJxzQiNTClw
+  cloud-name: ${CLOUDINARY_NAME}
+  api-key: ${CLOUDINARY_API_KEY}
+  api-secret: ${CLOUDINARY_API_SECRET}

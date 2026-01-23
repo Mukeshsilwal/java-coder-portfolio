@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { ScrollProgress } from '@/components/ScrollProgress';
+import { InstallButton } from '@/components/pwa/InstallPrompt';
 
 
 const navLinks = [
@@ -130,6 +131,7 @@ const Header = () => {
 
           {/* Right CTA */}
           <div className="hidden md:flex items-center gap-4">
+            <InstallButton />
             <Link to="/contact">
               <button className="btn-primary text-sm py-2 px-6 shadow-lg shadow-primary/20 hover:shadow-primary/40 group relative overflow-hidden">
                 <span className="relative z-10 transition-colors group-hover:text-white">Let's Build</span>
