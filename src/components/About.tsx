@@ -65,31 +65,6 @@ const About = () => {
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
             {/* Left Column - Text */}
             <div className="space-y-8 animate-fade-up">
-              <div className="glass-card p-6 rounded-2xl border border-border/50 bg-background/50">
-                <div className="flex items-center gap-3 mb-4 border-b border-border/50 pb-4">
-                  <div className="flex gap-1.5">
-                    <div className="w-3 h-3 rounded-full bg-red-500/80" />
-                    <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-                    <div className="w-3 h-3 rounded-full bg-green-500/80" />
-                  </div>
-                  <span className="font-mono text-sm text-muted-foreground ml-auto">about.java</span>
-                </div>
-                <pre className="font-mono text-sm text-muted-foreground overflow-x-auto leading-relaxed">
-                  <code>
-                    {`<span className="text-purple-400">public class</span> <span className="text-yellow-400">Developer</span> {
-  <span className="text-purple-400">private</span> String name = <span className="text-green-400">"Mukesh Silwal"</span>;
-  <span className="text-purple-400">private</span> String focus = <span className="text-green-400">"Backend Engineering"</span>;
-  
-  <span className="text-purple-400">private</span> String[] passions = {
-    <span className="text-green-400">"Reactive Programming"</span>,
-    <span className="text-green-400">"Fintech Solutions"</span>,
-    <span className="text-green-400">"Distributed Systems"</span>
-  };
-}`}
-                  </code>
-                </pre>
-              </div>
-
               <div className="space-y-6 text-lg text-muted-foreground leading-relaxed">
                 {profile?.bio ? (
                   <div className="whitespace-pre-line">

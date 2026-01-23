@@ -87,34 +87,43 @@ const Header = () => {
   return (
     <>
       <ScrollProgress />
-      {/* Floating Glass Navbar */}
+      {/* Floating Glass Navbar - Mobile Optimized & Always Visible */}
       <header
-        className={`navbar-floating ${isScrolled ? 'navbar-scrolled' : ''} z-50`}
+        className={`navbar-floating ${isScrolled ? 'navbar-scrolled' : ''}`}
+        style={{
+          position: 'fixed',
+          top: '1rem',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 50,
+          width: 'calc(100% - 2rem)',
+          maxWidth: '100%'
+        }}
       >
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between w-full">
           {/* Logo */}
           <Link
             to="/"
-            className="flex items-center gap-2 group"
+            className="flex items-center gap-2 group flex-shrink-0"
             onClick={(e) => scrollToSection(e, 'top')}
           >
             <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20 transition-transform group-hover:scale-110">
               <span className="font-bold text-primary text-xl">M</span>
             </div>
-            <div className="flex flex-col">
-              <span className="font-bold text-lg leading-none tracking-tight">Mukesh Silwal</span>
+            <div className="hidden sm:flex flex-col">
+              <span className="font-bold text-base lg:text-lg leading-none tracking-tight">Mukesh Silwal</span>
               <span className="text-[10px] text-muted-foreground uppercase tracking-widest group-hover:text-primary transition-colors">Backend Engineer</span>
             </div>
           </Link>
 
           {/* Desktop Navigation - Center */}
-          <nav className="hidden md:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
+          <nav className="hidden md:flex items-center gap-1">
             {navLinks.map((link) => (
               <Link
                 key={link.label}
                 to={link.href}
                 onClick={(e) => scrollToSection(e, link.isTopFn ? 'top' : (link.sectionId || null))}
-                className={`relative px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg group ${isActive(link)
+                className={`relative px-3 lg:px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg group ${isActive(link)
                   ? 'text-primary font-semibold'
                   : 'text-muted-foreground hover:text-foreground'
                   }`}
@@ -130,10 +139,10 @@ const Header = () => {
           </nav>
 
           {/* Right CTA */}
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden md:flex items-center gap-2 lg:gap-4 flex-shrink-0">
             <InstallButton />
             <Link to="/contact">
-              <button className="btn-primary text-sm py-2 px-6 shadow-lg shadow-primary/20 hover:shadow-primary/40 group relative overflow-hidden">
+              <button className="btn-primary text-sm py-2 px-4 lg:px-6 shadow-lg shadow-primary/20 hover:shadow-primary/40 group relative overflow-hidden">
                 <span className="relative z-10 transition-colors group-hover:text-white">Let's Build</span>
                 <div className="absolute inset-0 bg-gradient-to-r from-accent to-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               </button>
@@ -142,7 +151,7 @@ const Header = () => {
 
           {/* Mobile Menu Toggle */}
           <button
-            className="md:hidden text-foreground p-2 hover:bg-secondary/50 rounded-lg transition-colors z-50"
+            className="md:hidden text-foreground p-2 hover:bg-secondary/50 rounded-lg transition-colors z-50 flex-shrink-0"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle menu"
           >

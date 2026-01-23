@@ -1,4 +1,4 @@
-import { ArrowDown, Github, Linkedin, Mail, Code2, Terminal, Sparkles, Download } from 'lucide-react';
+import { ArrowDown, Github, Linkedin, Mail, Code2, Sparkles, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { resumeService } from '@/services/resumeService';
 import { StatusBadge } from '@/components/StatusBadge';
@@ -14,10 +14,10 @@ const Hero = () => {
       <div className="absolute bottom-1/4 right-1/4 w-[min(500px,80vw)] h-[min(500px,80vw)] bg-accent/10 rounded-full blur-[120px] animate-pulse-slow" style={{ animationDelay: '2s' }} />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center max-w-7xl mx-auto">
+        <div className="max-w-4xl mx-auto">{/* Changed from grid lg:grid-cols-2 to single centered column */}
 
-          {/* LEFT SIDE - Content */}
-          <div className="space-y-8 text-center lg:text-left">
+          {/* Content - Centered */}
+          <div className="space-y-8 text-center">{/* Removed lg:text-left since no side panel */}
             {/* Enhanced Status Badge */}
             <StatusBadge available={true} experience="2+ Years Experience" />
 
@@ -29,7 +29,7 @@ const Hero = () => {
               </h1>
 
               {/* Role Tagline */}
-              <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3 text-lg sm:text-xl">
+              <div className="flex flex-wrap items-center justify-center gap-3 text-lg sm:text-xl">
                 <span className="font-semibold text-foreground">Java Backend Engineer</span>
                 <span className="text-primary">•</span>
                 <span className="text-muted-foreground">Reactive Systems</span>
@@ -39,7 +39,7 @@ const Hero = () => {
             </div>
 
             {/* Value Proposition */}
-            <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto lg:mx-0 animate-fade-up text-balance" style={{ animationDelay: '0.2s' }}>
+            <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto animate-fade-up text-balance" style={{ animationDelay: '0.2s' }}>
               Building <span className="text-foreground font-semibold">robust, scalable backend systems</span> with
               Java, Spring Boot & Reactive Programming. Currently powering mobile banking at Nepal's #1 fintech.
             </p>
@@ -48,7 +48,7 @@ const Hero = () => {
             <MetricsDisplay className="animate-fade-up" />
 
             {/* CTA Buttons */}
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 animate-fade-up" style={{ animationDelay: '0.3s' }}>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up" style={{ animationDelay: '0.3s' }}>
               <button
                 onClick={() => document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' })}
                 className="btn-primary w-full sm:w-auto flex items-center justify-center gap-2 group cursor-pointer"
@@ -66,7 +66,7 @@ const Hero = () => {
             </div>
 
             {/* Social Links */}
-            <div className="flex items-center justify-center lg:justify-start gap-3 animate-fade-up" style={{ animationDelay: '0.4s' }}>
+            <div className="flex items-center justify-center gap-3 animate-fade-up" style={{ animationDelay: '0.4s' }}>
               <a
                 href="https://github.com/Mukeshsilwal"
                 target="_blank"
@@ -93,80 +93,6 @@ const Hero = () => {
                 <Mail className="w-5 h-5" />
               </a>
             </div>
-          </div>
-
-          {/* RIGHT SIDE - Visual Panel */}
-          <div className="relative hidden lg:block animate-fade-up" style={{ animationDelay: '0.2s' }}>
-            {/* Floating Code Card */}
-            <div className="glass-card p-6 rounded-2xl space-y-4 animate-float">
-              {/* Terminal Header */}
-              <div className="flex items-center gap-2 pb-4 border-b border-border/50">
-                <Terminal className="w-4 h-4 text-accent" />
-                <span className="text-sm font-medium text-muted-foreground">Developer.java</span>
-                <div className="ml-auto flex gap-1.5">
-                  <div className="w-3 h-3 rounded-full bg-red-500/50" />
-                  <div className="w-3 h-3 rounded-full bg-yellow-500/50" />
-                  <div className="w-3 h-3 rounded-full bg-green-500/50" />
-                </div>
-              </div>
-
-              {/* Code Content */}
-              <div className="code-font text-sm space-y-2 text-muted-foreground">
-                <div className="flex gap-3">
-                  <span className="text-muted-foreground/50 select-none">1</span>
-                  <span><span className="text-accent">@SpringBootApplication</span></span>
-                </div>
-                <div className="flex gap-3">
-                  <span className="text-muted-foreground/50 select-none">2</span>
-                  <span><span className="text-primary">public class</span> <span className="text-foreground font-semibold">Developer</span> {'{'}</span>
-                </div>
-                <div className="flex gap-3">
-                  <span className="text-muted-foreground/50 select-none">3</span>
-                  <span className="pl-4">
-                    <span className="text-primary">private</span> String name = <span className="text-green-400">"Mukesh"</span>;
-                  </span>
-                </div>
-                <div className="flex gap-3">
-                  <span className="text-muted-foreground/50 select-none">4</span>
-                  <span className="pl-4">
-                    <span className="text-primary">private</span> String[] skills = {'{'}
-                  </span>
-                </div>
-                <div className="flex gap-3">
-                  <span className="text-muted-foreground/50 select-none">5</span>
-                  <span className="pl-8">
-                    <span className="text-green-400">"Java"</span>, <span className="text-green-400">"Spring Boot"</span>,
-                  </span>
-                </div>
-                <div className="flex gap-3">
-                  <span className="text-muted-foreground/50 select-none">6</span>
-                  <span className="pl-8">
-                    <span className="text-green-400">"WebFlux"</span>, <span className="text-green-400">"PostgreSQL"</span>
-                  </span>
-                </div>
-                <div className="flex gap-3">
-                  <span className="text-muted-foreground/50 select-none">7</span>
-                  <span className="pl-4">{'};'}</span>
-                </div>
-                <div className="flex gap-3">
-                  <span className="text-muted-foreground/50 select-none">8</span>
-                  <span>{'}'}</span>
-                </div>
-              </div>
-
-              {/* Tech Stack Badges */}
-              <div className="flex flex-wrap gap-2 pt-4 border-t border-border/50">
-                {['Java', 'Spring Boot', 'WebFlux', 'PostgreSQL', 'Docker'].map((tech) => (
-                  <span key={tech} className="skill-chip text-xs">
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Floating Elements */}
-            <div className="absolute -top-6 -right-6 w-24 h-24 bg-primary/20 rounded-2xl blur-2xl animate-pulse-slow" />
-            <div className="absolute -bottom-6 -left-6 w-32 h-32 bg-accent/20 rounded-2xl blur-2xl animate-pulse-slow" style={{ animationDelay: '1s' }} />
           </div>
         </div>
       </div>
