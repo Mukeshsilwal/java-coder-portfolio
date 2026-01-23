@@ -25,14 +25,32 @@ public class ExperienceController {
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<Experience>> createExperience(@RequestBody Experience experience) {
+    public ResponseEntity<ApiResponse<Experience>> createExperience(@RequestBody com.portfolio.backend.dto.ExperienceRequestDTO dto) {
+        Experience experience = Experience.builder()
+                .company(dto.getCompany())
+                .role(dto.getRole())
+                .description(dto.getDescription())
+                .startDate(dto.getStartDate())
+                .endDate(dto.getEndDate())
+                .current(dto.isCurrent())
+                .technologies(dto.getTechnologies())
+                .build();
         return ResponseEntity.ok(ApiResponse.success("Experience created successfully", service.saveExperience(experience)));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse<Experience>> updateExperience(@PathVariable UUID id, @RequestBody Experience experience) {
-        experience.setId(id);
+    public ResponseEntity<ApiResponse<Experience>> updateExperience(@PathVariable UUID id, @RequestBody com.portfolio.backend.dto.ExperienceRequestDTO dto) {
+        Experience experience = Experience.builder()
+                .id(id)
+                .company(dto.getCompany())
+                .role(dto.getRole())
+                .description(dto.getDescription())
+                .startDate(dto.getStartDate())
+                .endDate(dto.getEndDate())
+                .current(dto.isCurrent())
+                .technologies(dto.getTechnologies())
+                .build();
         return ResponseEntity.ok(ApiResponse.success("Experience updated successfully", service.saveExperience(experience)));
     }
 

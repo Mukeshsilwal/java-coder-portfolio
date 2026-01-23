@@ -18,8 +18,14 @@ public class ContactController {
     private final ContactService service;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<ContactMessage>> sendMessage(@RequestBody ContactMessage message, HttpServletRequest request) {
-        message.setIpAddress(request.getRemoteAddr());
+    public ResponseEntity<ApiResponse<ContactMessage>> sendMessage(@RequestBody com.portfolio.backend.dto.ContactRequestDTO dto, HttpServletRequest request) {
+        ContactMessage message = ContactMessage.builder()
+                .senderName(dto.getSenderName())
+                .senderEmail(dto.getSenderEmail())
+                .subject(dto.getSubject())
+                .message(dto.getMessage())
+                .ipAddress(request.getRemoteAddr())
+                .build();
         return ResponseEntity.ok(ApiResponse.success("Message sent successfully", service.saveMessage(message)));
     }
     
