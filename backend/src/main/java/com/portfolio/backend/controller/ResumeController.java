@@ -57,8 +57,8 @@ public class ResumeController {
         try {
             return ResponseEntity.ok(ApiResponse.success("CV metadata retrieved successfully", resumeService.getActiveResumeMetadata()));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(ApiResponse.error("CV not found"));
+            // Return success with null data to avoid frontend console errors
+            return ResponseEntity.ok(ApiResponse.success("No active CV found", null));
         }
     }
 

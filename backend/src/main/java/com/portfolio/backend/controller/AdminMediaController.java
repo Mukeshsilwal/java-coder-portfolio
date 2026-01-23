@@ -84,8 +84,8 @@ public class AdminMediaController {
             
             return ResponseEntity.ok(ApiResponse.success("Active CV retrieved", responseData));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(ApiResponse.error("No active CV found"));
+            // Return 200 with null data to signify "no CV" without causing a 404 error on frontend
+            return ResponseEntity.ok(ApiResponse.success("No active CV found", null));
         }
     }
 
