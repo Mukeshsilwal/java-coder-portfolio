@@ -32,7 +32,7 @@ public class ExperienceController {
                 .description(dto.getDescription())
                 .startDate(dto.getStartDate())
                 .endDate(dto.getEndDate())
-                .current(dto.isCurrent())
+                .isCurrent(dto.isCurrent())
                 .technologies(dto.getTechnologies())
                 .build();
         return ResponseEntity.ok(ApiResponse.success("Experience created successfully", service.saveExperience(experience)));
@@ -48,7 +48,7 @@ public class ExperienceController {
                 .description(dto.getDescription())
                 .startDate(dto.getStartDate())
                 .endDate(dto.getEndDate())
-                .current(dto.isCurrent())
+                .isCurrent(dto.isCurrent())
                 .technologies(dto.getTechnologies())
                 .build();
         return ResponseEntity.ok(ApiResponse.success("Experience updated successfully", service.saveExperience(experience)));
