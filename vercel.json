@@ -1,0 +1,8 @@
+{
+    "rewrites": [
+        {
+            "source": "/api/:match*",
+            "destination": "https://java-coder-portfolio.onrender.com/api/:match*"
+        }
+    ]
+}
