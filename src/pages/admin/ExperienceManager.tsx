@@ -55,8 +55,8 @@ const ExperienceManager = () => {
 
     const loadExperience = async () => {
         try {
-            const { data } = await axiosInstance.get<Experience[]>('/experience');
-            setExperiences(data);
+            const { data } = await axiosInstance.get<any>('/experience');
+            setExperiences(data.data || []);
         } catch (err) {
             console.error(err);
             toast.error('Failed to load experience');

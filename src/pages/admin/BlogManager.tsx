@@ -54,8 +54,10 @@ const BlogManager = () => {
     const loadPosts = async () => {
         try {
             // Admin endpoint to get all
-            const { data } = await axiosInstance.get('/blogs/admin');
-            setPosts(data.content || data); // Handle Page response
+            const { data } = await axiosInstance.get<any>('/blogs/admin');
+            // Check if it's a Page response (content) or List
+            const payload = data.data;
+            setPosts(payload?.content || payload || []);
         } catch (err) {
             console.error(err);
             // toast.error('Failed to load blogs');

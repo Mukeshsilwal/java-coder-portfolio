@@ -52,8 +52,8 @@ const SkillManager = () => {
 
     const loadSkills = async () => {
         try {
-            const { data } = await axiosInstance.get<Skill[]>('/skills');
-            setSkills(data);
+            const { data } = await axiosInstance.get<any>('/skills'); // Return type is ApiResponse
+            setSkills(data.data || []);
         } catch (err) {
             console.error(err);
         } finally {
