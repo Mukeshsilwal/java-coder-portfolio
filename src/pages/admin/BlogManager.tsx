@@ -53,21 +53,21 @@ const BlogManager = () => {
 
     const loadPosts = async () => {
         try {
-            // Admin endpoint to get all
             const { data } = await axiosInstance.get<any>('/blogs/admin');
-            // Check if it's a Page response (content) or List
-            // Check if it's a Page response (content) or List
             const payload: any = data.data;
-            let items = [];
+            let items: any[] = [];
             if (Array.isArray(payload)) {
                 items = payload;
             } else if (payload && Array.isArray(payload.content)) {
                 items = payload.content;
             }
-            setPosts(items);
+            // Normalize tags to string for form compatibility
+            setPosts(items.map(item => ({
+                ...item,
+                tags: Array.isArray(item.tags) ? item.tags.join(', ') : item.tags
+            })));
         } catch (err) {
             console.error(err);
-            // toast.error('Failed to load blogs');
         } finally {
             setLoading(false);
         }
@@ -76,18 +76,27 @@ const BlogManager = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
+            // Convert tags string to array for backend
+            const payload = {
+                ...formData,
+                tags: typeof formData.tags === 'string'
+                    ? formData.tags.split(',').map(t => t.trim()).filter(Boolean)
+                    : formData.tags
+            };
+
             if (editingId) {
-                await axiosInstance.put(`/blogs/${editingId}`, formData);
+                await axiosInstance.put(`/blogs/${editingId}`, payload);
                 toast.success('Post updated');
             } else {
-                await axiosInstance.post('/blogs', formData);
+                await axiosInstance.post('/blogs', payload);
                 toast.success('Post created');
             }
             setIsDialogOpen(false);
             resetForm();
             loadPosts();
-        } catch (err) {
-            toast.error('Operation failed');
+        } catch (err: any) {
+            console.error(err);
+            toast.error(err.response?.data?.message || 'Operation failed');
         }
     };
 
