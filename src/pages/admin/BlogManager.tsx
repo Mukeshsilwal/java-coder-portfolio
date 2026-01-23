@@ -64,7 +64,8 @@ const BlogManager = () => {
             // Normalize tags to string for form compatibility
             setPosts(items.map(item => ({
                 ...item,
-                tags: Array.isArray(item.tags) ? item.tags.join(', ') : item.tags
+                tags: Array.isArray(item.tags) ? item.tags.join(', ') : item.tags,
+                published: item.isPublished // Map backend field to frontend model
             })));
         } catch (err) {
             console.error(err);
