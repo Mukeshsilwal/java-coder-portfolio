@@ -27,7 +27,7 @@ interface BlogPost {
     content: string;
     coverImage?: string;
     tags?: string;
-    isPublished: boolean;
+    published: boolean;
     viewCount: number;
     createdAt: string;
 }
@@ -44,7 +44,7 @@ const BlogManager = () => {
         content: '',
         coverImage: '',
         tags: '',
-        isPublished: false
+        published: false
     });
 
     useEffect(() => {
@@ -124,7 +124,7 @@ const BlogManager = () => {
             content: '',
             coverImage: '',
             tags: '',
-            isPublished: false
+            published: false
         });
         setEditingId(null);
     };
@@ -183,7 +183,7 @@ const BlogManager = () => {
                             )}
 
                             <div className="flex items-center space-x-2">
-                                <Checkbox id="pub" checked={formData.isPublished} onCheckedChange={(c) => setFormData({ ...formData, isPublished: c === true })} />
+                                <Checkbox id="pub" checked={formData.published} onCheckedChange={(c) => setFormData({ ...formData, published: c === true })} />
                                 <Label htmlFor="pub">Publish immediately</Label>
                             </div>
 
@@ -210,8 +210,8 @@ const BlogManager = () => {
                             <div className="flex-1">
                                 <div className="flex items-center gap-2 mb-1">
                                     <h3 className="font-bold text-lg line-clamp-1">{post.title}</h3>
-                                    <Badge variant={post.isPublished ? "default" : "secondary"}>
-                                        {post.isPublished ? "Published" : "Draft"}
+                                    <Badge variant={post.published ? "default" : "secondary"}>
+                                        {post.published ? "Published" : "Draft"}
                                     </Badge>
                                 </div>
                                 <div className="flex items-center gap-4 text-sm text-muted-foreground">
