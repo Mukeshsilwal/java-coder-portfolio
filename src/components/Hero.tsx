@@ -8,10 +8,10 @@ import { MetricsDisplay } from '@/components/MetricsDisplay';
 const Hero = () => {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden hero-padding">
-      {/* Subtle Background Elements */}
+      {/* Subtle Background Elements - Mobile Safe */}
       <div className="absolute inset-0 bg-grid-pattern bg-grid opacity-5" />
-      <div className="absolute top-1/4 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] animate-pulse-slow" />
-      <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-accent/10 rounded-full blur-[120px] animate-pulse-slow" style={{ animationDelay: '2s' }} />
+      <div className="absolute top-1/4 left-1/4 w-[min(500px,80vw)] h-[min(500px,80vw)] bg-primary/10 rounded-full blur-[120px] animate-pulse-slow" />
+      <div className="absolute bottom-1/4 right-1/4 w-[min(500px,80vw)] h-[min(500px,80vw)] bg-accent/10 rounded-full blur-[120px] animate-pulse-slow" style={{ animationDelay: '2s' }} />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center max-w-7xl mx-auto">

@@ -57,7 +57,7 @@ const Contact = () => {
   return (
     <section id="contact" className="section-padding relative overflow-hidden">
       {/* Background Glow */}
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[128px] pointer-events-none" />
+      <div className="absolute bottom-0 right-0 w-[min(500px,80vw)] h-[min(500px,80vw)] bg-primary/5 rounded-full blur-[128px] pointer-events-none" />
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-5xl mx-auto">
