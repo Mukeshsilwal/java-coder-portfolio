@@ -13,7 +13,6 @@ public class PortfolioBackendApplication {
 		SpringApplication.run(PortfolioBackendApplication.class, args);
 	}
 
-	/*
 	@Bean
 	public FlywayMigrationStrategy flywayMigrationStrategy() {
 		return flyway -> {
@@ -21,5 +20,4 @@ public class PortfolioBackendApplication {
 			flyway.migrate();
 		};
 	}
-	*/
 }

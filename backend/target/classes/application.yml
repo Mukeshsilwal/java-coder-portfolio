@@ -8,7 +8,7 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
@@ -25,6 +25,7 @@ server:
 jwt:
   secret: ${JWT_SECRET:verysecretkeyMustBeLongEnoughForHS512AlgorithmSoMakeItsuperLongAndComplex12345!}
   expiration: 86400000 # 1 day
+  refresh-expiration: 604800000 # 7 days
 
 # Logging
 logging:
@@ -33,6 +34,6 @@ logging:
     com.portfolio.backend: DEBUG
 
 cloudinary:
-  cloud-name: dsqubrfjp
-  api-key: 624365773875321
-  api-secret: 9P5wS1lelWdo6CubuJxzQiNTClw
+  cloud-name: ${CLOUDINARY_NAME}
+  api-key: ${CLOUDINARY_API_KEY}
+  api-secret: ${CLOUDINARY_API_SECRET}
