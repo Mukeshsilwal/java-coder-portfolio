@@ -105,6 +105,9 @@ const SkillManager = () => {
                     <DialogContent>
                         <DialogHeader>
                             <DialogTitle>Add New Skill</DialogTitle>
+                            <div className="text-sm text-muted-foreground">
+                                Add a new skill to your portfolio.
+                            </div>
                         </DialogHeader>
                         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
                             <div className="space-y-2">

@@ -125,6 +125,9 @@ const ExperienceManager = () => {
                     <DialogContent className="max-w-xl">
                         <DialogHeader>
                             <DialogTitle>{editingId ? 'Edit Experience' : 'Add Experience'}</DialogTitle>
+                            <div className="text-sm text-muted-foreground">
+                                {editingId ? 'Edit the details of your experience.' : 'Add a new work experience.'}
+                            </div>
                         </DialogHeader>
                         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
                             <div className="grid grid-cols-2 gap-4">

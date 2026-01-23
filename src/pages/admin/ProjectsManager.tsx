@@ -117,6 +117,9 @@ const ProjectsManager = () => {
                     <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                         <DialogHeader>
                             <DialogTitle>{editingId ? 'Edit Project' : 'Add New Project'}</DialogTitle>
+                            <div className="text-sm text-muted-foreground">
+                                {editingId ? 'Update project details.' : 'Fill in the details for your new project.'}
+                            </div>
                         </DialogHeader>
                         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
                             <div className="grid gap-4 py-4">

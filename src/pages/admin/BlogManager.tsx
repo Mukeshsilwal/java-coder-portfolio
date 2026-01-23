@@ -56,8 +56,15 @@ const BlogManager = () => {
             // Admin endpoint to get all
             const { data } = await axiosInstance.get<any>('/blogs/admin');
             // Check if it's a Page response (content) or List
-            const payload = data.data;
-            setPosts(payload?.content || payload || []);
+            // Check if it's a Page response (content) or List
+            const payload: any = data.data;
+            let items = [];
+            if (Array.isArray(payload)) {
+                items = payload;
+            } else if (payload && Array.isArray(payload.content)) {
+                items = payload.content;
+            }
+            setPosts(items);
         } catch (err) {
             console.error(err);
             // toast.error('Failed to load blogs');
@@ -124,6 +131,9 @@ const BlogManager = () => {
                     <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                         <DialogHeader>
                             <DialogTitle>{editingId ? 'Edit Post' : 'New Post'}</DialogTitle>
+                            <div className="text-sm text-muted-foreground">
+                                {editingId ? 'Make changes to your blog post here.' : 'Create a new blog post.'}
+                            </div>
                         </DialogHeader>
                         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
                             <div className="grid grid-cols-2 gap-4">
