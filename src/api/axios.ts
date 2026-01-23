@@ -1,8 +1,10 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import { useAuthStore } from '@/store/authStore';
 
-// Use relative path for proxy
-const API_URL = '/api';
+// Use relative path for proxy in dev, absolute path in prod
+const API_URL = import.meta.env.PROD
+    ? 'https://java-coder-portfolio.onrender.com/api'
+    : '/api';
 
 export const axiosInstance = axios.create({
     baseURL: API_URL,
