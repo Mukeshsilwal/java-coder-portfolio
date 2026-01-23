@@ -34,4 +34,7 @@ public class Profile {
     private String profileImage;
     private String profileImageUrl;
     private String availabilityStatus;
+    
+    @Builder.Default
+    private Long visitCount = 0L;
 }

@@ -17,28 +17,36 @@ export interface LoginDTO {
 // Public APIs
 export const publicApi = {
     getProfile: async () => {
-        const { data } = await axiosInstance.get<ProfileDTO>('/profile');
-        return data;
+        const { data } = await axiosInstance.get('/profile');
+        return data.data; // Extract from ApiResponse
     },
     getProjects: async (params?: { featured?: boolean, tech?: string, type?: string, page?: number, size?: number }) => {
-        const { data } = await axiosInstance.get<ProjectDTO[]>('/projects', { params });
-        return data;
+        const { data } = await axiosInstance.get('/projects', { params });
+        return data.data; // Extract from ApiResponse
     },
     getSkills: async () => {
-        const { data } = await axiosInstance.get<SkillDTO[]>('/skills');
-        return data;
+        const { data } = await axiosInstance.get('/skills');
+        return data.data; // Extract from ApiResponse
     },
     getProjectById: async (id: string) => {
-        const { data } = await axiosInstance.get<ProjectDTO>(`/projects/${id}`);
-        return data;
+        const { data } = await axiosInstance.get(`/projects/${id}`);
+        return data.data; // Extract from ApiResponse
     },
     getExperiences: async () => {
         const { data } = await axiosInstance.get('/experience');
-        return data;
+        return data.data; // Extract from ApiResponse
     },
     sendMessage: async (message: MessageDTO) => {
         const { data } = await axiosInstance.post('/contact', message);
-        return data;
+        return data.data; // Extract from ApiResponse
+    },
+    getCVDownloadUrl: async () => {
+        const { data } = await axiosInstance.get('/public/media/cv/download-url');
+        // Handle ApiResponse format: { status, message, data }
+        return data.data; // Returns { url, publicId }
+    },
+    downloadCV: () => {
+        return `${axiosInstance.defaults.baseURL}/public/media/cv/download`;
     }
 };
 
@@ -46,18 +54,18 @@ export const publicApi = {
 export const adminApi = {
     // Profile
     updateProfile: async (profile: Partial<ProfileDTO>) => {
-        const { data } = await axiosInstance.put<ProfileDTO>('/profile', profile);
-        return data;
+        const { data } = await axiosInstance.put('/profile', profile);
+        return data.data; // Extract from ApiResponse
     },
 
     // Projects
     createProject: async (project: Partial<ProjectDTO>) => {
-        const { data } = await axiosInstance.post<ProjectDTO>('/projects', project);
-        return data;
+        const { data } = await axiosInstance.post('/projects', project);
+        return data.data; // Extract from ApiResponse
     },
     updateProject: async (id: string, project: Partial<ProjectDTO>) => {
-        const { data } = await axiosInstance.put<ProjectDTO>(`/projects/${id}`, project);
-        return data;
+        const { data } = await axiosInstance.put(`/projects/${id}`, project);
+        return data.data; // Extract from ApiResponse
     },
     deleteProject: async (id: string) => {
         await axiosInstance.delete(`/projects/${id}`);
@@ -65,15 +73,15 @@ export const adminApi = {
 
     // Skills
     createSkill: async (skill: Partial<SkillDTO>) => {
-        const { data } = await axiosInstance.post<SkillDTO>('/skills', skill);
-        return data;
+        const { data } = await axiosInstance.post('/skills', skill);
+        return data.data; // Extract from ApiResponse
     },
     deleteSkill: async (id: string) => {
         await axiosInstance.delete(`/skills/${id}`);
     },
     updateSkill: async (id: string, skill: Partial<SkillDTO>) => { // Assuming update exists
-        const { data } = await axiosInstance.put<SkillDTO>(`/skills/${id}`, skill);
-        return data;
+        const { data } = await axiosInstance.put(`/skills/${id}`, skill);
+        return data.data; // Extract from ApiResponse
     },
 
     // Images
@@ -108,6 +116,43 @@ export const adminApi = {
             headers: { 'Content-Type': 'multipart/form-data' }
         });
         return data;
+    },
+
+    // Media Management
+    uploadImage: async (file: File, folder: string = 'general') => {
+        const formData = new FormData();
+        formData.append('file', file);
+        formData.append('folder', folder);
+        const { data } = await axiosInstance.post('/admin/media/upload/image', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        return data;
+    },
+    uploadCV: async (file: File) => {
+        const formData = new FormData();
+        formData.append('file', file);
+        const { data } = await axiosInstance.post('/admin/media/upload/cv', formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        return data;
+    },
+    getActiveCV: async () => {
+        const { data } = await axiosInstance.get('/admin/media/cv/active');
+        return data;
+    },
+    deleteMedia: async (id: number) => {
+        await axiosInstance.delete(`/admin/media/${id}`);
+    },
+    deleteMediaByPublicId: async (publicId: string) => {
+        await axiosInstance.delete('/admin/media/by-public-id', {
+            params: { publicId }
+        });
+    },
+    listMedia: async (type?: 'IMAGE' | 'CV') => {
+        const { data } = await axiosInstance.get('/admin/media/list', {
+            params: type ? { type } : {}
+        });
+        return data;
     }
 };
 
@@ -120,5 +165,8 @@ export const authApi = {
     register: async (credentials: LoginDTO) => {
         const { data } = await axiosInstance.post('/auth/register', credentials);
         return data;
+    },
+    logout: async () => {
+        await axiosInstance.post('/auth/logout');
     }
 };

@@ -1,5 +1,6 @@
 package com.portfolio.backend.controller;
 
+import com.portfolio.backend.common.ApiResponse;
 import com.portfolio.backend.dto.SkillDTO;
 import com.portfolio.backend.service.SkillService;
 import lombok.RequiredArgsConstructor;
@@ -18,20 +19,20 @@ public class SkillController {
     private final SkillService service;
 
     @GetMapping
-    public ResponseEntity<List<SkillDTO>> getAllSkills() {
-        return ResponseEntity.ok(service.getAllSkills());
+    public ResponseEntity<ApiResponse<List<SkillDTO>>> getAllSkills() {
+        return ResponseEntity.ok(ApiResponse.success("Skills retrieved successfully", service.getAllSkills()));
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<SkillDTO> createSkill(@RequestBody @jakarta.validation.Valid SkillDTO dto) {
-        return ResponseEntity.ok(service.createSkill(dto));
+    public ResponseEntity<ApiResponse<SkillDTO>> createSkill(@RequestBody @jakarta.validation.Valid SkillDTO dto) {
+        return ResponseEntity.ok(ApiResponse.success("Skill created successfully", service.createSkill(dto)));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteSkill(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Void>> deleteSkill(@PathVariable UUID id) {
         service.deleteSkill(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.success("Skill deleted successfully", null));
     }
 }

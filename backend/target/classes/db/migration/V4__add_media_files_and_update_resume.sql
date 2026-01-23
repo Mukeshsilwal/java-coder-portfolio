@@ -1,0 +1,11 @@
+CREATE TABLE media_files (
+    id BIGSERIAL PRIMARY KEY,
+    file_type VARCHAR(255) NOT NULL,
+    url VARCHAR(500) NOT NULL,
+    public_id VARCHAR(255) NOT NULL,
+    uploaded_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    active BOOLEAN DEFAULT TRUE
+);
+
+ALTER TABLE resume_files ADD COLUMN url VARCHAR(500);
+ALTER TABLE resume_files ADD COLUMN public_id VARCHAR(255);

@@ -43,6 +43,8 @@ public class User {
     @UpdateTimestamp
     private LocalDateTime updatedAt;
 
+    private LocalDateTime lastLogin;
+
     public enum Role {
         ADMIN, USER
     }

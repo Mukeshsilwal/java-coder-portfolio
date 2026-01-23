@@ -18,7 +18,15 @@ public class ApiResponse<T> {
         return new ApiResponse<>("SUCCESS", message, data);
     }
 
+    public static <T> ApiResponse<T> success(T data) {
+        return new ApiResponse<>("SUCCESS", "Operation completed successfully", data);
+    }
+
     public static <T> ApiResponse<T> error(String message) {
         return new ApiResponse<>("ERROR", message, null);
+    }
+
+    public static <T> ApiResponse<T> error(String message, T data) {
+        return new ApiResponse<>("ERROR", message, data);
     }
 }

@@ -32,10 +32,13 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeHttpRequests(auth -> auth
+                // Public endpoints - No authentication required
                 .requestMatchers("/api/auth/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                .requestMatchers("/api/profile/**", "/api/skills/**", "/api/projects/**", "/api/blogs/**", "/api/contact/**", "/api/public/cv/**").permitAll() 
+                .requestMatchers("/api/profile/**", "/api/skills/**", "/api/projects/**", "/api/blogs/**", "/api/experience/**", "/api/contact/**", "/api/public/**").permitAll() 
+                // Admin endpoints - Require ADMIN role
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
+                // All other requests are public (for portfolio website)
+                .anyRequest().permitAll()
             )
             .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider)

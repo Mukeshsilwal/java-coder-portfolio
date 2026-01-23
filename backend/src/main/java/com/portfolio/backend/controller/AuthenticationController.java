@@ -35,12 +35,55 @@ public class AuthenticationController {
     ) {
         AuthenticationResponse authResponse = service.authenticate(request);
 
-        // Create HttpOnly Cookie
+        // Access Token Cookie
         Cookie cookie = new Cookie("accessToken", authResponse.getToken());
         cookie.setHttpOnly(true);
-        cookie.setSecure(false); // Set to true in production with HTTPS
+        cookie.setSecure(false);
         cookie.setPath("/");
-        cookie.setMaxAge(24 * 60 * 60); // 1 day
+        cookie.setMaxAge(24 * 60 * 60);
+        response.addCookie(cookie);
+
+        // Refresh Token Cookie
+        Cookie refreshCookie = new Cookie("refreshToken", authResponse.getRefreshToken());
+        refreshCookie.setHttpOnly(true);
+        refreshCookie.setSecure(false);
+        refreshCookie.setPath("/api/auth/refresh");
+        refreshCookie.setMaxAge(7 * 24 * 60 * 60);
+        response.addCookie(refreshCookie);
+
+        return ResponseEntity.ok(authResponse);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthenticationResponse> refreshToken(
+            jakarta.servlet.http.HttpServletRequest request,
+            HttpServletResponse response
+    ) {
+        String refreshToken = null;
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if ("refreshToken".equals(cookie.getName())) {
+                    refreshToken = cookie.getValue();
+                    break;
+                }
+            }
+        }
+
+        if (refreshToken == null) {
+            return ResponseEntity.status(403).build();
+        }
+
+        AuthenticationResponse authResponse = service.refreshToken(refreshToken);
+        if (authResponse == null) {
+            return ResponseEntity.status(403).build();
+        }
+
+        // Update Access Token Cookie
+        Cookie cookie = new Cookie("accessToken", authResponse.getToken());
+        cookie.setHttpOnly(true);
+        cookie.setSecure(false);
+        cookie.setPath("/");
+        cookie.setMaxAge(24 * 60 * 60);
         response.addCookie(cookie);
 
         return ResponseEntity.ok(authResponse);
@@ -61,6 +104,14 @@ public class AuthenticationController {
         cookie.setPath("/");
         cookie.setMaxAge(0);
         response.addCookie(cookie);
+
+        Cookie refreshCookie = new Cookie("refreshToken", null);
+        refreshCookie.setHttpOnly(true);
+        refreshCookie.setSecure(false);
+        refreshCookie.setPath("/api/auth/refresh");
+        refreshCookie.setMaxAge(0);
+        response.addCookie(refreshCookie);
+
         return ResponseEntity.ok().build();
     }
 }

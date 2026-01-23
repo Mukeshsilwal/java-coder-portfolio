@@ -1,5 +1,6 @@
 package com.portfolio.backend.controller;
 
+import com.portfolio.backend.common.ApiResponse;
 import com.portfolio.backend.entity.BlogPost;
 import com.portfolio.backend.service.BlogService;
 import lombok.RequiredArgsConstructor;
@@ -22,44 +23,44 @@ public class BlogController {
 
     // Public: Get published blogs
     @GetMapping
-    public ResponseEntity<Page<BlogPost>> getBlogs(
+    public ResponseEntity<ApiResponse<Page<BlogPost>>> getBlogs(
             @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        return ResponseEntity.ok(service.getPublishedPosts(pageable));
+        return ResponseEntity.ok(ApiResponse.success("Published blogs retrieved successfully", service.getPublishedPosts(pageable)));
     }
 
     @GetMapping("/{slug}")
-    public ResponseEntity<BlogPost> getBlogBySlug(@PathVariable String slug) {
+    public ResponseEntity<ApiResponse<BlogPost>> getBlogBySlug(@PathVariable String slug) {
         return service.getPostBySlug(slug)
-                .map(ResponseEntity::ok)
+                .map(post -> ResponseEntity.ok(ApiResponse.success("Blog post retrieved successfully", post)))
                 .orElse(ResponseEntity.notFound().build());
     }
 
     // Admin: Get all blogs (including drafts)
     @GetMapping("/admin")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Page<BlogPost>> getAllBlogsAdmin(
+    public ResponseEntity<ApiResponse<Page<BlogPost>>> getAllBlogsAdmin(
             @PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        return ResponseEntity.ok(service.getAllPosts(pageable));
+        return ResponseEntity.ok(ApiResponse.success("All blogs retrieved successfully", service.getAllPosts(pageable)));
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<BlogPost> createPost(@RequestBody BlogPost post) {
-        return ResponseEntity.ok(service.createPost(post));
+    public ResponseEntity<ApiResponse<BlogPost>> createPost(@RequestBody BlogPost post) {
+        return ResponseEntity.ok(ApiResponse.success("Blog post created successfully", service.createPost(post)));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<BlogPost> updatePost(@PathVariable UUID id, @RequestBody BlogPost post) {
-        return ResponseEntity.ok(service.updatePost(id, post));
+    public ResponseEntity<ApiResponse<BlogPost>> updatePost(@PathVariable UUID id, @RequestBody BlogPost post) {
+        return ResponseEntity.ok(ApiResponse.success("Blog post updated successfully", service.updatePost(id, post)));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deletePost(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Void>> deletePost(@PathVariable UUID id) {
         service.deletePost(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.success("Blog post deleted successfully", null));
     }
 }

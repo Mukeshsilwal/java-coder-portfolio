@@ -1,45 +1,37 @@
 package com.portfolio.backend.service;
 
+import com.portfolio.backend.entity.MediaFile;
+import com.portfolio.backend.entity.MediaType;
 import com.portfolio.backend.entity.Resume;
 import com.portfolio.backend.repository.ResumeRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 public class ResumeService {
 
     private final ResumeRepository resumeRepository;
-    private final StorageService storageService;
+    private final MediaService mediaService;
 
     @Transactional
     public Resume uploadResume(MultipartFile file, String username) throws IOException {
-        // Validate MIME type
-        if (!"application/pdf".equals(file.getContentType())) {
-            throw new IllegalArgumentException("Only PDF files are allowed");
-        }
+        // Validation handled in MediaService generally, but double check type here if strictly Resume
+        // MediaService handles upload and sets previous CVs to inactive in MediaFile table.
+        // We also need to update Resume table.
         
-        // Deactivate old resumes
-        resumeRepository.deactivateAll();
+        resumeRepository.deactivateAll(); // Validating existing logic
+        
+        MediaFile media = mediaService.uploadMedia(file, MediaType.CV);
 
-        // Generate unique filename
-        String originalFilename = file.getOriginalFilename();
-        if (originalFilename == null) originalFilename = "resume.pdf";
-        String storedFilename = UUID.randomUUID() + "_" + originalFilename;
-
-        // Store file
-        String filePath = storageService.store(file, storedFilename);
-
-        // Save metadata
         Resume resume = Resume.builder()
-                .fileName(originalFilename)
-                .filePath(storedFilename) // Storing the relative/key name for retrieval
+                .fileName(file.getOriginalFilename())
+                .filePath(media.getPublicId()) // Storing publicId in filePath for backward comp if needed
+                .publicId(media.getPublicId())
+                .url(media.getUrl())
                 .fileSize(file.getSize())
                 .contentType(file.getContentType())
                 .uploadedBy(username)
@@ -54,16 +46,30 @@ public class ResumeService {
                 .orElseThrow(() -> new RuntimeException("No active resume found"));
     }
 
-    public Resource getActiveResumeResource() {
+    // Changed from returning Resource to returning URL String
+    public String getActiveResumeUrl() {
         Resume resume = getActiveResumeMetadata();
-        return storageService.loadAsResource(resume.getFilePath());
+        return resume.getUrl();
     }
 
     @Transactional
     public void deleteActiveResume() {
         Resume resume = getActiveResumeMetadata();
-        // Soft delete: just deactivate. File is kept for history/auditing.
+        // Soft delete in Resume table
         resume.setIsActive(false);
         resumeRepository.save(resume);
+        
+        // Should we delete from Cloudinary?
+        // Requirement: "Replace old CV on new upload". 
+        // Logic in MediaService.uploadMedia handles deactivating "MediaFile".
+        // Here we just update Resume entity status.
+    }
+
+    @Transactional
+    public void incrementDownloadCount() {
+        resumeRepository.findByIsActiveTrue().ifPresent(resume -> {
+            resume.setDownloadCount(resume.getDownloadCount() + 1);
+            resumeRepository.save(resume);
+        });
     }
 }

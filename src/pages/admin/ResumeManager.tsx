@@ -1,219 +1,168 @@
 import { useState, useEffect } from 'react';
-import { resumeService, ResumeMetadata } from '@/services/resumeService';
-import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Upload, FileText, CheckCircle, AlertCircle, RefreshCw, Trash2, Download } from 'lucide-react';
-import { useToast } from '@/components/ui/use-toast';
+import { CheckCircle, AlertCircle, Download, Calendar } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from "@/components/ui/progress"
+import { Button } from '@/components/ui/button';
+import { CVUploader } from '@/components/admin/CVUploader';
+import { axiosInstance } from '@/api/axios';
+
+interface CVMetadata {
+    url: string;
+    publicId: string;
+    uploadedAt: string;
+}
 
 const ResumeManager = () => {
-    const [file, setFile] = useState<File | null>(null);
-    const [metadata, setMetadata] = useState<ResumeMetadata | null>(null);
-    const [loading, setLoading] = useState(false);
-    const [uploading, setUploading] = useState(false);
-    const { toast } = useToast();
+    const [cvMetadata, setCvMetadata] = useState<CVMetadata | null>(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        fetchMetadata();
+        fetchCVMetadata();
     }, []);
 
-    const fetchMetadata = async () => {
+    const fetchCVMetadata = async () => {
         setLoading(true);
         try {
-            const data = await resumeService.getMetadata();
-            setMetadata(data);
+            const { data } = await axiosInstance.get('/admin/media/cv/active');
+            // Handle ApiResponse format: { status, message, data }
+            if (data.status === 'SUCCESS' && data.data) {
+                setCvMetadata({
+                    url: data.data.url,
+                    publicId: data.data.publicId,
+                    uploadedAt: data.data.uploadedAt
+                });
+            }
         } catch (error) {
-            console.error(error);
-            // Ignore 404
+            console.error('No active CV found:', error);
+            setCvMetadata(null);
         } finally {
             setLoading(false);
         }
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            const selectedFile = e.target.files[0];
-            if (selectedFile.type !== 'application/pdf') {
-                toast({
-                    variant: "destructive",
-                    title: "Invalid file type",
-                    description: "Please upload a PDF file.",
-                });
-                return;
-            }
-            if (selectedFile.size > 5 * 1024 * 1024) {
-                toast({
-                    variant: "destructive",
-                    title: "File too large",
-                    description: "Max size is 5MB.",
-                });
-                return;
-            }
-            setFile(selectedFile);
-        }
-    };
-
-    const handleUpload = async () => {
-        if (!file) return;
-
-        setUploading(true);
-        try {
-            await resumeService.uploadResume(file);
-            toast({
-                title: "Success",
-                description: "Resume uploaded successfully.",
-            });
-            setFile(null);
-            fetchMetadata();
-        } catch (error: any) {
-            toast({
-                variant: "destructive",
-                title: "Upload Failed",
-                description: error.message || "Something went wrong.",
-            });
-        } finally {
-            setUploading(false);
-        }
-    };
-
-    const formatBytes = (bytes: number) => {
-        if (bytes === 0) return '0 Bytes';
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    const handleUploadSuccess = (url: string) => {
+        fetchCVMetadata();
     };
 
     return (
         <div className="space-y-6">
-            <h1 className="text-3xl font-bold tracking-tight">Resume Management</h1>
+            <div>
+                <h1 className="text-3xl font-bold tracking-tight">Resume Management</h1>
+                <p className="text-muted-foreground mt-2">
+                    Upload and manage your CV/Resume. Only one CV can be active at a time.
+                </p>
+            </div>
 
             <div className="grid gap-6 md:grid-cols-2">
-                {/* Upload Card */}
+                {/* Upload Section */}
+                <CVUploader
+                    onUploadSuccess={handleUploadSuccess}
+                    currentCVUrl={cvMetadata?.url}
+                />
+
+                {/* Status Section */}
                 <Card>
                     <CardHeader>
-                        <CardTitle>Upload New Resume</CardTitle>
+                        <CardTitle>Current Status</CardTitle>
                         <CardDescription>
-                            Upload a new PDF resume. This will replace the existing active resume.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="space-y-4">
-                        <div className="border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center text-center hover:bg-muted/50 transition-colors">
-                            <Upload className="h-10 w-10 text-muted-foreground mb-4" />
-                            <div className="space-y-2">
-                                <label
-                                    htmlFor="resume-upload"
-                                    className="cursor-pointer text-sm font-medium text-primary hover:underline"
-                                >
-                                    Select PDF File
-                                    <input
-                                        id="resume-upload"
-                                        type="file"
-                                        accept="application/pdf"
-                                        className="hidden"
-                                        onChange={handleFileChange}
-                                    />
-                                </label>
-                                <p className="text-xs text-muted-foreground">
-                                    PDF up to 5MB
-                                </p>
-                            </div>
-                        </div>
-
-                        {file && (
-                            <div className="flex items-center gap-3 p-3 border rounded-md bg-muted/20">
-                                <FileText className="h-5 w-5 text-primary" />
-                                <div className="flex-1 overflow-hidden">
-                                    <p className="text-sm font-medium truncate">{file.name}</p>
-                                    <p className="text-xs text-muted-foreground">{formatBytes(file.size)}</p>
-                                </div>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={() => setFile(null)}
-                                >
-                                    <Trash2 className="h-4 w-4 text-destructive" />
-                                </Button>
-                            </div>
-                        )}
-
-                        <Button
-                            className="w-full"
-                            disabled={!file || uploading}
-                            onClick={handleUpload}
-                        >
-                            {uploading && <RefreshCw className="mr-2 h-4 w-4 animate-spin" />}
-                            {uploading ? 'Uploading...' : 'Upload & Replace'}
-                        </Button>
-                    </CardContent>
-                </Card>
-
-                {/* Status Card */}
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Current Active Resume</CardTitle>
-                        <CardDescription>
-                            Details of the currently available resume.
+                            Details of your currently active resume
                         </CardDescription>
                     </CardHeader>
                     <CardContent>
                         {loading ? (
-                            <div className="flex justify-center p-6"><RefreshCw className="animate-spin" /></div>
-                        ) : metadata ? (
+                            <div className="flex items-center justify-center p-8">
+                                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+                            </div>
+                        ) : cvMetadata ? (
                             <div className="space-y-4">
-                                <div className="flex items-start gap-4 p-4 border rounded-lg bg-green-50 dark:bg-green-900/20">
+                                {/* Active Status */}
+                                <div className="flex items-start gap-4 p-4 border rounded-lg bg-green-50 dark:bg-green-900/20 border-green-200 dark:border-green-800">
                                     <div className="p-2 bg-green-100 dark:bg-green-800 rounded-full">
                                         <CheckCircle className="h-6 w-6 text-green-600 dark:text-green-400" />
                                     </div>
-                                    <div className="space-y-1">
-                                        <h3 className="font-medium">Active</h3>
-                                        <p className="text-sm text-muted-foreground">
-                                            Last updated: {new Date(metadata.uploadedAt).toLocaleDateString()}
+                                    <div className="flex-1 space-y-1">
+                                        <h3 className="font-medium text-green-900 dark:text-green-100">
+                                            CV Active
+                                        </h3>
+                                        <p className="text-sm text-green-700 dark:text-green-300">
+                                            Your resume is live and available for download
                                         </p>
                                     </div>
-                                    <Badge variant="outline" className="ml-auto border-green-200 text-green-700 bg-green-50 mb-auto">
+                                    <Badge variant="outline" className="border-green-200 text-green-700 bg-green-50">
                                         Active
                                     </Badge>
                                 </div>
 
-                                <div className="space-y-4 pt-4">
-                                    <div className="grid grid-cols-2 gap-4 text-sm">
-                                        <div>
-                                            <p className="text-muted-foreground">Filename</p>
-                                            <p className="font-medium truncate">{metadata.fileName}</p>
-                                        </div>
-                                        <div>
-                                            <p className="text-muted-foreground">Size</p>
-                                            <p className="font-medium">{formatBytes(metadata.fileSize)}</p>
-                                        </div>
+                                {/* Metadata */}
+                                <div className="space-y-3 pt-2">
+                                    <div className="flex items-center gap-2 text-sm">
+                                        <Calendar className="w-4 h-4 text-muted-foreground" />
+                                        <span className="text-muted-foreground">Last Updated:</span>
+                                        <span className="font-medium">
+                                            {new Date(cvMetadata.uploadedAt).toLocaleDateString('en-US', {
+                                                year: 'numeric',
+                                                month: 'long',
+                                                day: 'numeric'
+                                            })}
+                                        </span>
                                     </div>
 
-                                    <a
-                                        href={resumeService.getDownloadUrl()}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="block"
-                                    >
-                                        <Button variant="outline" className="w-full">
-                                            <Download className="mr-2 h-4 w-4" />
-                                            Preview / Download
-                                        </Button>
-                                    </a>
+                                    <div className="pt-2 space-y-2">
+                                        <a
+                                            href={cvMetadata.url}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="block"
+                                        >
+                                            <Button variant="outline" className="w-full">
+                                                <Download className="mr-2 h-4 w-4" />
+                                                Preview / Download CV
+                                            </Button>
+                                        </a>
+
+                                        <div className="p-3 bg-muted/50 rounded-lg">
+                                            <p className="text-xs text-muted-foreground mb-1">Public Download URL:</p>
+                                            <code className="text-xs break-all bg-background px-2 py-1 rounded border">
+                                                {window.location.origin}/api/public/media/cv/download
+                                            </code>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         ) : (
                             <div className="flex flex-col items-center justify-center p-8 text-center space-y-3">
-                                <AlertCircle className="h-10 w-10 text-muted-foreground" />
-                                <h3 className="font-medium text-lg">No Resume Found</h3>
-                                <p className="text-muted-foreground text-sm">
-                                    Upload a resume to get started.
-                                </p>
+                                <div className="p-3 rounded-full bg-muted">
+                                    <AlertCircle className="h-8 w-8 text-muted-foreground" />
+                                </div>
+                                <div>
+                                    <h3 className="font-medium text-lg">No Resume Found</h3>
+                                    <p className="text-muted-foreground text-sm mt-1">
+                                        Upload your CV to get started
+                                    </p>
+                                </div>
                             </div>
                         )}
                     </CardContent>
                 </Card>
             </div>
+
+            {/* Information Card */}
+            <Card className="border-blue-200 bg-blue-50/50 dark:bg-blue-900/10 dark:border-blue-800">
+                <CardHeader>
+                    <CardTitle className="text-blue-900 dark:text-blue-100">
+                        How It Works
+                    </CardTitle>
+                </CardHeader>
+                <CardContent className="text-sm text-blue-800 dark:text-blue-200 space-y-2">
+                    <ul className="list-disc list-inside space-y-1">
+                        <li>Upload your CV in PDF or DOCX format (maximum 5MB)</li>
+                        <li>Only one CV can be active at a time - uploading a new CV automatically replaces the old one</li>
+                        <li>Your CV is stored securely on Cloudinary CDN for fast global access</li>
+                        <li>The public download link is automatically available on your portfolio</li>
+                        <li>All uploads are validated for file type and size before processing</li>
+                    </ul>
+                </CardContent>
+            </Card>
         </div>
     );
 };

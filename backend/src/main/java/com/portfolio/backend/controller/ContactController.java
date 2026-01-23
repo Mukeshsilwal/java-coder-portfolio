@@ -1,5 +1,6 @@
 package com.portfolio.backend.controller;
 
+import com.portfolio.backend.common.ApiResponse;
 import com.portfolio.backend.entity.ContactMessage;
 import com.portfolio.backend.service.ContactService;
 import lombok.RequiredArgsConstructor;
@@ -17,21 +18,21 @@ public class ContactController {
     private final ContactService service;
 
     @PostMapping
-    public ResponseEntity<ContactMessage> sendMessage(@RequestBody ContactMessage message, HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<ContactMessage>> sendMessage(@RequestBody ContactMessage message, HttpServletRequest request) {
         message.setIpAddress(request.getRemoteAddr());
-        return ResponseEntity.ok(service.saveMessage(message));
+        return ResponseEntity.ok(ApiResponse.success("Message sent successfully", service.saveMessage(message)));
     }
     
     @GetMapping
     @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<ContactMessage>> getAllMessages() {
-        return ResponseEntity.ok(service.getAllMessages());
+    public ResponseEntity<ApiResponse<List<ContactMessage>>> getAllMessages() {
+        return ResponseEntity.ok(ApiResponse.success("Messages retrieved successfully", service.getAllMessages()));
     }
 
     @DeleteMapping("/{id}")
     @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteMessage(@PathVariable java.util.UUID id) {
+    public ResponseEntity<ApiResponse<Void>> deleteMessage(@PathVariable java.util.UUID id) {
         service.deleteMessage(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.success("Message deleted successfully", null));
     }
 }

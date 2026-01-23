@@ -6,9 +6,10 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter } from "react-router-dom";
 import { ThemeProvider } from "./components/theme-provider";
 import AppRoutes from "./routes/AppRoutes";
-import { InstallPrompt } from "./components/pwa/InstallPrompt";
-import { OfflineBanner } from "./components/pwa/OfflineBanner";
-import { UpdatePrompt } from "./components/pwa/UpdatePrompt";
+// PWA components disabled
+// import { InstallPrompt } from "./components/pwa/InstallPrompt";
+// import { OfflineBanner } from "./components/pwa/OfflineBanner";
+// import { UpdatePrompt } from "./components/pwa/UpdatePrompt";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -27,10 +28,10 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          {/* PWA Components */}
-          <OfflineBanner />
-          <InstallPrompt />
-          <UpdatePrompt />
+          {/* PWA Components - All Disabled */}
+          {/* <OfflineBanner /> */}
+          {/* <InstallPrompt /> */}
+          {/* <UpdatePrompt /> */}
 
           <AppRoutes />
         </BrowserRouter>

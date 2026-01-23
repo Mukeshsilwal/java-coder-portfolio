@@ -1,5 +1,6 @@
 package com.portfolio.backend.controller;
 
+import com.portfolio.backend.common.ApiResponse;
 import com.portfolio.backend.dto.ProfileDTO;
 import com.portfolio.backend.service.ProfileService;
 import lombok.RequiredArgsConstructor;
@@ -15,13 +16,13 @@ public class ProfileController {
     private final ProfileService service;
 
     @GetMapping
-    public ResponseEntity<ProfileDTO> getProfile() {
-        return ResponseEntity.ok(service.getProfile());
+    public ResponseEntity<ApiResponse<ProfileDTO>> getProfile() {
+        return ResponseEntity.ok(ApiResponse.success("Profile retrieved successfully", service.getProfile()));
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<ProfileDTO> updateProfile(@RequestBody ProfileDTO dto) {
-        return ResponseEntity.ok(service.updateProfile(dto));
+    public ResponseEntity<ApiResponse<ProfileDTO>> updateProfile(@RequestBody ProfileDTO dto) {
+        return ResponseEntity.ok(ApiResponse.success("Profile updated successfully", service.updateProfile(dto)));
     }
 }

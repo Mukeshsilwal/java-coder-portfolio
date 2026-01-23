@@ -1,17 +1,16 @@
 package com.portfolio.backend.controller;
 
+import com.portfolio.backend.common.ApiResponse;
 import com.portfolio.backend.entity.Resume;
 import com.portfolio.backend.service.ResumeService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import java.net.URI;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,56 +23,57 @@ public class ResumeController {
 
     @PostMapping(value = "/admin/cv/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     // Security handled by SecurityConfig for /api/admin/**
-    public ResponseEntity<Map<String, Object>> uploadResume(@RequestParam("file") MultipartFile file) {
+    public ResponseEntity<ApiResponse<Map<String, Object>>> uploadResume(@RequestParam("file") MultipartFile file) {
         try {
             String username = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication().getName();
             Resume resume = resumeService.uploadResume(file, username);
             
-            Map<String, Object> response = new HashMap<>();
-            response.put("status", "SUCCESS");
-            response.put("fileName", resume.getFileName());
-            response.put("downloadUrl", "/api/public/cv/download");
+            Map<String, Object> data = new HashMap<>();
+            data.put("fileName", resume.getFileName());
+            data.put("url", resume.getUrl());
+            data.put("downloadUrl", "/api/public/cv/download");
             
-            return ResponseEntity.ok(response);
+            return ResponseEntity.ok(ApiResponse.success("CV uploaded successfully", data));
         } catch (IllegalArgumentException e) {
-             return ResponseEntity.badRequest().body(Map.of("status", "ERROR", "message", e.getMessage()));
+             return ResponseEntity.badRequest().body(ApiResponse.error(e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.internalServerError().body(Map.of("status", "ERROR", "message", e.getMessage()));
+            return ResponseEntity.internalServerError().body(ApiResponse.error(e.getMessage()));
         }
     }
 
     @DeleteMapping("/admin/cv")
-    public ResponseEntity<Void> deleteResume() {
+    public ResponseEntity<ApiResponse<Void>> deleteResume() {
         try {
             resumeService.deleteActiveResume();
-            return ResponseEntity.noContent().build();
+            return ResponseEntity.ok(ApiResponse.success("CV deleted successfully", null));
         } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error("CV not found"));
         }
     }
 
     @GetMapping("/admin/cv")
-    public ResponseEntity<Resume> getResumeMetadata() {
+    public ResponseEntity<ApiResponse<Resume>> getResumeMetadata() {
         try {
-            return ResponseEntity.ok(resumeService.getActiveResumeMetadata());
+            return ResponseEntity.ok(ApiResponse.success("CV metadata retrieved successfully", resumeService.getActiveResumeMetadata()));
         } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error("CV not found"));
         }
     }
 
     @GetMapping("/public/cv/download")
-    public ResponseEntity<Resource> downloadResume() {
+    public ResponseEntity<?> downloadResume() {
         try {
-            Resume resume = resumeService.getActiveResumeMetadata();
-            Resource resource = resumeService.getActiveResumeResource();
+            resumeService.incrementDownloadCount();
+            String url = resumeService.getActiveResumeUrl();
             
-            return ResponseEntity.ok()
-                    .contentType(MediaType.APPLICATION_PDF)
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resume.getFileName() + "\"")
-                    .header(HttpHeaders.CACHE_CONTROL, "public, max-age=3600") // Cache for 1 hour
-                    .body(resource);
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .location(URI.create(url))
+                    .build();
         } catch (Exception e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(ApiResponse.error("CV not found"));
         }
     }
 }

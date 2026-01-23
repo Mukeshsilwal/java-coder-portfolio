@@ -34,8 +34,14 @@ public class Resume {
 
     private String uploadedBy;
 
+    private String url;
+    private String publicId;
+
     @Column(name = "is_active")
     private Boolean isActive;
+
+    @Builder.Default
+    private Long downloadCount = 0L;
 
     @PrePersist
     public void prePersist() {

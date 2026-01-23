@@ -1,5 +1,6 @@
 package com.portfolio.backend.controller;
 
+import com.portfolio.backend.common.ApiResponse;
 import com.portfolio.backend.entity.Experience;
 import com.portfolio.backend.service.ExperienceService;
 import lombok.RequiredArgsConstructor;
@@ -18,27 +19,27 @@ public class ExperienceController {
     private final ExperienceService service;
 
     @GetMapping
-    public ResponseEntity<List<Experience>> getAllExperience() {
-        return ResponseEntity.ok(service.getAllExperience());
+    public ResponseEntity<ApiResponse<List<Experience>>> getAllExperience() {
+        return ResponseEntity.ok(ApiResponse.success("Experience retrieved successfully", service.getAllExperience()));
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Experience> createExperience(@RequestBody Experience experience) {
-        return ResponseEntity.ok(service.saveExperience(experience));
+    public ResponseEntity<ApiResponse<Experience>> createExperience(@RequestBody Experience experience) {
+        return ResponseEntity.ok(ApiResponse.success("Experience created successfully", service.saveExperience(experience)));
     }
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Experience> updateExperience(@PathVariable UUID id, @RequestBody Experience experience) {
+    public ResponseEntity<ApiResponse<Experience>> updateExperience(@PathVariable UUID id, @RequestBody Experience experience) {
         experience.setId(id);
-        return ResponseEntity.ok(service.saveExperience(experience));
+        return ResponseEntity.ok(ApiResponse.success("Experience updated successfully", service.saveExperience(experience)));
     }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<Void> deleteExperience(@PathVariable UUID id) {
+    public ResponseEntity<ApiResponse<Void>> deleteExperience(@PathVariable UUID id) {
         service.deleteExperience(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(ApiResponse.success("Experience deleted successfully", null));
     }
 }
