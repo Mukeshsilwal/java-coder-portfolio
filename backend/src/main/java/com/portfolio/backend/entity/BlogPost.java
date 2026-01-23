@@ -29,11 +29,16 @@ public class BlogPost {
     private String slug;
 
     @Column(columnDefinition = "TEXT")
-    private String content; // Markdown
+    private String content;
+
+    @Column(columnDefinition = "TEXT")
+    private String excerpt;
 
     private String coverImage;
     private String thumbnailUrl;
-    private String tags; // Comma separated
+    
+    @ElementCollection
+    private java.util.Set<String> tags;
 
     @com.fasterxml.jackson.annotation.JsonProperty("isPublished")
     private boolean isPublished;

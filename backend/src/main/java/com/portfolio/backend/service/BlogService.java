@@ -43,6 +43,7 @@ public class BlogService {
         return repository.findById(id).map(post -> {
             post.setTitle(updated.getTitle());
             post.setContent(updated.getContent());
+            post.setExcerpt(updated.getExcerpt());
             post.setPublished(updated.isPublished());
             post.setTags(updated.getTags());
             post.setCoverImage(updated.getCoverImage());

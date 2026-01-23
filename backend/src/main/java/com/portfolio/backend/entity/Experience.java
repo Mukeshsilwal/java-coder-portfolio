@@ -23,7 +23,7 @@ public class Experience {
     private String company;
     
     @Column(name = "role")
-    private String position;
+    private String role;
     
     private String description;
     private LocalDate startDate;
@@ -31,8 +31,11 @@ public class Experience {
     private boolean isCurrent;
     private String logoUrl;
     
+    @ElementCollection
+    private java.util.List<String> technologies;
+    
     @Column(name = "job_type")
-    private String jobType; // Full-time, Part-time, etc.
+    private String jobType;
     
     @Column(name = "display_order")
     private Integer order;

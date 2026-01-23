@@ -7,5 +7,7 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface ProfileMapper {
     ProfileDTO toDto(Profile profile);
+    @org.mapstruct.Mapping(target = "profileImageUrl", ignore = true)
+    @org.mapstruct.Mapping(target = "visitCount", ignore = true)
     Profile toEntity(ProfileDTO profileDTO);
 }
