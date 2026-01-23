@@ -89,7 +89,7 @@ const Header = () => {
       <ScrollProgress />
       {/* Floating Glass Navbar */}
       <header
-        className={`navbar-floating ${isScrolled ? 'navbar-scrolled' : ''}`}
+        className={`navbar-floating ${isScrolled ? 'navbar-scrolled' : ''} z-50`}
       >
         <div className="flex items-center justify-between">
           {/* Logo */}
@@ -142,7 +142,7 @@ const Header = () => {
 
           {/* Mobile Menu Toggle */}
           <button
-            className="md:hidden text-foreground p-2 hover:bg-secondary/50 rounded-lg transition-colors"
+            className="md:hidden text-foreground p-2 hover:bg-secondary/50 rounded-lg transition-colors z-50"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             aria-label="Toggle menu"
           >
@@ -153,7 +153,7 @@ const Header = () => {
 
       {/* Mobile Navigation */}
       {isMobileMenuOpen && (
-        <nav className="fixed top-20 left-4 right-4 z-40 glass-card rounded-2xl p-4 animate-fade-up md:hidden border-t border-white/10 shadow-2xl shadow-black/50">
+        <nav className="fixed top-20 left-4 right-4 z-[60] glass-card rounded-2xl p-4 animate-fade-up md:hidden border-t border-white/10 shadow-2xl shadow-black/50">
           <div className="flex flex-col gap-1">
             {navLinks.map((link) => (
               <Link
@@ -169,7 +169,11 @@ const Header = () => {
               </Link>
             ))}
           </div>
-          <div className="mt-4 pt-4 border-t border-border/50">
+          <div className="mt-4 pt-4 border-t border-border/50 space-y-2">
+            {/* Install App Button for Mobile */}
+            <div className="flex justify-center">
+              <InstallButton />
+            </div>
             <Link to="/contact" className="block" onClick={() => setIsMobileMenuOpen(false)}>
               <button className="btn-primary w-full text-sm py-3 font-semibold shadow-lg shadow-primary/20">
                 Hire Me
@@ -182,7 +186,7 @@ const Header = () => {
       {/* Backdrop for mobile menu */}
       {isMobileMenuOpen && (
         <div
-          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-30 md:hidden animate-fade-in"
+          className="fixed inset-0 bg-background/80 backdrop-blur-sm z-[55] md:hidden animate-fade-in"
           onClick={() => setIsMobileMenuOpen(false)}
         />
       )}
