@@ -1,5 +1,6 @@
 import Hero from '@/components/Hero';
 import About from '@/components/About';
+import { MetricsDisplay } from '@/components/MetricsDisplay';
 import Skills from '@/components/Skills';
 import Projects from '@/components/Projects';
 import Experience from '@/components/Experience';
@@ -10,10 +11,11 @@ const Index = () => {
   return (
     <>
       <Hero />
+      <MetricsDisplay />
       <About />
       <Skills />
-      <Projects />
       <Experience />
+      <Projects />
       <LatestBlogs />
       <Contact />
     </>

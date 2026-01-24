@@ -73,31 +73,18 @@ const About = () => {
                 ) : (
                   <>
                     <p>
-                      I'm a passionate <span className="text-foreground font-semibold">Java Backend Software Engineer</span> with
-                      over 2 years of experience building robust fintech solutions.
+                      I am a results-driven <span className="text-foreground font-semibold">Java Software Engineer</span> specializing in
+                      <span className="text-foreground font-semibold"> FinTech</span> and backend systems. With deep expertise in
+                      building <span className="text-primary font-medium">scalable microservices</span>, I engineer high-throughput
+                      transaction processing systems using <span className="text-orange-500 font-medium">Spring Boot</span> and modern cloud technologies.
                     </p>
                     <p>
-                      My expertise lies in <span className="text-orange-500 font-medium">Spring Boot</span>, <span className="text-green-500 font-medium">WebFlux</span>, and designing scalable microservices.
+                      My technical focus spans advanced <span className="text-green-500 font-medium">REST API</span> design, database optimization,
+                      and distributed system architecture. I am committed to delivering enterprise-grade solutions that prioritize performance,
+                      security, and maintainability.
                     </p>
                   </>
                 )}
-              </div>
-
-              <div className="flex items-center gap-6 pt-4 border-t border-border/50">
-                <div className="text-center">
-                  <span className="text-3xl font-bold text-foreground">{profile?.yearsOfExperience || '2+'}</span>
-                  <p className="text-sm text-muted-foreground uppercase tracking-wider font-medium mt-1">Years Exp</p>
-                </div>
-                <div className="w-px h-12 bg-border" />
-                <div className="text-center">
-                  <span className="text-3xl font-bold text-foreground">5+</span>
-                  <p className="text-sm text-muted-foreground uppercase tracking-wider font-medium mt-1">Live Projects</p>
-                </div>
-                <div className="w-px h-12 bg-border" />
-                <div className="text-center">
-                  <span className="text-3xl font-bold text-foreground">2</span>
-                  <p className="text-sm text-muted-foreground uppercase tracking-wider font-medium mt-1">Companies</p>
-                </div>
               </div>
             </div>
 

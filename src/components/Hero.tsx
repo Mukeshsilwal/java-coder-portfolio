@@ -4,7 +4,6 @@ import { publicApi } from '@/api/services';
 import { ProfileDTO } from '@/types';
 import { resumeService } from '@/services/resumeService';
 import { StatusBadge } from '@/components/StatusBadge';
-import { MetricsDisplay } from '@/components/MetricsDisplay';
 
 const Hero = () => {
   const [profile, setProfile] = useState<ProfileDTO | null>(null);
@@ -67,24 +66,16 @@ const Hero = () => {
                   <>
                     <span className="font-semibold text-foreground">Java Backend Engineer</span>
                     <span className="text-primary">•</span>
-                    <span className="text-muted-foreground">Reactive Systems</span>
+                    <span className="text-muted-foreground">High-Scale Systems</span>
                   </>
                 )}
               </div>
             </div>
 
-            {/* Value Proposition */}
-            <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto animate-fade-up text-balance" style={{ animationDelay: '0.2s' }}>
-              {profile?.bio || (
-                <>
-                  Building <span className="text-foreground font-semibold">robust, scalable backend systems</span> with
-                  Java, Spring Boot & Reactive Programming. Currently powering mobile banking at Nepal's #1 fintech.
-                </>
-              )}
+            {/* Value Proposition - Short & Punchy (max 20 words) */}
+            <p className="text-xl sm:text-2xl text-muted-foreground leading-relaxed max-w-2xl mx-auto animate-fade-up text-balance font-medium" style={{ animationDelay: '0.2s' }}>
+              Building <span className="text-foreground font-semibold">robust, scalable fintech systems</span> with Java, Spring Boot & Microservices.
             </p>
-
-            {/* Key Metrics */}
-            <MetricsDisplay className="animate-fade-up" />
 
             {/* CTA Buttons */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-fade-up" style={{ animationDelay: '0.3s' }}>

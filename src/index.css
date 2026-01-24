@@ -347,7 +347,7 @@
   /* Floating Navbar - Mobile Optimized */
   .navbar-floating {
     @apply fixed top-4 left-1/2 -translate-x-1/2 z-50;
-    @apply glass-card rounded-2xl px-4 py-3;
+    @apply glass-card rounded-2xl px-4 py-3 bg-background/80 backdrop-blur-xl;
     @apply transition-all duration-300;
     width: calc(100% - 2rem);
     /* Mobile: 16px margin on each side */
