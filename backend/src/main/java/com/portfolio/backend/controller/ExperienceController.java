@@ -36,6 +36,7 @@ public class ExperienceController {
                 .technologies(dto.getTechnologies())
                 .logoUrl(dto.getLogoUrl())
                 .jobType(dto.getJobType())
+                .workMode(dto.getWorkMode())
                 .order(dto.getOrder())
                 .build();
         return ResponseEntity.ok(ApiResponse.success("Experience created successfully", service.saveExperience(experience)));
@@ -55,6 +56,7 @@ public class ExperienceController {
                 .technologies(dto.getTechnologies())
                 .logoUrl(dto.getLogoUrl())
                 .jobType(dto.getJobType())
+                .workMode(dto.getWorkMode())
                 .order(dto.getOrder())
                 .build();
         return ResponseEntity.ok(ApiResponse.success("Experience updated successfully", service.saveExperience(experience)));

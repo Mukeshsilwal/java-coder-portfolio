@@ -28,6 +28,7 @@ interface Experience {
     endDate: string;
     isCurrent: boolean;
     jobType?: string;
+    workMode?: string;
     logoUrl?: string;
     order?: number;
 }
@@ -46,6 +47,7 @@ const ExperienceManager = () => {
         endDate: '',
         isCurrent: false,
         jobType: 'FULL_TIME',
+        workMode: 'ON_SITE',
         logoUrl: ''
     });
 
@@ -107,7 +109,8 @@ const ExperienceManager = () => {
     const openEdit = (exp: Experience) => {
         setFormData({
             ...exp,
-            jobType: exp.jobType || 'FULL_TIME'
+            jobType: exp.jobType || 'FULL_TIME',
+            workMode: exp.workMode || 'ON_SITE'
         });
         setEditingId(exp.id);
         setIsDialogOpen(true);
@@ -122,6 +125,7 @@ const ExperienceManager = () => {
             endDate: '',
             isCurrent: false,
             jobType: 'FULL_TIME',
+            workMode: 'ON_SITE',
             logoUrl: ''
         });
         setEditingId(null);
@@ -156,20 +160,35 @@ const ExperienceManager = () => {
 
 
 
-                            <div className="space-y-2">
-                                <Label htmlFor="jobType">Job Type</Label>
-                                <select
-                                    id="jobType"
-                                    className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                                    value={formData.jobType}
-                                    onChange={e => setFormData({ ...formData, jobType: e.target.value })}
-                                >
-                                    <option value="FULL_TIME">Full Time</option>
-                                    <option value="PART_TIME">Part Time</option>
-                                    <option value="CONTRACT">Contract</option>
-                                    <option value="FREELANCE">Freelance</option>
-                                    <option value="INTERNSHIP">Internship</option>
-                                </select>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2">
+                                    <Label htmlFor="jobType">Job Type</Label>
+                                    <select
+                                        id="jobType"
+                                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                        value={formData.jobType}
+                                        onChange={e => setFormData({ ...formData, jobType: e.target.value })}
+                                    >
+                                        <option value="FULL_TIME">Full Time</option>
+                                        <option value="PART_TIME">Part Time</option>
+                                        <option value="CONTRACT">Contract</option>
+                                        <option value="FREELANCE">Freelance</option>
+                                        <option value="INTERNSHIP">Internship</option>
+                                    </select>
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="workMode">Work Mode</Label>
+                                    <select
+                                        id="workMode"
+                                        className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                        value={formData.workMode}
+                                        onChange={e => setFormData({ ...formData, workMode: e.target.value })}
+                                    >
+                                        <option value="ON_SITE">On-site</option>
+                                        <option value="REMOTE">Remote</option>
+                                        <option value="HYBRID">Hybrid</option>
+                                    </select>
+                                </div>
                             </div>
 
                             <div className="space-y-2">
@@ -219,7 +238,11 @@ const ExperienceManager = () => {
                                 </div>
                                 <p className="text-primary font-medium">{exp.company}</p>
                                 <p className="text-sm text-muted-foreground mb-2">
-                                    {exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate} • <span className="text-xs uppercase bg-muted px-1 py-0.5 rounded">{exp.jobType?.replace('_', ' ')}</span>
+                                    {exp.startDate} - {exp.isCurrent ? 'Present' : exp.endDate} •
+                                    <span className="text-xs uppercase bg-muted px-1 py-0.5 rounded ml-1">{exp.jobType?.replace('_', ' ')}</span>
+                                    {exp.workMode && (
+                                        <span className="text-xs uppercase bg-muted px-1 py-0.5 rounded ml-1">{exp.workMode.replace('_', ' ')}</span>
+                                    )}
                                 </p>
                                 <p className="text-sm text-gray-600 dark:text-gray-300 whitespace-pre-line">{exp.description}</p>
                             </div>

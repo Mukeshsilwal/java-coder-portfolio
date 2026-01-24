@@ -11,6 +11,7 @@ export interface ExperienceData {
     location?: string;
     technologies?: string[];
     jobType?: string;
+    workMode?: string;
 }
 
 interface TimelineItemProps {
@@ -87,7 +88,12 @@ const ExperienceContent = ({ experience, align }: { experience: ExperienceData, 
             {experience.jobTitle}
             {experience.jobType && (
                 <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
-                    {experience.jobType}
+                    {experience.jobType.replace('_', ' ')}
+                </span>
+            )}
+            {experience.workMode && (
+                <span className="text-xs px-2 py-0.5 rounded-full bg-secondary text-muted-foreground border border-border">
+                    {experience.workMode.replace('_', ' ')}
                 </span>
             )}
             {experience.location && (

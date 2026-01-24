@@ -25,5 +25,6 @@ public class ExperienceRequestDTO {
     private List<String> technologies;
     private String logoUrl;
     private String jobType;
+    private String workMode;
     private Integer order;
 }

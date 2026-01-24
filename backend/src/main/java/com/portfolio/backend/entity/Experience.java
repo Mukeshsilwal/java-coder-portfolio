@@ -39,6 +39,9 @@ public class Experience {
     
     @Column(name = "job_type")
     private String jobType;
+
+    @Column(name = "work_mode")
+    private String workMode;
     
     @Column(name = "display_order")
     private Integer order;
