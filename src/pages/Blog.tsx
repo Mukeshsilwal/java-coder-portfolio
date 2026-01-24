@@ -13,7 +13,7 @@ interface BlogPost {
     slug: string;
     content: string; // We'll show snippet
     coverImage?: string;
-    tags?: string;
+    tags?: string | string[];
     createdAt: string;
     viewCount: number;
 }
@@ -25,8 +25,26 @@ const BlogPage = () => {
     useEffect(() => {
         const fetchPosts = async () => {
             try {
-                const { data } = await axiosInstance.get('/blogs');
-                setPosts(data.content || data);
+                const { data } = await axiosInstance.get<any>('/blogs');
+                let items: any[] = [];
+
+                // Robust data extraction to handle different backend response structures
+                if (data && Array.isArray(data)) {
+                    items = data;
+                } else if (data && data.data && Array.isArray(data.data)) {
+                    items = data.data;
+                } else if (data && data.content && Array.isArray(data.content)) {
+                    items = data.content;
+                } else if (data && data.data && data.data.content && Array.isArray(data.data.content)) {
+                    items = data.data.content;
+                }
+
+                if (!Array.isArray(items)) {
+                    console.warn('BlogPage: received data is not an array', data);
+                    items = [];
+                }
+
+                setPosts(items);
             } catch (err) {
                 console.error(err);
             } finally {
@@ -65,7 +83,7 @@ const BlogPage = () => {
                             )}
                             <div className="absolute top-4 left-4">
                                 <Badge className="bg-background/80 backdrop-blur text-foreground hover:bg-background">
-                                    {post.tags?.split(',')[0] || 'Tech'}
+                                    {(Array.isArray(post.tags) ? post.tags : (post.tags || '').split(','))[0] || 'Tech'}
                                 </Badge>
                             </div>
                         </div>

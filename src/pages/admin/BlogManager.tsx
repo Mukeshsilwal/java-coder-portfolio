@@ -18,6 +18,7 @@ import {
     DialogHeader,
     DialogTitle,
     DialogTrigger,
+    DialogDescription,
 } from "@/components/ui/dialog";
 
 interface BlogPost {
@@ -26,7 +27,7 @@ interface BlogPost {
     slug: string;
     content: string;
     coverImage?: string;
-    tags?: string;
+    tags?: string | string[]; // Allow both for internal handling
     published: boolean;
     viewCount: number;
     createdAt: string;
@@ -54,21 +55,35 @@ const BlogManager = () => {
     const loadPosts = async () => {
         try {
             const { data } = await axiosInstance.get<any>('/blogs/admin');
-            const payload: any = data.data;
             let items: any[] = [];
-            if (Array.isArray(payload)) {
-                items = payload;
-            } else if (payload && Array.isArray(payload.content)) {
-                items = payload.content;
+
+            // Robust data extraction
+            if (data && Array.isArray(data)) {
+                items = data;
+            } else if (data && data.data && Array.isArray(data.data)) {
+                items = data.data;
+            } else if (data && data.content && Array.isArray(data.content)) {
+                items = data.content;
+            } else if (data && data.data && data.data.content && Array.isArray(data.data.content)) {
+                items = data.data.content;
             }
+
+            if (!Array.isArray(items)) {
+                console.warn('Blog loadPosts: Items is not an array', items);
+                items = [];
+            }
+
             // Normalize tags to string for form compatibility
-            setPosts(items.map(item => ({
+            const formattedPosts = items.map(item => ({
                 ...item,
-                tags: Array.isArray(item.tags) ? item.tags.join(', ') : item.tags,
-                published: item.isPublished // Map backend field to frontend model
-            })));
+                tags: Array.isArray(item.tags) ? item.tags.join(', ') : (item.tags || ''),
+                published: item.isPublished !== undefined ? item.isPublished : item.published
+            }));
+
+            setPosts(formattedPosts);
         } catch (err) {
-            console.error(err);
+            console.error('Failed to load posts:', err);
+            toast.error('Failed to load blog posts');
         } finally {
             setLoading(false);
         }
@@ -78,11 +93,10 @@ const BlogManager = () => {
         e.preventDefault();
         try {
             // Convert tags string to array for backend
+            const tagsString = typeof formData.tags === 'string' ? formData.tags : '';
             const payload = {
                 ...formData,
-                tags: typeof formData.tags === 'string'
-                    ? formData.tags.split(',').map(t => t.trim()).filter(Boolean)
-                    : formData.tags
+                tags: tagsString.split(',').map(t => t.trim()).filter(Boolean)
             };
 
             if (editingId) {
@@ -141,9 +155,9 @@ const BlogManager = () => {
                     <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                         <DialogHeader>
                             <DialogTitle>{editingId ? 'Edit Post' : 'New Post'}</DialogTitle>
-                            <div className="text-sm text-muted-foreground">
+                            <DialogDescription>
                                 {editingId ? 'Make changes to your blog post here.' : 'Create a new blog post.'}
-                            </div>
+                            </DialogDescription>
                         </DialogHeader>
                         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
                             <div className="grid grid-cols-2 gap-4">
