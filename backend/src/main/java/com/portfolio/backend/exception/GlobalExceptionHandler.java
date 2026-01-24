@@ -24,10 +24,12 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, String>> handleRuntimeException(RuntimeException e) {
+        e.printStackTrace(); // Log the error to console
         Map<String, String> error = new HashMap<>();
         error.put("error", "Application Error");
         error.put("message", e.getMessage());
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+        // Return 500 for runtime exceptions to distinguish from client errors
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 
     @ExceptionHandler(BadCredentialsException.class)

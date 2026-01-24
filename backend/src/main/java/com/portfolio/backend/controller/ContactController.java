@@ -18,7 +18,7 @@ public class ContactController {
     private final ContactService service;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<ContactMessage>> sendMessage(@RequestBody com.portfolio.backend.dto.ContactRequestDTO dto, HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<ContactMessage>> sendMessage(@jakarta.validation.Valid @RequestBody com.portfolio.backend.dto.ContactRequestDTO dto, HttpServletRequest request) {
         ContactMessage message = ContactMessage.builder()
                 .senderName(dto.getSenderName())
                 .senderEmail(dto.getSenderEmail())
