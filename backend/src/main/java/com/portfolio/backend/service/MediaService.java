@@ -26,11 +26,8 @@ public class MediaService {
         validateFile(file, type);
 
         String folder = getFolderForType(type);
-        String resourceType = (type == MediaType.CV) ? "raw" : "image"; // cloud use 'auto' but raw is safer for PDF sometimes or generic files
-        
-        // For PDF specifically, if we want preview generation, we might use 'image' or 'auto'. 
-        // User asked for "resource_type: auto".
-        resourceType = "auto";
+        // Force 'raw' for CVs to ensure predictable public URL access without image transformation constraints
+        String resourceType = (type == MediaType.CV) ? "raw" : "auto";
 
         // If Image, restrict formats? User said: jpg, png, webp, svg for Images. pdf, docx for CV.
         
