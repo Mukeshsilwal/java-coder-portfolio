@@ -19,12 +19,13 @@ public class Experience {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(name = "company_name")
+    @Column(name = "company_name", length = 500)
     private String company;
     
-    @Column(name = "role")
+    @Column(name = "role", length = 500)
     private String role;
     
+    @Column(columnDefinition = "TEXT")
     private String description;
     private LocalDate startDate;
     private LocalDate endDate;
