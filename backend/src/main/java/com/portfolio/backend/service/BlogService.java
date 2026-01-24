@@ -24,7 +24,12 @@ public class BlogService {
     }
 
     public Optional<BlogPost> getPostBySlug(String slug) {
-        return repository.findBySlug(slug);
+        Optional<BlogPost> post = repository.findBySlug(slug);
+        post.ifPresent(p -> {
+            p.setViewCount(p.getViewCount() + 1);
+            repository.save(p);
+        });
+        return post;
     }
     
     public Optional<BlogPost> getPostById(UUID id) {
