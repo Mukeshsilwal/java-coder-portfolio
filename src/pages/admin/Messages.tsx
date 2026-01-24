@@ -23,14 +23,17 @@ const MessageItem = ({ msg, onDelete, onRead }: { msg: Message; onDelete: (id: s
     const [expanded, setExpanded] = useState(false);
 
     const handleExpand = async () => {
+        console.log("Card clicked!", msg.id);
         const newExpanded = !expanded;
         setExpanded(newExpanded);
 
         if (newExpanded && !msg.read) {
+            console.log("Marking as read:", msg.id);
             // Optimistic update
             onRead(msg.id);
             try {
                 await axiosInstance.put(`/contact/${msg.id}/read`);
+                console.log("API call success for:", msg.id);
             } catch (err) {
                 console.error("Failed to mark as read", err);
                 // Optionally revert if failed, but for read status it's low risk
