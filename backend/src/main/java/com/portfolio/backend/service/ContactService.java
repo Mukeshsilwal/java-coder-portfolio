@@ -24,4 +24,11 @@ public class ContactService {
     public void deleteMessage(java.util.UUID id) {
         repository.deleteById(id);
     }
+
+    public ContactMessage markMessageAsRead(java.util.UUID id) {
+        ContactMessage message = repository.findById(id)
+                .orElseThrow(() -> new jakarta.persistence.EntityNotFoundException("Message not found with id: " + id));
+        message.setRead(true);
+        return repository.save(message);
+    }
 }

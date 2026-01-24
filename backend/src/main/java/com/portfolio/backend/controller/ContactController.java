@@ -1,6 +1,7 @@
 package com.portfolio.backend.controller;
 
 import com.portfolio.backend.common.ApiResponse;
+import com.portfolio.backend.dto.ContactRequestDTO;
 import com.portfolio.backend.entity.ContactMessage;
 import com.portfolio.backend.service.ContactService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +19,7 @@ public class ContactController {
     private final ContactService service;
 
     @PostMapping
-    public ResponseEntity<ApiResponse<ContactMessage>> sendMessage(@jakarta.validation.Valid @RequestBody com.portfolio.backend.dto.ContactRequestDTO dto, HttpServletRequest request) {
+    public ResponseEntity<ApiResponse<ContactMessage>> sendMessage(@jakarta.validation.Valid @RequestBody ContactRequestDTO dto, HttpServletRequest request) {
         ContactMessage message = ContactMessage.builder()
                 .senderName(dto.getSenderName())
                 .senderEmail(dto.getSenderEmail())
@@ -40,5 +41,11 @@ public class ContactController {
     public ResponseEntity<ApiResponse<Void>> deleteMessage(@PathVariable java.util.UUID id) {
         service.deleteMessage(id);
         return ResponseEntity.ok(ApiResponse.success("Message deleted successfully", null));
+    }
+
+    @PutMapping("/{id}/read")
+    @org.springframework.security.access.prepost.PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<ContactMessage>> markAsRead(@PathVariable java.util.UUID id) {
+        return ResponseEntity.ok(ApiResponse.success("Message marked as read", service.markMessageAsRead(id)));
     }
 }
