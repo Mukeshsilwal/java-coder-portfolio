@@ -20,6 +20,7 @@ const Experience = () => {
             jobTitle: exp.role, // Backend: role
             startDate: exp.startDate,
             endDate: exp.endDate,
+            isCurrent: exp.isCurrent,
             description: exp.description,
             jobType: exp.jobType,
             location: 'Remote', // Default or could be added to DB later

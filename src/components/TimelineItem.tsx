@@ -6,6 +6,7 @@ export interface ExperienceData {
     jobTitle: string;
     startDate: string;
     endDate: string | null;
+    isCurrent?: boolean;
     description: string;
     location?: string;
     technologies?: string[];
@@ -19,7 +20,7 @@ interface TimelineItemProps {
 }
 
 export const TimelineItem = ({ experience, isLast, index }: TimelineItemProps) => {
-    const isPresent = !experience.endDate;
+    const isPresent = experience.isCurrent || !experience.endDate;
     const delay = index * 100; // Staggered animation delay
 
     return (
@@ -32,7 +33,7 @@ export const TimelineItem = ({ experience, isLast, index }: TimelineItemProps) =
                         <ExperienceContent experience={experience} align="right" />
                     ) : (
                         <div className="text-sm text-muted-foreground font-mono pt-4 transition-colors group-hover:text-primary/80">
-                            {formatDate(experience.startDate)} - {experience.endDate ? formatDate(experience.endDate) : 'Present'}
+                            {formatDate(experience.startDate)} - {isPresent ? 'Present' : formatDate(experience.endDate || '')}
                         </div>
                     )}
                 </div>
@@ -51,7 +52,7 @@ export const TimelineItem = ({ experience, isLast, index }: TimelineItemProps) =
                         <ExperienceContent experience={experience} align="left" />
                     ) : (
                         <div className="text-sm text-muted-foreground font-mono pt-4 transition-colors group-hover:text-primary/80">
-                            {formatDate(experience.startDate)} - {experience.endDate ? formatDate(experience.endDate) : 'Present'}
+                            {formatDate(experience.startDate)} - {isPresent ? 'Present' : formatDate(experience.endDate || '')}
                         </div>
                     )}
                 </div>
@@ -64,7 +65,7 @@ export const TimelineItem = ({ experience, isLast, index }: TimelineItemProps) =
                 />
                 <div className="mb-2 text-xs font-mono text-muted-foreground flex items-center gap-2">
                     <Calendar className="w-3 h-3" />
-                    {formatDate(experience.startDate)} - {experience.endDate ? formatDate(experience.endDate) : 'Present'}
+                    {formatDate(experience.startDate)} - {isPresent ? 'Present' : formatDate(experience.endDate || '')}
                 </div>
                 <ExperienceContent experience={experience} align="left" />
             </div>

@@ -18,7 +18,10 @@ public class ExperienceRequestDTO {
     private String description;
     private LocalDate startDate;
     private LocalDate endDate;
-    private boolean current;
+    
+    @com.fasterxml.jackson.annotation.JsonProperty("isCurrent")
+    private boolean isCurrent;
+    
     private List<String> technologies;
     private String logoUrl;
     private String jobType;

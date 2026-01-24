@@ -186,7 +186,7 @@ const ExperienceManager = () => {
                             </div>
 
                             <div className="flex items-center space-x-2">
-                                <Checkbox id="current" checked={formData.isCurrent} onCheckedChange={(c) => setFormData({ ...formData, isCurrent: c === true })} />
+                                <Checkbox id="current" checked={formData.isCurrent} onCheckedChange={(c) => setFormData({ ...formData, isCurrent: c === true, endDate: c === true ? '' : formData.endDate })} />
                                 <Label htmlFor="current">I currently work here</Label>
                             </div>
 
