@@ -28,8 +28,8 @@ const Header = () => {
       // Scroll Spy Logic
       const sections = navLinks.map(link => link.sectionId).filter(Boolean) as string[];
 
-      // Default to home if at top
-      if (window.scrollY < 100) {
+      // Default to home if at top AND on home page
+      if (window.scrollY < 100 && location.pathname === '/') {
         setActiveSection('home');
         return;
       }
@@ -78,10 +78,12 @@ const Header = () => {
   };
 
   const isActive = (link: typeof navLinks[0]) => {
-    if (link.isTopFn) return activeSection === 'home';
-    if (link.sectionId === activeSection) return true;
-    if (!link.sectionId && location.pathname === link.href) return true;
-    return false;
+    // If it's a home section link AND we are on home page
+    if (link.isTopFn || link.sectionId) {
+      return location.pathname === '/' && activeSection === (link.sectionId || 'home');
+    }
+    // If it's a standalone page (Blog, Contact) with no sectionId
+    return location.pathname.startsWith(link.href);
   };
 
   return (
