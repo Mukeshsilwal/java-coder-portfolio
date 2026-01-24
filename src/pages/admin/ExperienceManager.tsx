@@ -22,7 +22,7 @@ import {
 interface Experience {
     id: string;
     company: string;
-    position: string;
+    role: string;
     description: string;
     startDate: string;
     endDate: string;
@@ -40,7 +40,7 @@ const ExperienceManager = () => {
 
     const [formData, setFormData] = useState<Partial<Experience>>({
         company: '',
-        position: '',
+        role: '',
         description: '',
         startDate: '',
         endDate: '',
@@ -105,7 +105,10 @@ const ExperienceManager = () => {
     };
 
     const openEdit = (exp: Experience) => {
-        setFormData(exp);
+        setFormData({
+            ...exp,
+            jobType: exp.jobType || 'FULL_TIME'
+        });
         setEditingId(exp.id);
         setIsDialogOpen(true);
     };
@@ -113,7 +116,7 @@ const ExperienceManager = () => {
     const resetForm = () => {
         setFormData({
             company: '',
-            position: '',
+            role: '',
             description: '',
             startDate: '',
             endDate: '',
@@ -146,8 +149,8 @@ const ExperienceManager = () => {
                                     <Input id="company" value={formData.company} onChange={e => setFormData({ ...formData, company: e.target.value })} required />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="position">Position</Label>
-                                    <Input id="position" value={formData.position} onChange={e => setFormData({ ...formData, position: e.target.value })} required />
+                                    <Label htmlFor="role">Role</Label>
+                                    <Input id="role" value={formData.role} onChange={e => setFormData({ ...formData, role: e.target.value })} required />
                                 </div>
                             </div>
 
@@ -208,7 +211,7 @@ const ExperienceManager = () => {
                             </div>
                             <div className="flex-1">
                                 <div className="flex justify-between">
-                                    <h3 className="font-bold text-lg">{exp.position}</h3>
+                                    <h3 className="font-bold text-lg">{exp.role}</h3>
                                     <div className="flex gap-2">
                                         <Button variant="ghost" size="icon" onClick={() => openEdit(exp)}><Edit2 className="w-4 h-4" /></Button>
                                         <Button variant="ghost" size="icon" className="text-destructive" onClick={() => handleDelete(exp.id)}><Trash2 className="w-4 h-4" /></Button>
