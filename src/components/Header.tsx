@@ -11,8 +11,8 @@ const navLinks = [
   { href: '/#skills', label: 'Skills', sectionId: 'skills' },
   { href: '/#projects', label: 'Projects', sectionId: 'projects' },
   { href: '/#experience', label: 'Experience', sectionId: 'experience' },
-  { href: '/blog', label: 'Blog', sectionId: null },
-  { href: '/contact', label: 'Contact', sectionId: null },
+  { href: '/#blog', label: 'Blog', sectionId: 'blog' },
+  { href: '/#contact', label: 'Contact', sectionId: 'contact' },
 ];
 
 const Header = () => {
