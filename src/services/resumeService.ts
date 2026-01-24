@@ -52,5 +52,5 @@ export const resumeService = {
     },
 
 
-    getDownloadUrl: () => `${API_BASE_URL}/public/cv/download`
+    getDownloadUrl: () => `${API_BASE_URL}/public/media/cv/download`
 };
