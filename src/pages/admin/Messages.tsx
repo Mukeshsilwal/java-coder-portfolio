@@ -21,19 +21,19 @@ interface Message {
 
 const MessageItem = ({ msg, onDelete, onRead }: { msg: Message; onDelete: (id: string) => void; onRead: (id: string) => void }) => {
     const [expanded, setExpanded] = useState(false);
-    const [isRead, setIsRead] = useState(msg.read);
 
     const handleExpand = async () => {
         const newExpanded = !expanded;
         setExpanded(newExpanded);
 
-        if (newExpanded && !isRead) {
+        if (newExpanded && !msg.read) {
+            // Optimistic update
+            onRead(msg.id);
             try {
                 await axiosInstance.put(`/contact/${msg.id}/read`);
-                setIsRead(true);
-                onRead(msg.id);
             } catch (err) {
                 console.error("Failed to mark as read", err);
+                // Optionally revert if failed, but for read status it's low risk
             }
         }
     };
@@ -42,7 +42,7 @@ const MessageItem = ({ msg, onDelete, onRead }: { msg: Message; onDelete: (id: s
         <Card
             className={cn(
                 "transition-all duration-200 cursor-pointer border-l-4",
-                isRead ? "border-l-transparent bg-card" : "border-l-primary bg-primary/5",
+                msg.read ? "border-l-transparent bg-card" : "border-l-primary bg-primary/5",
                 expanded && "shadow-md scale-[1.01]"
             )}
             onClick={handleExpand}
@@ -51,10 +51,10 @@ const MessageItem = ({ msg, onDelete, onRead }: { msg: Message; onDelete: (id: s
                 <div className="flex flex-col md:flex-row gap-4 items-start justify-between">
                     <div className="flex-1 space-y-1">
                         <div className="flex items-center gap-2 flex-wrap">
-                            <h3 className={cn("text-lg", !isRead ? "font-bold" : "font-medium")}>
+                            <h3 className={cn("text-lg", !msg.read ? "font-bold" : "font-medium")}>
                                 {msg.subject || "(No Subject)"}
                             </h3>
-                            {!isRead && (
+                            {!msg.read && (
                                 <Badge variant="default" className="text-[10px] h-5 px-1.5 bg-primary text-primary-foreground">
                                     NEW
                                 </Badge>
