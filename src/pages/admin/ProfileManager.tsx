@@ -39,8 +39,8 @@ const ProfileManager = () => {
 
     const loadProfile = async () => {
         try {
-            const { data } = await axiosInstance.get<Profile>('/profile');
-            setProfile(data);
+            const { data } = await axiosInstance.get('/profile');
+            setProfile(data.data);
         } catch (err) {
             console.error("Profile not found or error", err);
         } finally {

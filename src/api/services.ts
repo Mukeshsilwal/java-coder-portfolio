@@ -54,7 +54,7 @@ export const publicApi = {
 export const adminApi = {
     // Profile
     updateProfile: async (profile: Partial<ProfileDTO>) => {
-        const { data } = await axiosInstance.put('/profile', profile);
+        const { data } = await axiosInstance.post('/profile', profile);
         return data.data; // Extract from ApiResponse
     },
 

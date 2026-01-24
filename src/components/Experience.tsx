@@ -4,60 +4,26 @@ import { publicApi } from '@/api/services';
 import { Skeleton } from '@/components/ui/skeleton';
 import { TimelineItem, ExperienceData } from '@/components/TimelineItem';
 
-const FALLBACK_EXPERIENCE: ExperienceData[] = [
-  {
-    id: 1,
-    companyName: 'TechCorp Solutions',
-    jobTitle: 'Senior Backend Engineer',
-    startDate: '2023-01-01',
-    endDate: null,
-    description: 'Leading a team of 5 developers in re-architecting legacy monoliths into microservices using Spring Boot and Docker. Improved system scalability by 200%.',
-    location: 'Kathmandu, Nepal',
-    technologies: ['Java', 'Spring Cloud', 'Kubernetes', 'Kafka']
-  },
-  {
-    id: 2,
-    companyName: 'FinServe Nepal',
-    jobTitle: 'Java Developer',
-    startDate: '2021-03-01',
-    endDate: '2022-12-31',
-    description: 'Developed secure payment gateway integrations and core banking modules. Optimized SQL queries significantly reducing transaction latency.',
-    location: 'Lalitpur, Nepal',
-    technologies: ['Java 11', 'Spring Boot', 'PostgreSQL', 'Redis']
-  },
-  {
-    id: 3,
-    companyName: 'SoftBenz Infosys',
-    jobTitle: 'Junior Software Engineer',
-    startDate: '2019-06-01',
-    endDate: '2021-02-28',
-    description: 'Collaborated on full-stack web applications using React and Spring Boot. Implemented RESTful APIs and ensured high code quality through unit testing.',
-    location: 'Kathmandu, Nepal',
-    technologies: ['Java', 'React', 'MySQL', 'Junit']
-  }
-];
-
 const Experience = () => {
-  // Initialize with FALLBACK to ensure robustness immediately
-  const [experiences, setExperiences] = useState<ExperienceData[]>(FALLBACK_EXPERIENCE);
+  const [experiences, setExperiences] = useState<ExperienceData[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchExperience = async () => {
       try {
         const data = await publicApi.getExperiences();
-        if (data && data.length > 0) {
+        if (data && Array.isArray(data)) {
           // Map API DTO to UI model
           const mapped: ExperienceData[] = data.map((exp: any) => ({
             id: exp.id,
-            companyName: exp.company, // Backend: company
-            jobTitle: exp.position,   // Backend: position
+            companyName: exp.company,
+            jobTitle: exp.role, // Backend: role
             startDate: exp.startDate,
             endDate: exp.endDate,
             description: exp.description,
-            jobType: exp.jobType,     // Backend: jobType
-            location: 'Remote', // We might not have location in DB yet, or add it
-            technologies: [] // We don't have this column yet in Experience entity
+            jobType: exp.jobType,
+            location: 'Remote', // Default or could be added to DB later
+            technologies: exp.technologies || [] // Backend now returns this list
           }));
 
           // Sort by date descending
@@ -65,14 +31,20 @@ const Experience = () => {
           setExperiences(sorted);
         }
       } catch (err) {
-        console.error("Failed to fetch experience, using fallback", err);
-        setExperiences(FALLBACK_EXPERIENCE);
+        console.error("Failed to fetch experience", err);
       } finally {
         setLoading(false);
       }
     };
     fetchExperience();
   }, []);
+
+  // Use empty state if no experiences found (after loading)
+  if (!loading && experiences.length === 0) {
+    // Optional: Render nothing or a simplified empty state. 
+    // For now we render nothing to avoid clutter if no data exists.
+    return null;
+  }
 
   return (
     <section id="experience" className="section-padding relative w-full overflow-hidden bg-secondary/5">

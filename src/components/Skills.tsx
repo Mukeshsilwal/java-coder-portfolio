@@ -55,6 +55,7 @@ const categoryConfig: Record<string, CategoryConfig> = {
 interface SkillUI {
   name: string;
   level: number;
+  iconUrl?: string;
 }
 
 interface CategoryUI extends CategoryConfig {
@@ -139,7 +140,8 @@ const Skills = () => {
                 skills: groups[cat].map(s => ({
                   name: s.skillName,
                   // Ensure level is a number
-                  level: typeof s.proficiencyLevel === 'number' ? s.proficiencyLevel : 80
+                  level: typeof s.proficiencyLevel === 'number' ? s.proficiencyLevel : 80,
+                  iconUrl: s.iconUrl
                 }))
               };
             });

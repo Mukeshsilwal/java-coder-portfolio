@@ -1,11 +1,26 @@
-import { ArrowDown, Github, Linkedin, Mail, Code2, Sparkles, Download } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useEffect, useState } from 'react';
+import { ArrowDown, Github, Linkedin, Mail, Code2, Download } from 'lucide-react';
+import { publicApi } from '@/api/services';
+import { ProfileDTO } from '@/types';
 import { resumeService } from '@/services/resumeService';
 import { StatusBadge } from '@/components/StatusBadge';
 import { MetricsDisplay } from '@/components/MetricsDisplay';
 
-
 const Hero = () => {
+  const [profile, setProfile] = useState<ProfileDTO | null>(null);
+
+  useEffect(() => {
+    const fetchProfile = async () => {
+      try {
+        const data = await publicApi.getProfile();
+        setProfile(data);
+      } catch (error) {
+        console.error('Failed to fetch profile', error);
+      }
+    };
+    fetchProfile();
+  }, []);
+
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden hero-padding">
       {/* Subtle Background Elements - Mobile Safe */}
@@ -14,12 +29,28 @@ const Hero = () => {
       <div className="absolute bottom-1/4 right-1/4 w-[min(500px,80vw)] h-[min(500px,80vw)] bg-accent/10 rounded-full blur-[120px] animate-pulse-slow" style={{ animationDelay: '2s' }} />
 
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="max-w-4xl mx-auto">{/* Changed from grid lg:grid-cols-2 to single centered column */}
+        <div className="max-w-4xl mx-auto">
 
           {/* Content - Centered */}
-          <div className="space-y-8 text-center">{/* Removed lg:text-left since no side panel */}
+          <div className="space-y-8 text-center flex flex-col items-center">
+
+            {/* Profile Image */}
+            {profile?.profileImage && (
+              <div className="relative w-32 h-32 sm:w-40 sm:h-40 mb-4 animate-fade-in">
+                <div className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary to-accent blur-lg opacity-50 animate-pulse-slow"></div>
+                <img
+                  src={profile.profileImage}
+                  alt="Profile"
+                  className="relative w-full h-full rounded-full object-cover border-4 border-background shadow-2xl"
+                />
+              </div>
+            )}
+
             {/* Enhanced Status Badge */}
-            <StatusBadge available={true} experience="2+ Years Experience" />
+            <StatusBadge
+              available={!profile?.availabilityStatus || profile.availabilityStatus === 'AVAILABLE'}
+              experience={profile?.yearsOfExperience ? `${profile.yearsOfExperience}+ Years Experience` : "2+ Years Experience"}
+            />
 
             {/* Name Heading */}
             <div className="space-y-4 animate-fade-up" style={{ animationDelay: '0.1s' }}>
@@ -30,18 +61,26 @@ const Hero = () => {
 
               {/* Role Tagline */}
               <div className="flex flex-wrap items-center justify-center gap-3 text-lg sm:text-xl">
-                <span className="font-semibold text-foreground">Java Backend Engineer</span>
-                <span className="text-primary">•</span>
-                <span className="text-muted-foreground">Reactive Systems</span>
-                <span className="text-primary hidden sm:inline">•</span>
-                <span className="text-muted-foreground hidden sm:inline">Fintech</span>
+                {profile?.headline ? (
+                  <span className="font-semibold text-foreground">{profile.headline}</span>
+                ) : (
+                  <>
+                    <span className="font-semibold text-foreground">Java Backend Engineer</span>
+                    <span className="text-primary">•</span>
+                    <span className="text-muted-foreground">Reactive Systems</span>
+                  </>
+                )}
               </div>
             </div>
 
             {/* Value Proposition */}
             <p className="text-lg sm:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto animate-fade-up text-balance" style={{ animationDelay: '0.2s' }}>
-              Building <span className="text-foreground font-semibold">robust, scalable backend systems</span> with
-              Java, Spring Boot & Reactive Programming. Currently powering mobile banking at Nepal's #1 fintech.
+              {profile?.bio || (
+                <>
+                  Building <span className="text-foreground font-semibold">robust, scalable backend systems</span> with
+                  Java, Spring Boot & Reactive Programming. Currently powering mobile banking at Nepal's #1 fintech.
+                </>
+              )}
             </p>
 
             {/* Key Metrics */}
@@ -57,7 +96,12 @@ const Hero = () => {
                 View Projects
               </button>
 
-              <a href={resumeService.getDownloadUrl()} target="_blank" rel="noopener noreferrer" className="w-full sm:w-auto">
+              <a
+                href={profile?.resumeUrl || resumeService.getDownloadUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full sm:w-auto"
+              >
                 <button className="btn-secondary w-full sm:w-auto flex items-center justify-center gap-2 group">
                   <Download className="w-4 h-4 group-hover:translate-y-1 transition-transform" />
                   Download CV
@@ -67,31 +111,37 @@ const Hero = () => {
 
             {/* Social Links */}
             <div className="flex items-center justify-center gap-3 animate-fade-up" style={{ animationDelay: '0.4s' }}>
-              <a
-                href="https://github.com/Mukeshsilwal"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-11 h-11 rounded-xl glass-card flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/50 transition-all duration-300 hover:scale-110"
-                aria-label="GitHub"
-              >
-                <Github className="w-5 h-5" />
-              </a>
-              <a
-                href="https://linkedin.com/in/Mukeshsilwal"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-11 h-11 rounded-xl glass-card flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/50 transition-all duration-300 hover:scale-110"
-                aria-label="LinkedIn"
-              >
-                <Linkedin className="w-5 h-5" />
-              </a>
-              <a
-                href="mailto:mukeshsilwal5@gmail.com"
-                className="w-11 h-11 rounded-xl glass-card flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/50 transition-all duration-300 hover:scale-110"
-                aria-label="Email"
-              >
-                <Mail className="w-5 h-5" />
-              </a>
+              {profile?.githubUrl && (
+                <a
+                  href={profile.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-11 h-11 rounded-xl glass-card flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/50 transition-all duration-300 hover:scale-110"
+                  aria-label="GitHub"
+                >
+                  <Github className="w-5 h-5" />
+                </a>
+              )}
+              {profile?.linkedinUrl && (
+                <a
+                  href={profile.linkedinUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-11 h-11 rounded-xl glass-card flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/50 transition-all duration-300 hover:scale-110"
+                  aria-label="LinkedIn"
+                >
+                  <Linkedin className="w-5 h-5" />
+                </a>
+              )}
+              {profile?.email && (
+                <a
+                  href={`mailto:${profile.email}`}
+                  className="w-11 h-11 rounded-xl glass-card flex items-center justify-center text-muted-foreground hover:text-foreground hover:border-primary/50 transition-all duration-300 hover:scale-110"
+                  aria-label="Email"
+                >
+                  <Mail className="w-5 h-5" />
+                </a>
+              )}
             </div>
           </div>
         </div>

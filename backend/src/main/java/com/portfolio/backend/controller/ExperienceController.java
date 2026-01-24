@@ -34,6 +34,9 @@ public class ExperienceController {
                 .endDate(dto.getEndDate())
                 .isCurrent(dto.isCurrent())
                 .technologies(dto.getTechnologies())
+                .logoUrl(dto.getLogoUrl())
+                .jobType(dto.getJobType())
+                .order(dto.getOrder())
                 .build();
         return ResponseEntity.ok(ApiResponse.success("Experience created successfully", service.saveExperience(experience)));
     }
@@ -50,6 +53,9 @@ public class ExperienceController {
                 .endDate(dto.getEndDate())
                 .isCurrent(dto.isCurrent())
                 .technologies(dto.getTechnologies())
+                .logoUrl(dto.getLogoUrl())
+                .jobType(dto.getJobType())
+                .order(dto.getOrder())
                 .build();
         return ResponseEntity.ok(ApiResponse.success("Experience updated successfully", service.saveExperience(experience)));
     }

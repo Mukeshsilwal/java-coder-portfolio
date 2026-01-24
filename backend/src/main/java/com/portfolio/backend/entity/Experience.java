@@ -33,6 +33,8 @@ public class Experience {
     private String logoUrl;
     
     @ElementCollection
+    @CollectionTable(name = "experience_technologies", joinColumns = @JoinColumn(name = "experience_id"))
+    @Column(name = "technology")
     private java.util.List<String> technologies;
     
     @Column(name = "job_type")

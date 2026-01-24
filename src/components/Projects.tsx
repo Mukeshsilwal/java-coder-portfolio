@@ -6,60 +6,6 @@ import { ProjectDTO } from '@/types';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ProjectCard, ProjectCardData } from '@/components/ProjectCard';
 
-
-
-const staticProjects: ProjectCardData[] = [
-  {
-    title: 'Ticket Katum',
-    description: 'A comprehensive high-availability booking platform for bus tickets, hotel rooms, and large-scale event reservations. Designed for concurrency.',
-    problem: 'Traditional booking systems struggled with concurrent requests during peak festival seasons, leading to double bookings and poor user experience.',
-    solutions: [
-      'Implemented optimistic locking with Redis for seat reservation',
-      'Built distributed transaction management across multiple services',
-      'Designed real-time seat availability updates using WebSocket'
-    ],
-    metrics: 'Handled 10k+ concurrent requests during festival season with zero double bookings',
-    tech: ['Java', 'Spring Boot', 'React', 'PostgreSQL', 'Redis'],
-    github: 'https://github.com/Mukeshsilwal',
-    demo: null,
-    featured: true,
-    type: 'Commercial'
-  },
-  {
-    title: 'Kisan Ko Sathii',
-    description: 'AI-powered agricultural marketplace connecting farmers directly with buyers. Features image-based quality analysis using ML models.',
-    problem: 'Farmers faced 15-20% produce wastage due to slow buyer matchmaking and lack of quality standardization.',
-    solutions: [
-      'Integrated TensorFlow-based image recognition for quality grading',
-      'Built real-time price analytics using market data aggregation',
-      'Implemented direct chat system for instant buyer-farmer communication'
-    ],
-    metrics: 'Reduced produce wastage by 15% through faster matchmaking and quality standardization',
-    tech: ['Java', 'Spring Boot', 'Python', 'TensorFlow', 'React'],
-    github: 'https://github.com/Mukeshsilwal',
-    demo: null,
-    featured: true,
-    type: 'Innovation'
-  },
-  {
-    title: 'Gatepay',
-    description: 'Enterprise-grade payment gateway aggregator built with Reactive programming patterns for non-blocking throughput.',
-    problem: 'Existing payment gateways had blocking I/O operations causing performance bottlenecks during high-traffic periods.',
-    solutions: [
-      'Architected fully reactive pipeline using Spring WebFlux',
-      'Implemented distributed tracing with OpenTelemetry for debugging',
-      'Built merchant dashboard with real-time transaction monitoring'
-    ],
-    metrics: 'Processed $50k+ daily transactions with 99.99% uptime and <100ms latency',
-    tech: ['Java', 'Spring WebFlux', 'Docker', 'Kubernetes'],
-    github: 'https://github.com/Mukeshsilwal',
-    demo: null,
-    featured: true,
-    type: 'Fintech'
-  },
-];
-
-
 const getTechStyle = (tech: string) => {
   const lower = tech.toLowerCase();
   if (lower.includes('java')) return 'text-[#ff4500] bg-[#ff4500]/10 border-[#ff4500]/20';
@@ -71,35 +17,28 @@ const getTechStyle = (tech: string) => {
 };
 
 const Projects = () => {
-  const [projects, setProjects] = useState<ProjectCardData[]>(staticProjects);
+  const [projects, setProjects] = useState<ProjectCardData[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProjects = async () => {
       try {
         const data = await publicApi.getProjects();
-        if (data && data.length > 0) {
-          // Merge API data with static case study data
-          const mapped: ProjectCardData[] = data.map(p => {
-            const staticMatch = staticProjects.find(sp => sp.title.toLowerCase() === p.title.toLowerCase());
-
-            return {
-              title: p.title,
-              description: p.description,
-              problem: staticMatch?.problem,
-              solutions: staticMatch?.solutions,
-              metrics: staticMatch?.metrics,
-              tech: p.techStack ? p.techStack.split(',').map(s => s.trim()) : [],
-              github: p.githubRepoUrl,
-              demo: p.liveDemoUrl,
-              featured: p.isFeatured,
-              type: p.projectType
-            };
-          });
+        if (data && Array.isArray(data)) {
+          const mapped: ProjectCardData[] = data.map(p => ({
+            title: p.title,
+            description: p.description,
+            tech: p.techStack ? p.techStack.split(',').map(s => s.trim()) : [],
+            github: p.githubRepoUrl,
+            demo: p.liveDemoUrl,
+            featured: p.isFeatured,
+            type: p.projectType,
+            thumbnail: p.projectImage // Ensure mapped if available in DTO/Entity
+          }));
           setProjects(mapped);
         }
       } catch (err) {
-        console.error("Failed to fetch projects, using static fallback", err);
+        console.error("Failed to fetch projects", err);
       } finally {
         setLoading(false);
       }
@@ -107,11 +46,12 @@ const Projects = () => {
     fetchProjects();
   }, []);
 
-
-
   const featuredProjects = projects.filter(p => p.featured);
   const otherProjects = projects.filter(p => !p.featured);
 
+  if (!loading && projects.length === 0) {
+    return null;
+  }
   return (
     <section id="projects" className="section-padding relative w-full overflow-hidden">
       {/* Background Decor */}

@@ -20,4 +20,7 @@ public class ExperienceRequestDTO {
     private LocalDate endDate;
     private boolean current;
     private List<String> technologies;
+    private String logoUrl;
+    private String jobType;
+    private Integer order;
 }

@@ -4,10 +4,11 @@ import { useEffect, useRef, useState } from 'react';
 interface SkillItemProps {
     name: string;
     level: number;
+    iconUrl?: string; // Added iconUrl
     delay?: number;
 }
 
-export const SkillProgressBar = ({ name, level, delay = 0 }: SkillItemProps) => {
+export const SkillProgressBar = ({ name, level, iconUrl, delay = 0 }: SkillItemProps) => {
     const [isVisible, setIsVisible] = useState(false);
     const [currentLevel, setCurrentLevel] = useState(0);
     const ref = useRef<HTMLDivElement>(null);
@@ -40,7 +41,14 @@ export const SkillProgressBar = ({ name, level, delay = 0 }: SkillItemProps) => 
     return (
         <div ref={ref} className="space-y-2">
             <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-foreground">{name}</span>
+                <div className="flex items-center gap-2">
+                    {iconUrl && (
+                        <div className="w-6 h-6 rounded bg-secondary/30 flex items-center justify-center overflow-hidden p-0.5 border border-border/50">
+                            <img src={iconUrl} alt={name} className="w-full h-full object-contain" />
+                        </div>
+                    )}
+                    <span className="text-sm font-medium text-foreground">{name}</span>
+                </div>
                 <span className="text-xs text-muted-foreground font-mono tabular-nums">
                     {isVisible ? currentLevel : 0}%
                 </span>
@@ -76,7 +84,7 @@ export const SkillProgressBar = ({ name, level, delay = 0 }: SkillItemProps) => 
 interface SkillCategoryCardProps {
     title: string;
     icon: LucideIcon;
-    skills: { name: string; level: number }[];
+    skills: { name: string; level: number; iconUrl?: string }[];
     colorClass: string;
     borderClass: string;
     bgClass: string;
@@ -122,6 +130,7 @@ export const SkillCategoryCard = ({
                             key={skill.name}
                             name={skill.name}
                             level={skill.level}
+                            iconUrl={skill.iconUrl}
                             delay={delay + (index * 100)}
                         />
                     ))}
