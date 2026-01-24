@@ -14,7 +14,7 @@ interface BlogPost {
     slug: string;
     content: string;
     coverImage?: string;
-    tags?: string;
+    tags?: string | string[];
     createdAt: string;
     viewCount: number;
 }
@@ -28,8 +28,10 @@ const BlogDetail = () => {
     useEffect(() => {
         const fetchPost = async () => {
             try {
-                const { data } = await axiosInstance.get<BlogPost>(`/blogs/${slug}`);
-                setPost(data);
+                const { data } = await axiosInstance.get<any>(`/blogs/${slug}`);
+                // Handle wrapped response { status: "SUCCESS", data: { ... } }
+                const postData = data.data || data;
+                setPost(postData);
             } catch (err) {
                 console.error(err);
                 setError(true);
@@ -60,6 +62,13 @@ const BlogDetail = () => {
         </div>
     );
 
+    // Helper to get tags array safeley
+    const getTags = (): string[] => {
+        if (Array.isArray(post.tags)) return post.tags;
+        if (typeof post.tags === 'string') return post.tags.split(',');
+        return [];
+    };
+
     return (
         <article className="min-h-screen pt-24 pb-16">
             <div className="container mx-auto px-4 max-w-4xl">
@@ -70,9 +79,9 @@ const BlogDetail = () => {
                 </Link>
 
                 <div className="text-center mb-12 animate-fade-up">
-                    <div className="flex items-center justify-center gap-2 mb-6">
-                        {post.tags?.split(',').map(tag => (
-                            <Badge key={tag} variant="secondary">
+                    <div className="flex items-center justify-center gap-2 mb-6 flex-wrap">
+                        {getTags().map((tag, idx) => (
+                            <Badge key={idx} variant="secondary">
                                 {tag.trim()}
                             </Badge>
                         ))}
