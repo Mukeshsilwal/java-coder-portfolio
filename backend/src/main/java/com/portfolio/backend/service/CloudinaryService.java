@@ -22,7 +22,9 @@ public class CloudinaryService {
 
             Map params = ObjectUtils.asMap(
                     "folder", folderName,
-                    "resource_type", resourceType
+                    "resource_type", resourceType,
+                    "use_filename", true,
+                    "unique_filename", true
             );
 
             return cloudinary.uploader().upload(file.getBytes(), params);

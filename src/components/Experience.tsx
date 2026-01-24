@@ -55,6 +55,7 @@ const Experience = () => {
             startDate: exp.startDate,
             endDate: exp.endDate,
             description: exp.description,
+            jobType: exp.jobType,     // Backend: jobType
             location: 'Remote', // We might not have location in DB yet, or add it
             technologies: [] // We don't have this column yet in Experience entity
           }));

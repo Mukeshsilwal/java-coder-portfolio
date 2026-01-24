@@ -27,8 +27,10 @@ const Messages = () => {
 
     const loadMessages = async () => {
         try {
-            const { data } = await axiosInstance.get<Message[]>('/contact');
-            setMessages(data);
+            const response = await axiosInstance.get<any>('/contact');
+            // Check if response.data is the array or if it's wrapped in { status, message, data: [...] }
+            const msgs = Array.isArray(response.data) ? response.data : (response.data.data || []);
+            setMessages(msgs);
         } catch (err) {
             console.error(err);
             toast.error('Failed to load messages');

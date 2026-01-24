@@ -9,6 +9,7 @@ export interface ExperienceData {
     description: string;
     location?: string;
     technologies?: string[];
+    jobType?: string;
 }
 
 interface TimelineItemProps {
@@ -83,6 +84,11 @@ const ExperienceContent = ({ experience, align }: { experience: ExperienceData, 
                     ${align === 'right' ? 'justify-end' : 'justify-start'}`}>
             <Briefcase className="w-4 h-4 text-primary" />
             {experience.jobTitle}
+            {experience.jobType && (
+                <span className="ml-2 text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/20">
+                    {experience.jobType}
+                </span>
+            )}
             {experience.location && (
                 <>
                     <span className="w-1 h-1 rounded-full bg-border" />

@@ -61,16 +61,22 @@ const ProjectsManager = () => {
         try {
             if (editingId) {
                 await adminApi.updateProject(editingId, formData);
-                toast.success('Project updated successfully');
+                toast.success('Project Updated', {
+                    description: `Changes to "${formData.title}" have been saved successfully.`
+                });
             } else {
                 await adminApi.createProject(formData);
-                toast.success('Project created successfully');
+                toast.success('Project Created', {
+                    description: `Your new project "${formData.title}" is now live.`
+                });
             }
             setIsDialogOpen(false);
             resetForm();
             loadProjects();
         } catch (err) {
-            toast.error('Operation failed');
+            toast.error('Action Failed', {
+                description: 'Unable to save project details. Please check your connection and try again.'
+            });
             console.error(err);
         }
     };
@@ -79,10 +85,14 @@ const ProjectsManager = () => {
         if (!confirm('Are you sure you want to delete this project?')) return;
         try {
             await adminApi.deleteProject(id);
-            toast.success('Project deleted');
+            toast.success('Project Deleted', {
+                description: 'The project has been permanently removed.'
+            });
             loadProjects();
         } catch (err) {
-            toast.error('Failed to delete project');
+            toast.error('Delete Failed', {
+                description: 'Could not delete the project. Please try again.'
+            });
         }
     };
 
@@ -130,7 +140,16 @@ const ProjectsManager = () => {
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="type">Type</Label>
-                                        <Input id="type" value={formData.projectType} onChange={e => setFormData({ ...formData, projectType: e.target.value })} />
+                                        <select
+                                            id="type"
+                                            className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                                            value={formData.projectType}
+                                            onChange={e => setFormData({ ...formData, projectType: e.target.value as any })}
+                                        >
+                                            <option value="PERSONAL">Personal</option>
+                                            <option value="CLIENT">Client</option>
+                                            <option value="OPEN_SOURCE">Open Source</option>
+                                        </select>
                                     </div>
                                 </div>
 

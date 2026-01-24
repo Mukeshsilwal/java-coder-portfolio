@@ -30,16 +30,16 @@ const Contact = () => {
 
       setIsSuccess(true);
       toast({
-        title: "Message sent!",
-        description: "Thank you for reaching out. I'll get back to you soon.",
+        title: "Message Sent Successfully",
+        description: `Thanks ${formData.name}, your message has been delivered. I'll respond to ${formData.email} shortly.`,
       });
 
       // Reset after delay if needed, or leave success state
       setFormData({ name: '', email: '', message: '' });
     } catch (err) {
       toast({
-        title: "Message failed",
-        description: "Could not send message. Please try again later.",
+        title: "Transmission Failed",
+        description: "We couldn't send your message right now. Please check your connection or try again later.",
         variant: "destructive"
       });
     } finally {

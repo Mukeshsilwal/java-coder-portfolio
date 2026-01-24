@@ -602,3 +602,35 @@
   transform-origin: 0%;
   z-index: 100;
 }
+
+/* Fix Date Picker Icon Visibility */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(1);
+  /* Invert to make it white in dark/dark-ish backgrounds */
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* Light mode override if needed, but the default background seems to be dark for admin forms often or just handled by browser. 
+   If the admin inputs have white background, we might need to reset this. 
+   Let's use a class or dark mode selector to be safe. */
+.dark input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
+
+/* If light mode background is white, we want dark icon */
+.light input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0);
+}
+
+/* Default fallback if no class on body yet (though usually 'dark' is present in this app) */
+@media (prefers-color-scheme: dark) {
+  input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+  }
+}

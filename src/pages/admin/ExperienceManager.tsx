@@ -70,16 +70,22 @@ const ExperienceManager = () => {
         try {
             if (editingId) {
                 await axiosInstance.put(`/experience/${editingId}`, formData);
-                toast.success('Experience updated');
+                toast.success('Experience Updated', {
+                    description: `Successfully updated role at ${formData.company}.`
+                });
             } else {
                 await axiosInstance.post('/experience', formData);
-                toast.success('Experience added');
+                toast.success('Experience Added', {
+                    description: `New role at ${formData.company} has been added to your profile.`
+                });
             }
             setIsDialogOpen(false);
             resetForm();
             loadExperience();
         } catch (err) {
-            toast.error('Operation failed');
+            toast.error('Operation Failed', {
+                description: 'There was an error saving your experience data. Please try again.'
+            });
         }
     };
 
@@ -87,10 +93,14 @@ const ExperienceManager = () => {
         if (!confirm('Delete this experience?')) return;
         try {
             await axiosInstance.delete(`/experience/${id}`);
-            toast.success('Experience deleted');
+            toast.success('Experience Deleted', {
+                description: 'The experience entry has been removed.'
+            });
             loadExperience();
         } catch (err) {
-            toast.error('Failed to delete');
+            toast.error('Delete Failed', {
+                description: 'Could not delete the experience entry. Please try again.'
+            });
         }
     };
 
