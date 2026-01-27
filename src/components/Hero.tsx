@@ -8,6 +8,7 @@ import { StatusBadge } from '@/components/StatusBadge';
 const Hero = () => {
   const [profile, setProfile] = useState<ProfileDTO | null>(null);
 
+
   useEffect(() => {
     const fetchProfile = async () => {
       try {
