@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, Moon, Sun } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { ScrollProgress } from '@/components/ScrollProgress';
 import { InstallButton } from '@/components/pwa/InstallPrompt';
-
 
 const navLinks = [
   { href: '/', label: 'Home', isTopFn: true },
@@ -19,7 +18,33 @@ const Header = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeSection, setActiveSection] = useState('home');
+  const [isDarkMode, setIsDarkMode] = useState(false);
   const location = useLocation();
+
+  // Initialize dark mode from localStorage or system preference
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('theme');
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+      setIsDarkMode(true);
+      document.documentElement.classList.add('dark');
+    } else {
+      setIsDarkMode(false);
+      document.documentElement.classList.remove('dark');
+    }
+  }, []);
+
+  const toggleDarkMode = () => {
+    setIsDarkMode(!isDarkMode);
+    if (!isDarkMode) {
+      document.documentElement.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
+    }
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -50,7 +75,7 @@ const Header = () => {
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [location.pathname]);
 
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, sectionId: string | null) => {
     if (location.pathname === '/' && sectionId) {
@@ -141,8 +166,22 @@ const Header = () => {
           </nav>
 
           {/* Right CTA */}
-          <div className="hidden md:flex items-center gap-2 lg:gap-4 flex-shrink-0">
+          <div className="hidden md:flex items-center gap-2 lg:gap-3 flex-shrink-0">
+            {/* Dark Mode Toggle - Desktop */}
+            <button
+              onClick={toggleDarkMode}
+              className="p-2 rounded-lg hover:bg-secondary/50 transition-colors group"
+              aria-label="Toggle dark mode"
+            >
+              {isDarkMode ? (
+                <Sun className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+              ) : (
+                <Moon className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+              )}
+            </button>
+
             <InstallButton />
+
             <Link to="/contact">
               <button className="btn-primary text-sm py-2 px-4 lg:px-6 shadow-lg shadow-primary/20 hover:shadow-primary/40 group relative overflow-hidden">
                 <span className="relative z-10 transition-colors group-hover:text-white">Let's Build</span>
@@ -181,10 +220,29 @@ const Header = () => {
             ))}
           </div>
           <div className="mt-4 pt-4 border-t border-border/50 space-y-2">
+            {/* Dark Mode Toggle - Mobile */}
+            <button
+              onClick={toggleDarkMode}
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium rounded-lg bg-secondary/50 hover:bg-secondary transition-colors"
+            >
+              {isDarkMode ? (
+                <>
+                  <Sun className="w-4 h-4" />
+                  <span>Light Mode</span>
+                </>
+              ) : (
+                <>
+                  <Moon className="w-4 h-4" />
+                  <span>Dark Mode</span>
+                </>
+              )}
+            </button>
+
             {/* Install App Button for Mobile */}
             <div className="flex justify-center">
               <InstallButton />
             </div>
+
             <Link to="/contact" className="block" onClick={() => setIsMobileMenuOpen(false)}>
               <button className="btn-primary w-full text-sm py-3 font-semibold shadow-lg shadow-primary/20">
                 Hire Me
