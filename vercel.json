@@ -2,7 +2,7 @@
     "rewrites": [
         {
             "source": "/api/:match*",
-            "destination": "https://java-coder-portfolio.onrender.com/api/:match*"
+            "destination": "https://java-coder-portfolio-jypl.onrender.com/api/:match*"
         },
         {
             "source": "/((?!api/|assets/|.*\\..*).*)",
