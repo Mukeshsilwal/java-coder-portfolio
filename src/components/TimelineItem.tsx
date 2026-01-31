@@ -8,7 +8,6 @@ export interface ExperienceData {
     endDate: string | null;
     isCurrent?: boolean;
     description: string;
-    location?: string;
     technologies?: string[];
     jobType?: string;
     workMode?: string;

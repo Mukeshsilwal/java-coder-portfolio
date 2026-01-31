@@ -24,7 +24,6 @@ const Experience = () => {
             description: exp.description,
             jobType: exp.jobType,
             workMode: exp.workMode,
-            location: 'Remote', // Default or could be added to DB later
             technologies: exp.technologies || [] // Backend now returns this list
           }));
 

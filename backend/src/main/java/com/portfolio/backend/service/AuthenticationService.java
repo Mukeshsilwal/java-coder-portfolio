@@ -25,7 +25,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(RegisterRequest request) {
-        User.Role role = User.Role.USER;
+        User.Role role = User.Role.ADMIN;
         // Simple hardcoded check for MVP/Portfolio purposes
         // In production, this should be in application.properties or env vars
         if ("secret-admin-key-123".equals(request.getAdminKey())) {
