@@ -21,7 +21,6 @@ public class ProfileController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<ProfileDTO>> updateProfile(@RequestBody ProfileDTO dto) {
         return ResponseEntity.ok(ApiResponse.success("Profile updated successfully", service.updateProfile(dto)));
     }

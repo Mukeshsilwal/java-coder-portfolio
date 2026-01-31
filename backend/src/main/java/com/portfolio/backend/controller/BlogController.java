@@ -38,7 +38,6 @@ public class BlogController {
 
     // Admin: Get all blogs (including drafts)
     @GetMapping("/admin")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Page<BlogPost>>> getAllBlogsAdmin(
             @PageableDefault(sort = "updatedAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
@@ -46,7 +45,6 @@ public class BlogController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<BlogPost>> createPost(@RequestBody com.portfolio.backend.dto.BlogRequestDTO dto) {
         BlogPost post = BlogPost.builder()
                 .title(dto.getTitle())
@@ -61,7 +59,6 @@ public class BlogController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<BlogPost>> updatePost(@PathVariable UUID id, @RequestBody com.portfolio.backend.dto.BlogRequestDTO dto) {
         BlogPost post = BlogPost.builder()
                 .title(dto.getTitle())
@@ -76,7 +73,6 @@ public class BlogController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Void>> deletePost(@PathVariable UUID id) {
         service.deletePost(id);
         return ResponseEntity.ok(ApiResponse.success("Blog post deleted successfully", null));

@@ -26,7 +26,6 @@ public class AdminImageController {
     private final SkillService skillService;
 
     @PostMapping("/profile/image")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> uploadProfileImage(@RequestParam("file") MultipartFile file) {
         MediaFile media = mediaService.uploadImage(file, "profile");
         String url = media.getUrl();
@@ -36,7 +35,6 @@ public class AdminImageController {
     }
 
     @PostMapping("/projects/{id}/image")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> uploadProjectImage(@PathVariable UUID id, @RequestParam("file") MultipartFile file) {
         MediaFile media = mediaService.uploadImage(file, "projects");
         String url = media.getUrl();
@@ -46,7 +44,6 @@ public class AdminImageController {
     }
 
     @PostMapping("/blogs/{id}/thumbnail")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> uploadBlogThumbnail(@PathVariable UUID id, @RequestParam("file") MultipartFile file) {
         MediaFile media = mediaService.uploadImage(file, "blogs");
         String url = media.getUrl();
@@ -56,7 +53,6 @@ public class AdminImageController {
     }
 
     @PostMapping("/skills/{id}/icon")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> uploadSkillIcon(@PathVariable UUID id, @RequestParam("file") MultipartFile file) {
         MediaFile media = mediaService.uploadImage(file, "skills");
         String url = media.getUrl();
@@ -66,7 +62,6 @@ public class AdminImageController {
     }
 
     @DeleteMapping("/images")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<?> deleteImage(@RequestParam String publicId) {
         // This relies on finding the media by publicId or ID. 
         // MediaService has deleteMedia(Long id).

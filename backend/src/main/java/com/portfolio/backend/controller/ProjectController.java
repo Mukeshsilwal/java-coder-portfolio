@@ -29,19 +29,16 @@ public class ProjectController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<ProjectDTO>> createProject(@RequestBody ProjectDTO projectDTO) {
         return ResponseEntity.ok(ApiResponse.success("Project created successfully", service.createProject(projectDTO)));
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<ProjectDTO>> updateProject(@PathVariable UUID id, @RequestBody ProjectDTO projectDTO) {
         return ResponseEntity.ok(ApiResponse.success("Project updated successfully", service.updateProject(id, projectDTO)));
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Void>> deleteProject(@PathVariable UUID id) {
         service.deleteProject(id);
         return ResponseEntity.ok(ApiResponse.success("Project deleted successfully", null));

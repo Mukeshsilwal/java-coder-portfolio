@@ -24,7 +24,6 @@ public class ExperienceController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Experience>> createExperience(@RequestBody com.portfolio.backend.dto.ExperienceRequestDTO dto) {
         Experience experience = Experience.builder()
                 .company(dto.getCompany())
@@ -43,7 +42,6 @@ public class ExperienceController {
     }
 
     @PutMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Experience>> updateExperience(@PathVariable UUID id, @RequestBody com.portfolio.backend.dto.ExperienceRequestDTO dto) {
         Experience experience = Experience.builder()
                 .id(id)
@@ -63,7 +61,6 @@ public class ExperienceController {
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Void>> deleteExperience(@PathVariable UUID id) {
         service.deleteExperience(id);
         return ResponseEntity.ok(ApiResponse.success("Experience deleted successfully", null));

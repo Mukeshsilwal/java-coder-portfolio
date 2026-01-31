@@ -24,13 +24,11 @@ public class SkillController {
     }
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<SkillDTO>> createSkill(@RequestBody @jakarta.validation.Valid SkillDTO dto) {
         return ResponseEntity.ok(ApiResponse.success("Skill created successfully", service.createSkill(dto)));
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Void>> deleteSkill(@PathVariable UUID id) {
         service.deleteSkill(id);
         return ResponseEntity.ok(ApiResponse.success("Skill deleted successfully", null));

@@ -18,7 +18,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/api/admin/media")
 @RequiredArgsConstructor
-@PreAuthorize("hasRole('ADMIN')")
 public class AdminMediaController {
 
     private final MediaService mediaService;
