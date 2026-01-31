@@ -46,7 +46,7 @@ export const publicApi = {
         return data.data; // Returns { url, publicId }
     },
     downloadCV: () => {
-        return `${axiosInstance.defaults.baseURL}/public/media/cv/download`;
+        return `${axiosInstance.defaults.baseURL}/public/cv/download?download=true`;
     }
 };
 
