@@ -19,23 +19,28 @@ public class ResumeService {
 
     @Transactional
     public Resume uploadResume(MultipartFile file, String username) throws IOException {
-        // Validation handled in MediaService generally, but double check type here if strictly Resume
-        // MediaService handles upload and sets previous CVs to inactive in MediaFile table.
-        // We also need to update Resume table.
-        
-        resumeRepository.deactivateAll(); // Validating existing logic
-        
+        // Validate PDF
+        if (!file.getContentType().equals("application/pdf")) {
+            throw new IllegalArgumentException("Only PDF files are allowed");
+        }
+
+        // Deactivate all existing resumes
+        resumeRepository.deactivateAll();
+
+        // Upload to Cloudinary via MediaService
         MediaFile media = mediaService.uploadMedia(file, MediaType.CV);
 
+        // Create Resume entity
         Resume resume = Resume.builder()
                 .fileName(file.getOriginalFilename())
-                .filePath(media.getPublicId()) // Storing publicId in filePath for backward comp if needed
+                .filePath(media.getPublicId())
                 .publicId(media.getPublicId())
                 .url(media.getUrl())
                 .fileSize(file.getSize())
                 .contentType(file.getContentType())
                 .uploadedBy(username)
                 .isActive(true)
+                .downloadCount(0L)
                 .build();
 
         return resumeRepository.save(resume);
@@ -46,7 +51,6 @@ public class ResumeService {
                 .orElseThrow(() -> new RuntimeException("No active resume found"));
     }
 
-    // Changed from returning Resource to returning URL String
     public String getActiveResumeUrl() {
         Resume resume = getActiveResumeMetadata();
         return resume.getUrl();
@@ -55,14 +59,16 @@ public class ResumeService {
     @Transactional
     public void deleteActiveResume() {
         Resume resume = getActiveResumeMetadata();
-        // Soft delete in Resume table
         resume.setIsActive(false);
         resumeRepository.save(resume);
-        
-        // Should we delete from Cloudinary?
-        // Requirement: "Replace old CV on new upload". 
-        // Logic in MediaService.uploadMedia handles deactivating "MediaFile".
-        // Here we just update Resume entity status.
+
+        // Also deactivate in MediaFile table
+        try {
+            mediaService.deactivateMedia(resume.getPublicId());
+        } catch (Exception e) {
+            // Log error but don't fail the operation
+            System.err.println("Failed to deactivate media file: " + e.getMessage());
+        }
     }
 
     @Transactional

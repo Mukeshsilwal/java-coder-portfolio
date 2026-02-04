@@ -41,3 +41,35 @@ export interface ProfileDTO {
 export interface AuthResponse {
     token: string;
 }
+
+export interface Experience {
+    id: string;
+    company: string;
+    role: string;
+    description: string;
+    startDate: string;
+    endDate: string | null;
+    isCurrent: boolean;
+    technologies: string[];
+    logoUrl?: string;
+    jobType?: string;
+    workMode?: string;
+    order?: number;
+}
+
+export interface Education {
+    id: string;
+    institution: string;
+    degree: string;
+    location: string;
+    startDate: string;
+    endDate: string | null;
+    status: string;
+    grade: string;
+    description: string;
+    certificateUrl?: string;
+    orderIndex: number;
+    visible: boolean;
+    createdAt?: string;
+    updatedAt?: string;
+}

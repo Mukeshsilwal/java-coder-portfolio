@@ -10,7 +10,8 @@ import {
     MessageSquare,
     LogOut,
     User,
-    Briefcase
+    Briefcase,
+    GraduationCap
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -20,6 +21,7 @@ const sidebarItems = [
     { icon: Folder, label: 'Projects', path: '/admin/projects' },
     { icon: Code2, label: 'Skills', path: '/admin/skills' },
     { icon: Briefcase, label: 'Experience', path: '/admin/experience' },
+    { icon: GraduationCap, label: 'Education', path: '/admin/education' },
     { icon: FileText, label: 'Resume', path: '/admin/resume' },
     { icon: FileText, label: 'Blogs', path: '/admin/blogs' },
     { icon: MessageSquare, label: 'Messages', path: '/admin/messages' },

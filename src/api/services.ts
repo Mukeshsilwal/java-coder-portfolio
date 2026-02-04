@@ -1,5 +1,5 @@
 import { axiosInstance } from './axios';
-import { ProjectDTO, SkillDTO, ProfileDTO } from '@/types';
+import { ProjectDTO, SkillDTO, ProfileDTO, Education, Experience } from '@/types';
 
 export interface MessageDTO {
     senderName: string;
@@ -47,6 +47,10 @@ export const publicApi = {
     },
     downloadCV: () => {
         return `${axiosInstance.defaults.baseURL}/public/cv/download?download=true`;
+    },
+    getEducation: async () => {
+        const { data } = await axiosInstance.get('/public/education');
+        return data.data;
     }
 };
 
@@ -153,6 +157,26 @@ export const adminApi = {
             params: type ? { type } : {}
         });
         return data;
+    },
+
+    // Education
+    getAllEducation: async () => {
+        const { data } = await axiosInstance.get('/admin/education');
+        return data.data;
+    },
+    createEducation: async (education: Partial<Education>) => {
+        const { data } = await axiosInstance.post('/admin/education', education);
+        return data.data;
+    },
+    updateEducation: async (id: string, education: Partial<Education>) => {
+        const { data } = await axiosInstance.put(`/admin/education/${id}`, education);
+        return data.data;
+    },
+    deleteEducation: async (id: string) => {
+        await axiosInstance.delete(`/admin/education/${id}`);
+    },
+    reorderEducation: async (ids: string[]) => {
+        await axiosInstance.patch('/admin/education/reorder', ids);
     }
 };
 

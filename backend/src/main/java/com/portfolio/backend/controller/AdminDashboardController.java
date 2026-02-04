@@ -21,6 +21,7 @@ public class AdminDashboardController {
     private final ProfileRepository profileRepository;
     private final ResumeRepository resumeRepository;
     private final ContactMessageRepository contactMessageRepository;
+    private final EducationRepository educationRepository;
     
     @GetMapping("/stats")
     public ResponseEntity<ApiResponse<Map<String, Object>>> getDashboardStats() {
@@ -28,6 +29,7 @@ public class AdminDashboardController {
         
         stats.put("projects", projectRepository.count());
         stats.put("blogs", blogRepository.count());
+        stats.put("education", educationRepository.count());
         
         // Sum visits from all profiles (usually just 1)
         Long totalViews = profileRepository.findAll().stream()

@@ -15,6 +15,7 @@ const Blog = lazy(() => import("@/pages/Blog"));
 const BlogDetail = lazy(() => import("@/pages/BlogDetail"));
 const ProjectsPage = lazy(() => import("@/pages/Projects"));
 const SkillsPage = lazy(() => import("@/pages/Skills"));
+const EducationPage = lazy(() => import("@/pages/Education"));
 const NotFound = lazy(() => import("@/pages/NotFound"));
 
 // Admin Pages
@@ -23,6 +24,7 @@ const ProjectsManager = lazy(() => import("@/pages/admin/ProjectsManager"));
 const ProfileManager = lazy(() => import("@/pages/admin/ProfileManager"));
 const SkillManager = lazy(() => import("@/pages/admin/SkillManager"));
 const ExperienceManager = lazy(() => import("@/pages/admin/ExperienceManager"));
+const EducationManager = lazy(() => import("@/pages/admin/EducationManager"));
 const ResumeManager = lazy(() => import("@/pages/admin/ResumeManager"));
 const BlogManager = lazy(() => import("@/pages/admin/BlogManager"));
 const Messages = lazy(() => import("@/pages/admin/Messages"));
@@ -48,6 +50,7 @@ const AppRoutes = () => {
                     <Route path="/blog/:slug" element={<BlogDetail />} />
                     <Route path="/projects" element={<ProjectsPage />} />
                     <Route path="/skills" element={<SkillsPage />} />
+                    <Route path="/education" element={<EducationPage />} />
                 </Route>
 
                 {/* Admin Routes */}
@@ -57,6 +60,7 @@ const AppRoutes = () => {
                     <Route path="skills" element={<SkillManager />} />
                     <Route path="profile" element={<ProfileManager />} />
                     <Route path="experience" element={<ExperienceManager />} />
+                    <Route path="education" element={<EducationManager />} />
                     <Route path="resume" element={<ResumeManager />} />
                     <Route path="blogs" element={<BlogManager />} />
                     <Route path="messages" element={<Messages />} />
