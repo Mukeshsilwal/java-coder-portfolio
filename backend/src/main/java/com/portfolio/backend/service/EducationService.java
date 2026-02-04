@@ -34,12 +34,19 @@ public class EducationService {
         Education existing = repository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Education not found"));
         
-        if(updated.getInstitution() != null) existing.setInstitution(updated.getInstitution());
-        if(updated.getDegree() != null) existing.setDegree(updated.getDegree());
+        if(updated.getInstitution() != null && !updated.getInstitution().trim().isEmpty()) existing.setInstitution(updated.getInstitution());
+        if(updated.getDegree() != null && !updated.getDegree().trim().isEmpty()) existing.setDegree(updated.getDegree());
         if(updated.getLocation() != null) existing.setLocation(updated.getLocation());
         if(updated.getStartDate() != null) existing.setStartDate(updated.getStartDate());
-        existing.setEndDate(updated.getEndDate()); // Can be null if ongoing
-        if(updated.getStatus() != null) existing.setStatus(updated.getStatus());
+        
+        // Handle endDate - if status is Ongoing, it might be null
+        if (updated.getEndDate() != null) {
+            existing.setEndDate(updated.getEndDate());
+        } else if ("Ongoing".equalsIgnoreCase(updated.getStatus())) {
+            existing.setEndDate(null);
+        }
+
+        if(updated.getStatus() != null && !updated.getStatus().trim().isEmpty()) existing.setStatus(updated.getStatus());
         if(updated.getGrade() != null) existing.setGrade(updated.getGrade());
         if(updated.getDescription() != null) existing.setDescription(updated.getDescription());
         if(updated.getCertificateUrl() != null) existing.setCertificateUrl(updated.getCertificateUrl());
