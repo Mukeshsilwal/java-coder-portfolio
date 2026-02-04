@@ -72,35 +72,31 @@ public class ResumeController {
     }
 
     @GetMapping("/public/cv/download")
-    public ResponseEntity<Resource> downloadResume() {
+    public ResponseEntity<byte[]> downloadResume() {
         try {
             resumeService.incrementDownloadCount();
             Resume resume = resumeService.getActiveResumeMetadata();
             String cloudinaryUrl = resume.getUrl();
 
-            // Open connection to Cloudinary URL
+            // Open connection to Cloudinary URL and read all bytes
             URL url = new URL(cloudinaryUrl);
-            InputStream inputStream = url.openStream();
-
-            InputStreamResource resource = new InputStreamResource(inputStream);
+            byte[] bytes;
+            try (InputStream is = url.openStream()) {
+                bytes = is.readAllBytes();
+            }
 
             // Set proper headers for PDF download
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_PDF);
-            headers.setContentDisposition(
-                    ContentDisposition.attachment()
-                            .filename(resume.getFileName() != null ? resume.getFileName() : "resume.pdf")
-                            .build()
+            headers.set(HttpHeaders.CONTENT_TYPE, "application/pdf");
+            headers.set(HttpHeaders.CONTENT_DISPOSITION, 
+                ContentDisposition.attachment()
+                    .filename(resume.getFileName() != null ? resume.getFileName() : "resume.pdf")
+                    .build().toString()
             );
+            headers.set(HttpHeaders.CONTENT_LENGTH, String.valueOf(bytes.length));
+            headers.set(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate");
 
-            // Set content length if available
-            if (resume.getFileSize() != null) {
-                headers.setContentLength(resume.getFileSize());
-            }
-
-            return ResponseEntity.ok()
-                    .headers(headers)
-                    .body(resource);
+            return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
 
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

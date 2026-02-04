@@ -49,36 +49,36 @@ public class PublicMediaController {
     }
 
     /**
-     * Stream CV as download (recommended approach)
-     * This provides proper download headers and filename
+     * Download CV as binary stream
+     * Fixed to prevent corruption by setting proper headers and using direct byte response
      */
     @GetMapping("/cv/download")
-    public ResponseEntity<Resource> downloadCV() {
+    public ResponseEntity<byte[]> downloadCV() {
         try {
             MediaFile cv = mediaService.getActiveMediaByType(MediaType.CV);
             String cloudinaryUrl = cv.getUrl();
 
-            // Open connection to Cloudinary URL
+            // Download bytes from Cloudinary
             URL url = new URL(cloudinaryUrl);
-            InputStream inputStream = url.openStream();
+            byte[] bytes;
+            try (InputStream is = url.openStream()) {
+                bytes = is.readAllBytes();
+            }
 
-            InputStreamResource resource = new InputStreamResource(inputStream);
+            // Extract filename
+            String fileName = cv.getFileName() != null ? cv.getFileName() : 
+                              extractFileNameFromPublicId(cv.getPublicId(), "resume.pdf");
 
-            // Extract filename from publicId or use default
-            String fileName = extractFileNameFromPublicId(cv.getPublicId(), "resume.pdf");
-
-            // Set proper headers for PDF download
+            // Set headers
             HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(org.springframework.http.MediaType.APPLICATION_PDF);
-            headers.setContentDisposition(
-                    org.springframework.http.ContentDisposition.attachment()
-                            .filename(fileName)
-                            .build()
-            );
+            headers.set(HttpHeaders.CONTENT_TYPE, "application/pdf");
+            headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
+            headers.set(HttpHeaders.CONTENT_LENGTH, String.valueOf(bytes.length));
+            headers.set(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate");
+            headers.set(HttpHeaders.PRAGMA, "no-cache");
+            headers.set(HttpHeaders.EXPIRES, "0");
 
-            return ResponseEntity.ok()
-                    .headers(headers)
-                    .body(resource);
+            return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
 
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -87,28 +87,25 @@ public class PublicMediaController {
         }
     }
 
-    /**
-     * Alternative: Direct redirect to Cloudinary (simpler but less control)
-     * Use this if you want Cloudinary to handle the download directly
-     */
     @GetMapping("/cv/redirect")
-    public ResponseEntity<?> redirectToCV() {
+    public ResponseEntity<Void> redirectToCV() {
         try {
             MediaFile cv = mediaService.getActiveMediaByType(MediaType.CV);
+            String url = cv.getUrl();
 
-            // Add download transformation to Cloudinary URL
-            String fileName = extractFileNameFromPublicId(cv.getPublicId(), "resume.pdf");
-            String downloadUrl = cv.getUrl().replace("/upload/", "/upload/fl_attachment:" + fileName + "/");
+            // Cloudinary "attachment" flag ensures browser triggers download
+            String fileName = cv.getFileName() != null ? cv.getFileName() : "resume.pdf";
+            String downloadUrl = url;
+            
+            if (url.contains("/upload/")) {
+                downloadUrl = url.replace("/upload/", "/upload/fl_attachment:" + fileName.replace(" ", "_") + "/");
+            }
 
             return ResponseEntity.status(HttpStatus.FOUND)
-                    .header("Location", downloadUrl)
+                    .header(HttpHeaders.LOCATION, downloadUrl)
                     .build();
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(ApiResponse.error("CV not available"));
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(ApiResponse.error("Error accessing CV: " + e.getMessage()));
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
     }
 

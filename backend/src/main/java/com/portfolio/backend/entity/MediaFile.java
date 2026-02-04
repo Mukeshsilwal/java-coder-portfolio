@@ -31,6 +31,10 @@ public class MediaFile {
     @Column(nullable = false)
     private String publicId;
 
+    private Long fileSize;
+
+    private String fileName;
+
     @CreationTimestamp
     private LocalDateTime uploadedAt;
 

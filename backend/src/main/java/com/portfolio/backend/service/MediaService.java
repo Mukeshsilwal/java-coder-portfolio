@@ -90,6 +90,8 @@ public class MediaService {
                     .publicId(publicId)
                     .url(url)
                     .fileType(type)
+                    .fileSize(file.getSize())
+                    .fileName(file.getOriginalFilename())
                     .active(true)
                     .build();
 
