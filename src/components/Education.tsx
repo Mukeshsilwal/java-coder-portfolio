@@ -23,6 +23,37 @@ const Education = () => {
         fetchEducation();
     }, []);
 
+    const structuredData = education.length > 0 ? {
+        "@context": "https://schema.org",
+        "@type": "ItemList",
+        "itemListElement": education.map((edu, index) => ({
+            "@type": "ListItem",
+            "position": index + 1,
+            "item": {
+                "@type": "Course",
+                "name": edu.degree,
+                "description": edu.description,
+                "provider": {
+                    "@type": "EducationalOrganization",
+                    "name": edu.institution,
+                    "address": edu.location
+                }
+            }
+        }))
+    } : null;
+
+    useEffect(() => {
+        if (structuredData) {
+            const script = document.createElement('script');
+            script.type = 'application/ld+json';
+            script.innerHTML = JSON.stringify(structuredData);
+            document.head.appendChild(script);
+            return () => {
+                document.head.removeChild(script);
+            };
+        }
+    }, [structuredData]);
+
     if (loading) {
         return (
             <section id="education" className="py-20 bg-background/50">
@@ -42,37 +73,6 @@ const Education = () => {
     }
 
     if (education.length === 0) return null;
-
-    const structuredData = {
-        "@context": "https://schema.org",
-        "@type": "ItemList",
-        "itemListElement": education.map((edu, index) => ({
-            "@type": "ListItem",
-            "position": index + 1,
-            "item": {
-                "@type": "Course",
-                "name": edu.degree,
-                "description": edu.description,
-                "provider": {
-                    "@type": "EducationalOrganization",
-                    "name": edu.institution,
-                    "address": edu.location
-                }
-            }
-        }))
-    };
-
-    useEffect(() => {
-        if (education.length > 0) {
-            const script = document.createElement('script');
-            script.type = 'application/ld+json';
-            script.innerHTML = JSON.stringify(structuredData);
-            document.head.appendChild(script);
-            return () => {
-                document.head.removeChild(script);
-            };
-        }
-    }, [education]);
 
     return (
         <section id="education" className="py-24 relative overflow-hidden bg-background">

@@ -24,6 +24,7 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
+    DialogDescription,
     DialogFooter,
 } from "@/components/ui/dialog";
 import { motion, Reorder } from 'framer-motion';
@@ -254,6 +255,9 @@ const EducationManager = () => {
                             <GraduationCap className="w-5 h-5 text-primary" />
                             {editingId ? 'Edit Education Record' : 'Add New Education'}
                         </DialogTitle>
+                        <DialogDescription>
+                            {editingId ? 'Update your existing education details.' : 'Add your degree or certification information below.'}
+                        </DialogDescription>
                     </DialogHeader>
 
                     <form onSubmit={handleSubmit} className="space-y-6 pt-4">

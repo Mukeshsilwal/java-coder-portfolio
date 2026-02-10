@@ -14,6 +14,7 @@ import {
     DialogContent,
     DialogHeader,
     DialogTitle,
+    DialogDescription,
     DialogTrigger,
 } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
@@ -127,9 +128,9 @@ const ProjectsManager = () => {
                     <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
                         <DialogHeader>
                             <DialogTitle>{editingId ? 'Edit Project' : 'Add New Project'}</DialogTitle>
-                            <div className="text-sm text-muted-foreground">
+                            <DialogDescription>
                                 {editingId ? 'Update project details.' : 'Fill in the details for your new project.'}
-                            </div>
+                            </DialogDescription>
                         </DialogHeader>
                         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
                             <div className="grid gap-4 py-4">
