@@ -7,6 +7,7 @@ import com.portfolio.backend.entity.MediaType;
 import com.portfolio.backend.repository.MediaFileRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,6 +43,9 @@ public class MediaService {
         }
     }
 
+    @Value("${app.upload-dir:uploads}")
+    private String uploadDir;
+
     @Transactional
     public MediaFile uploadMedia(MultipartFile file, MediaType type, String folderPath) throws IOException {
         // Validate file
@@ -63,20 +67,31 @@ public class MediaService {
             });
         }
 
+        // Handle CVs in Database (BLOB) per user request
+        if (type == MediaType.CV) {
+            // Build MediaFile entity for database storage
+            MediaFile mediaFile = MediaFile.builder()
+                    .publicId("DATABASE_" + System.currentTimeMillis()) 
+                    .url("/api/public/media/cv/download") 
+                    .data(file.getBytes()) // Store bytes directly in DB
+                    .fileType(type)
+                    .fileSize(file.getSize())
+                    .fileName(file.getOriginalFilename())
+                    .active(true)
+                    .build();
+
+            return mediaFileRepository.save(mediaFile);
+        }
+
         try {
-            // Upload to Cloudinary with correct parameters
+            // Upload to Cloudinary for other types (images)
             Map uploadParams = ObjectUtils.asMap(
                     "folder", folderPath,
-                    "resource_type", type == MediaType.CV ? "raw" : "auto",
+                    "resource_type", "auto",
                     "use_filename", true,
                     "unique_filename", true,
                     "overwrite", false
             );
-
-            // Add format for PDFs
-            if (type == MediaType.CV) {
-                uploadParams.put("format", "pdf");
-            }
 
             // Upload file
             Map uploadResult = cloudinary.uploader().upload(file.getBytes(), uploadParams);

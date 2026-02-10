@@ -30,12 +30,13 @@ public class ResumeService {
         // Upload to Cloudinary via MediaService
         MediaFile media = mediaService.uploadMedia(file, MediaType.CV);
 
-        // Create Resume entity
+        // Create Resume entity with BLOB data
         Resume resume = Resume.builder()
                 .fileName(file.getOriginalFilename())
                 .filePath(media.getPublicId())
                 .publicId(media.getPublicId())
                 .url(media.getUrl())
+                .data(file.getBytes()) // Store bytes directly in DB
                 .fileSize(file.getSize())
                 .contentType(file.getContentType())
                 .uploadedBy(username)

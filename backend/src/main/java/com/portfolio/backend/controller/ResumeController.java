@@ -5,6 +5,8 @@ import com.portfolio.backend.entity.Resume;
 import com.portfolio.backend.service.ResumeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -72,29 +74,42 @@ public class ResumeController {
     }
 
     @GetMapping("/public/cv/download")
-    public ResponseEntity<Void> downloadResume() {
+    public ResponseEntity<Resource> downloadResume() {
         try {
             resumeService.incrementDownloadCount();
             Resume resume = resumeService.getActiveResumeMetadata();
-            String url = resume.getUrl();
-
-            // Prepare a safe filename for Cloudinary attachment flag
             String fileName = resume.getFileName() != null ? resume.getFileName() : "resume.pdf";
-            String safeFileName = fileName.replaceAll("[^a-zA-Z0-9.-]", "_");
-            
-            String downloadUrl = url;
-            // Cloudinary "fl_attachment" flag ensures browser triggers download
-            if (url.contains("/upload/")) {
-                downloadUrl = url.replace("/upload/", "/upload/fl_attachment:" + safeFileName + "/");
+
+            // If we have BLOB data, serve it directly
+            if (resume.getData() != null && resume.getData().length > 0) {
+                Resource resource = new ByteArrayResource(resume.getData());
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_TYPE, "application/pdf")
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                        .header(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate")
+                        .body(resource);
             }
 
-            return ResponseEntity.status(HttpStatus.FOUND)
-                    .header(HttpHeaders.LOCATION, downloadUrl)
-                    .header(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate")
-                    .build();
+            // Fallback: Cloudinary Proxy (Legacy support)
+            String urlString = resume.getUrl();
+            if (urlString != null && urlString.startsWith("http")) {
+                URL url = new URL(urlString);
+                byte[] bytes;
+                try (InputStream is = url.openStream()) {
+                    bytes = is.readAllBytes();
+                }
+                Resource resource = new ByteArrayResource(bytes);
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_TYPE, "application/pdf")
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                        .header(HttpHeaders.CONTENT_LENGTH, String.valueOf(bytes.length))
+                        .body(resource);
+            }
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 }

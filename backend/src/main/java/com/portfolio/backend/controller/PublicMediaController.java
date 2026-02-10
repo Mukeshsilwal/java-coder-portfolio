@@ -6,6 +6,8 @@ import com.portfolio.backend.entity.MediaType;
 import com.portfolio.backend.service.MediaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -52,29 +54,47 @@ public class PublicMediaController {
      * Download CV by redirecting to Cloudinary with attachment flag
      * This avoids proxying large files through the backend and prevents potential timeouts or memory issues
      */
+    /**
+     * Download CV directly from database BLOB
+     * Fulfills "database-backed storage (BLOB)" approach
+     */
     @GetMapping("/cv/download")
-    public ResponseEntity<Void> downloadCV() {
+    public ResponseEntity<Resource> downloadCV() {
         try {
             MediaFile cv = mediaService.getActiveMediaByType(MediaType.CV);
-            String url = cv.getUrl();
-            
-            // Prepare a safe filename for Cloudinary attachment flag
             String fileName = cv.getFileName() != null ? cv.getFileName() : "resume.pdf";
-            String safeFileName = fileName.replaceAll("[^a-zA-Z0-9.-]", "_");
-            
-            String downloadUrl = url;
-            // Cloudinary "fl_attachment" flag ensures browser triggers download
-            if (url.contains("/upload/")) {
-                downloadUrl = url.replace("/upload/", "/upload/fl_attachment:" + safeFileName + "/");
+
+            // If we have BLOB data, serve it directly
+            if (cv.getData() != null && cv.getData().length > 0) {
+                Resource resource = new ByteArrayResource(cv.getData());
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_TYPE, "application/pdf")
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                        .header(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate")
+                        .body(resource);
             }
 
-            return ResponseEntity.status(HttpStatus.FOUND)
-                    .header(HttpHeaders.LOCATION, downloadUrl)
-                    .header(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate")
-                    .build();
+            // Fallback: Proxy from Cloudinary if no BLOB exists (for older records)
+            String urlString = cv.getUrl();
+            if (urlString != null && urlString.startsWith("http")) {
+                URL url = new URL(urlString);
+                byte[] bytes;
+                try (InputStream is = url.openStream()) {
+                    bytes = is.readAllBytes();
+                }
+                
+                Resource resource = new ByteArrayResource(bytes);
+                return ResponseEntity.ok()
+                        .header(HttpHeaders.CONTENT_TYPE, "application/pdf")
+                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                        .header(HttpHeaders.CONTENT_LENGTH, String.valueOf(bytes.length))
+                        .body(resource);
+            }
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 

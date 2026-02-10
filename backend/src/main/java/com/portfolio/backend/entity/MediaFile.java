@@ -38,5 +38,9 @@ public class MediaFile {
     @CreationTimestamp
     private LocalDateTime uploadedAt;
 
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    private byte[] data;
+
     private boolean active;
 }

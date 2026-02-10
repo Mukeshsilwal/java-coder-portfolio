@@ -43,6 +43,10 @@ public class Resume {
     @Builder.Default
     private Long downloadCount = 0L;
 
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    private byte[] data;
+
     @PrePersist
     public void prePersist() {
         if (uploadedAt == null) {
