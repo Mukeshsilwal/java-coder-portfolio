@@ -23,7 +23,7 @@ public class Education {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(name = "institution_name", nullable = false, length = 500)
+    @Column(name = "institution", nullable = false, length = 500)
     private String institution;
 
     @Column(length = 500)
