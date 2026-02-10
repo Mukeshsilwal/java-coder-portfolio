@@ -49,41 +49,32 @@ public class PublicMediaController {
     }
 
     /**
-     * Download CV as binary stream
-     * Fixed to prevent corruption by setting proper headers and using direct byte response
+     * Download CV by redirecting to Cloudinary with attachment flag
+     * This avoids proxying large files through the backend and prevents potential timeouts or memory issues
      */
     @GetMapping("/cv/download")
-    public ResponseEntity<byte[]> downloadCV() {
+    public ResponseEntity<Void> downloadCV() {
         try {
             MediaFile cv = mediaService.getActiveMediaByType(MediaType.CV);
-            String cloudinaryUrl = cv.getUrl();
-
-            // Download bytes from Cloudinary
-            URL url = new URL(cloudinaryUrl);
-            byte[] bytes;
-            try (InputStream is = url.openStream()) {
-                bytes = is.readAllBytes();
+            String url = cv.getUrl();
+            
+            // Prepare a safe filename for Cloudinary attachment flag
+            String fileName = cv.getFileName() != null ? cv.getFileName() : "resume.pdf";
+            String safeFileName = fileName.replaceAll("[^a-zA-Z0-9.-]", "_");
+            
+            String downloadUrl = url;
+            // Cloudinary "fl_attachment" flag ensures browser triggers download
+            if (url.contains("/upload/")) {
+                downloadUrl = url.replace("/upload/", "/upload/fl_attachment:" + safeFileName + "/");
             }
 
-            // Extract filename
-            String fileName = cv.getFileName() != null ? cv.getFileName() : 
-                              extractFileNameFromPublicId(cv.getPublicId(), "resume.pdf");
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .header(HttpHeaders.LOCATION, downloadUrl)
+                    .header(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate")
+                    .build();
 
-            // Set headers
-            HttpHeaders headers = new HttpHeaders();
-            headers.set(HttpHeaders.CONTENT_TYPE, "application/pdf");
-            headers.set(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"");
-            headers.set(HttpHeaders.CONTENT_LENGTH, String.valueOf(bytes.length));
-            headers.set(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate");
-            headers.set(HttpHeaders.PRAGMA, "no-cache");
-            headers.set(HttpHeaders.EXPIRES, "0");
-
-            return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
-
-        } catch (RuntimeException e) {
+        } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 

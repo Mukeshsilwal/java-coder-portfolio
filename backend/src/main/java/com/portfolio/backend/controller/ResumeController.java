@@ -72,34 +72,27 @@ public class ResumeController {
     }
 
     @GetMapping("/public/cv/download")
-    public ResponseEntity<byte[]> downloadResume() {
+    public ResponseEntity<Void> downloadResume() {
         try {
             resumeService.incrementDownloadCount();
             Resume resume = resumeService.getActiveResumeMetadata();
-            String cloudinaryUrl = resume.getUrl();
+            String url = resume.getUrl();
 
-            // Open connection to Cloudinary URL and read all bytes
-            URL url = new URL(cloudinaryUrl);
-            byte[] bytes;
-            try (InputStream is = url.openStream()) {
-                bytes = is.readAllBytes();
+            // Prepare a safe filename for Cloudinary attachment flag
+            String fileName = resume.getFileName() != null ? resume.getFileName() : "resume.pdf";
+            String safeFileName = fileName.replaceAll("[^a-zA-Z0-9.-]", "_");
+            
+            String downloadUrl = url;
+            // Cloudinary "fl_attachment" flag ensures browser triggers download
+            if (url.contains("/upload/")) {
+                downloadUrl = url.replace("/upload/", "/upload/fl_attachment:" + safeFileName + "/");
             }
 
-            // Set proper headers for PDF download
-            HttpHeaders headers = new HttpHeaders();
-            headers.set(HttpHeaders.CONTENT_TYPE, "application/pdf");
-            headers.set(HttpHeaders.CONTENT_DISPOSITION, 
-                ContentDisposition.attachment()
-                    .filename(resume.getFileName() != null ? resume.getFileName() : "resume.pdf")
-                    .build().toString()
-            );
-            headers.set(HttpHeaders.CONTENT_LENGTH, String.valueOf(bytes.length));
-            headers.set(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate");
+            return ResponseEntity.status(HttpStatus.FOUND)
+                    .header(HttpHeaders.LOCATION, downloadUrl)
+                    .header(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate")
+                    .build();
 
-            return new ResponseEntity<>(bytes, headers, HttpStatus.OK);
-
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         }
