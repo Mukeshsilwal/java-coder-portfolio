@@ -48,7 +48,7 @@ public class ResumeService {
     }
 
     public Resume getActiveResumeMetadata() {
-        return resumeRepository.findByIsActiveTrue()
+        return resumeRepository.findTopByIsActiveTrueOrderByUploadedAtDesc()
                 .orElseThrow(() -> new RuntimeException("No active resume found"));
     }
 
@@ -78,5 +78,10 @@ public class ResumeService {
             resume.setDownloadCount(resume.getDownloadCount() + 1);
             resumeRepository.save(resume);
         });
+    }
+
+    public Resume getLatestResumeForUser(String username) {
+        return resumeRepository.findTopByUploadedByOrderByUploadedAtDesc(username)
+                .orElseThrow(() -> new RuntimeException("No resume found for user: " + username));
     }
 }

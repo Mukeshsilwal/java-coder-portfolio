@@ -16,4 +16,8 @@ public interface ResumeRepository extends JpaRepository<Resume, UUID> {
     @Modifying
     @Query("UPDATE Resume r SET r.isActive = false WHERE r.isActive = true")
     void deactivateAll();
+
+    Optional<Resume> findTopByUploadedByOrderByUploadedAtDesc(String uploadedBy);
+
+    Optional<Resume> findTopByIsActiveTrueOrderByUploadedAtDesc();
 }

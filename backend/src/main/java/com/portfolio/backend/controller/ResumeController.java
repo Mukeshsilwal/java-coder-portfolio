@@ -78,6 +78,11 @@ public class ResumeController {
         try {
             resumeService.incrementDownloadCount();
             Resume resume = resumeService.getActiveResumeMetadata();
+            
+            // Log details as requested (like HR/Admin endpoint)
+            System.out.println("Public user requesting latest active CV: " + resume.getFileName() +
+                    ", Uploaded: " + resume.getUploadedAt() + ", Type: " + resume.getContentType());
+            
             String fileName = resume.getFileName() != null ? resume.getFileName() : "resume.pdf";
 
             // If we have BLOB data, serve it directly
@@ -108,6 +113,49 @@ public class ResumeController {
 
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/admin/cv/download/latest")
+    public ResponseEntity<Resource> downloadLatestResume() {
+        try {
+            String username = org.springframework.security.core.context.SecurityContextHolder
+                    .getContext().getAuthentication().getName();
+
+            Resume resume = resumeService.getLatestResumeForUser(username);
+
+            // Log details as requested
+            System.out.println("User " + username + " requesting latest CV: " + resume.getFileName() +
+                    ", Uploaded: " + resume.getUploadedAt() + ", Type: " + resume.getContentType());
+
+            String fileName = resume.getFileName() != null ? resume.getFileName() : "resume.pdf";
+            String contentType = resume.getContentType() != null ? resume.getContentType() : "application/pdf";
+
+            byte[] data = null;
+            if (resume.getData() != null && resume.getData().length > 0) {
+                data = resume.getData();
+            } else if (resume.getUrl() != null && resume.getUrl().startsWith("http")) {
+                // Fallback to URL fetch if BLOB is missing
+                try (InputStream is = new URL(resume.getUrl()).openStream()) {
+                    data = is.readAllBytes();
+                }
+            }
+
+            if (data == null) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            }
+
+            Resource resource = new ByteArrayResource(data);
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_TYPE, contentType)
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                    .header(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate")
+                    .body(resource);
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
