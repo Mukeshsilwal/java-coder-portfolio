@@ -67,11 +67,23 @@ public class MediaService {
             });
         }
 
-        // Handle CVs in Database (BLOB) - Single File Policy
+        // Handle CVs: Save to Local Filesystem (Single File Policy)
         if (type == MediaType.CV) {
             final String FIXED_CV_ID = "CV_FILE";
+            
+            // Create target directory if not exists
+            java.nio.file.Path targetDir = java.nio.file.Paths.get(uploadDir, "cv");
+            if (!java.nio.file.Files.exists(targetDir)) {
+                java.nio.file.Files.createDirectories(targetDir);
+            }
+            
+            // Fixed filename
+            java.nio.file.Path targetPath = targetDir.resolve("my_cv.pdf");
+            
+            // Write file (Overwrite)
+            java.nio.file.Files.write(targetPath, file.getBytes());
 
-            // Check if CV already exists
+            // Check if CV database record already exists
             MediaFile mediaFile = mediaFileRepository.findByPublicId(FIXED_CV_ID)
                     .orElse(MediaFile.builder()
                             .publicId(FIXED_CV_ID)
@@ -79,10 +91,10 @@ public class MediaService {
                             .url("/api/public/media/cv/download")
                             .build());
 
-            // Update fields (whether new or existing)
-            mediaFile.setData(file.getBytes());
+            // Update metadata (No BLOB data here)
+            mediaFile.setData(null); // Ensure no BLOB data is stored
             mediaFile.setFileSize(file.getSize());
-            mediaFile.setFileName(file.getOriginalFilename());
+            mediaFile.setFileName("my_cv.pdf"); // Fixed name
             mediaFile.setActive(true);
             mediaFile.setUploadedAt(java.time.LocalDateTime.now()); // Update timestamp to show "Fresh" status
 
@@ -93,8 +105,6 @@ public class MediaService {
             List<MediaFile> otherFiles = mediaFileRepository.findByFileTypeAndActiveTrue(MediaType.CV);
             for (MediaFile f : otherFiles) {
                 if (!f.getPublicId().equals(FIXED_CV_ID)) {
-                    // Safe cleanup: just deactivate or delete. User said "replace".
-                    // We'll delete them to strictly follow "Only one CV in the entire system"
                     try {
                          mediaFileRepository.delete(f);
                     } catch (Exception e) {

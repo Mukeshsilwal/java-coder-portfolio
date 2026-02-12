@@ -58,40 +58,25 @@ public class PublicMediaController {
      * Download CV directly from database BLOB
      * Fulfills "database-backed storage (BLOB)" approach
      */
+    @org.springframework.beans.factory.annotation.Value("${app.upload-dir:uploads}")
+    private String uploadDir;
+
     @GetMapping("/cv/download")
     public ResponseEntity<Resource> downloadCV() {
         try {
-            MediaFile cv = mediaService.getActiveMediaByType(MediaType.CV);
-            String fileName = cv.getFileName() != null ? cv.getFileName() : "resume.pdf";
-
-            // If we have BLOB data, serve it directly
-            if (cv.getData() != null && cv.getData().length > 0) {
-                Resource resource = new ByteArrayResource(cv.getData());
-                return ResponseEntity.ok()
-                        .header(HttpHeaders.CONTENT_TYPE, "application/pdf")
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
-                        .header(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate")
-                        .body(resource);
+            java.nio.file.Path pdfPath = java.nio.file.Paths.get(uploadDir, "cv", "my_cv.pdf");
+            
+            if (!java.nio.file.Files.exists(pdfPath)) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
             }
 
-            // Fallback: Proxy from Cloudinary if no BLOB exists (for older records)
-            String urlString = cv.getUrl();
-            if (urlString != null && urlString.startsWith("http")) {
-                URL url = new URL(urlString);
-                byte[] bytes;
-                try (InputStream is = url.openStream()) {
-                    bytes = is.readAllBytes();
-                }
-                
-                Resource resource = new ByteArrayResource(bytes);
-                return ResponseEntity.ok()
-                        .header(HttpHeaders.CONTENT_TYPE, "application/pdf")
-                        .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
-                        .header(HttpHeaders.CONTENT_LENGTH, String.valueOf(bytes.length))
-                        .body(resource);
-            }
-
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+            Resource resource = new org.springframework.core.io.UrlResource(pdfPath.toUri());
+            
+            return ResponseEntity.ok()
+                    .header(HttpHeaders.CONTENT_TYPE, "application/pdf")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"my_cv.pdf\"")
+                    .header(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate")
+                    .body(resource);
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();

@@ -157,7 +157,7 @@ const ResumeManager = () => {
                     <ul className="list-disc list-inside space-y-1">
                         <li>Upload your CV in PDF format (maximum 10MB)</li>
                         <li>Only one CV can be active at a time - uploading a new CV automatically replaces the old one</li>
-                        <li>Your CV is stored securely on Cloudinary CDN for fast global access</li>
+                        <li>Your CV is stored securely on the server storage</li>
                         <li>The public download link is automatically available on your portfolio</li>
                         <li>All uploads are validated for file type and size before processing</li>
                     </ul>
