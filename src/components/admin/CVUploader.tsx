@@ -21,19 +21,18 @@ export const CVUploader = ({ onUploadSuccess, currentCVUrl }: CVUploaderProps) =
     const onDrop = useCallback((acceptedFiles: File[]) => {
         const file = acceptedFiles[0];
         if (file) {
-            // Validate file size (5MB max)
-            if (file.size > 5 * 1024 * 1024) {
+            // Validate file size (10MB max)
+            if (file.size > 10 * 1024 * 1024) {
                 toast.error('File too large', {
-                    description: 'Maximum file size is 5MB'
+                    description: 'Maximum file size is 10MB'
                 });
                 return;
             }
 
-            // Validate file type
-            const validTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-            if (!validTypes.includes(file.type) && !file.name.endsWith('.pdf') && !file.name.endsWith('.docx')) {
+            // Validate file type (PDF Only)
+            if (file.type !== 'application/pdf' && !file.name.toLowerCase().endsWith('.pdf')) {
                 toast.error('Invalid file type', {
-                    description: 'Only PDF and DOCX files are allowed'
+                    description: 'Only PDF files are allowed'
                 });
                 return;
             }
@@ -45,8 +44,7 @@ export const CVUploader = ({ onUploadSuccess, currentCVUrl }: CVUploaderProps) =
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
         onDrop,
         accept: {
-            'application/pdf': ['.pdf'],
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx']
+            'application/pdf': ['.pdf']
         },
         maxFiles: 1,
         multiple: false
@@ -106,7 +104,7 @@ export const CVUploader = ({ onUploadSuccess, currentCVUrl }: CVUploaderProps) =
             <CardHeader>
                 <CardTitle>CV / Resume Upload</CardTitle>
                 <CardDescription>
-                    Upload your CV in PDF or DOCX format (max 5MB). Only one CV can be active at a time.
+                    Upload your CV in PDF format (max 10MB). Only one CV can be active at a time.
                 </CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -131,7 +129,7 @@ export const CVUploader = ({ onUploadSuccess, currentCVUrl }: CVUploaderProps) =
                                     Drag & drop your CV here, or click to browse
                                 </p>
                                 <p className="text-xs text-muted-foreground">
-                                    Supports PDF and DOCX files up to 5MB
+                                    Supports PDF files up to 10MB
                                 </p>
                             </>
                         )}
@@ -199,7 +197,7 @@ export const CVUploader = ({ onUploadSuccess, currentCVUrl }: CVUploaderProps) =
                     disabled={!selectedFile || uploading}
                     className="w-full"
                 >
-                    {uploading ? 'Uploading...' : 'Upload & Replace CV'}
+                    {uploading ? 'Uploading...' : currentCVUrl ? 'Replace CV' : 'Upload CV'}
                 </Button>
             </CardContent>
         </Card>

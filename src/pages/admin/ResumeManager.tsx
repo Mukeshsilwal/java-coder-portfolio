@@ -155,7 +155,7 @@ const ResumeManager = () => {
                 </CardHeader>
                 <CardContent className="text-sm text-blue-800 dark:text-blue-200 space-y-2">
                     <ul className="list-disc list-inside space-y-1">
-                        <li>Upload your CV in PDF or DOCX format (maximum 5MB)</li>
+                        <li>Upload your CV in PDF format (maximum 10MB)</li>
                         <li>Only one CV can be active at a time - uploading a new CV automatically replaces the old one</li>
                         <li>Your CV is stored securely on Cloudinary CDN for fast global access</li>
                         <li>The public download link is automatically available on your portfolio</li>

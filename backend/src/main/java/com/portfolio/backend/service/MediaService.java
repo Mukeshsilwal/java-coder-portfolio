@@ -67,20 +67,43 @@ public class MediaService {
             });
         }
 
-        // Handle CVs in Database (BLOB) per user request
+        // Handle CVs in Database (BLOB) - Single File Policy
         if (type == MediaType.CV) {
-            // Build MediaFile entity for database storage
-            MediaFile mediaFile = MediaFile.builder()
-                    .publicId("DATABASE_" + System.currentTimeMillis()) 
-                    .url("/api/public/media/cv/download") 
-                    .data(file.getBytes()) // Store bytes directly in DB
-                    .fileType(type)
-                    .fileSize(file.getSize())
-                    .fileName(file.getOriginalFilename())
-                    .active(true)
-                    .build();
+            final String FIXED_CV_ID = "CV_FILE";
 
-            return mediaFileRepository.save(mediaFile);
+            // Check if CV already exists
+            MediaFile mediaFile = mediaFileRepository.findByPublicId(FIXED_CV_ID)
+                    .orElse(MediaFile.builder()
+                            .publicId(FIXED_CV_ID)
+                            .fileType(MediaType.CV)
+                            .url("/api/public/media/cv/download")
+                            .build());
+
+            // Update fields (whether new or existing)
+            mediaFile.setData(file.getBytes());
+            mediaFile.setFileSize(file.getSize());
+            mediaFile.setFileName(file.getOriginalFilename());
+            mediaFile.setActive(true);
+            mediaFile.setUploadedAt(java.time.LocalDateTime.now()); // Update timestamp to show "Fresh" status
+
+            // Save (Update or Create)
+            MediaFile savedFile = mediaFileRepository.save(mediaFile);
+
+            // Cleanup: Deactivate/Delete any other CV files (legacy cleanup)
+            List<MediaFile> otherFiles = mediaFileRepository.findByFileTypeAndActiveTrue(MediaType.CV);
+            for (MediaFile f : otherFiles) {
+                if (!f.getPublicId().equals(FIXED_CV_ID)) {
+                    // Safe cleanup: just deactivate or delete. User said "replace".
+                    // We'll delete them to strictly follow "Only one CV in the entire system"
+                    try {
+                         mediaFileRepository.delete(f);
+                    } catch (Exception e) {
+                        // ignore
+                    }
+                }
+            }
+            
+            return savedFile;
         }
 
         try {
@@ -118,6 +141,14 @@ public class MediaService {
     }
 
     public MediaFile getActiveMediaByType(MediaType type) {
+        if (type == MediaType.CV) {
+            final String FIXED_CV_ID = "CV_FILE";
+            // Check for specific CV ID first
+            return mediaFileRepository.findByPublicId(FIXED_CV_ID)
+                    .filter(MediaFile::isActive)
+                    .orElse(mediaFileRepository.findTopByFileTypeAndActiveTrueOrderByUploadedAtDesc(type)
+                            .orElseThrow(() -> new RuntimeException("No active " + type + " found")));
+        }
         return mediaFileRepository.findTopByFileTypeAndActiveTrueOrderByUploadedAtDesc(type)
                 .orElseThrow(() -> new RuntimeException("No active " + type + " found"));
     }
