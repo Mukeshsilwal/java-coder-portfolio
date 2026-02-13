@@ -78,7 +78,7 @@ public class MediaService {
             }
             
             // Fixed filename
-            java.nio.file.Path targetPath = targetDir.resolve("my_cv.pdf");
+            java.nio.file.Path targetPath = targetDir.resolve("Mukesh_Silwal_cv.pdf");
             
             // Write file (Overwrite)
             java.nio.file.Files.write(targetPath, file.getBytes());
@@ -94,7 +94,7 @@ public class MediaService {
             // Update metadata (No BLOB data here)
             mediaFile.setData(null); // Ensure no BLOB data is stored
             mediaFile.setFileSize(file.getSize());
-            mediaFile.setFileName("my_cv.pdf"); // Fixed name
+            mediaFile.setFileName("Mukesh_Silwal_cv.pdf"); // Fixed name
             mediaFile.setActive(true);
             mediaFile.setUploadedAt(java.time.LocalDateTime.now()); // Update timestamp to show "Fresh" status
 

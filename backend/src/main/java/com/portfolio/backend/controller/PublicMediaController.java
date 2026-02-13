@@ -64,7 +64,7 @@ public class PublicMediaController {
     @GetMapping("/cv/download")
     public ResponseEntity<Resource> downloadCV() {
         try {
-            java.nio.file.Path pdfPath = java.nio.file.Paths.get(uploadDir, "cv", "my_cv.pdf");
+            java.nio.file.Path pdfPath = java.nio.file.Paths.get(uploadDir, "cv", "Mukesh_Silwal_cv.pdf");
             
             if (!java.nio.file.Files.exists(pdfPath)) {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
@@ -74,7 +74,7 @@ public class PublicMediaController {
             
             return ResponseEntity.ok()
                     .header(HttpHeaders.CONTENT_TYPE, "application/pdf")
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"my_cv.pdf\"")
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"Mukesh_Silwal_cv.pdf\"")
                     .header(HttpHeaders.CACHE_CONTROL, "no-cache, no-store, must-revalidate")
                     .body(resource);
 
